@@ -1,0 +1,8 @@
+<!-- <div class="custom-checkbox" [class.checked]="checked" (click)="toggleCheck()">
+    <span *ngIf="checked">✔</span>
+</div> -->
+
+<label class="custom-checkbox">
+    <input type="checkbox" [checked]="checked" [indeterminate]="indeterminate" (click)="toggleCheck()" />
+    <span class="checkmark"></span>
+  </label>

@@ -1,0 +1,54 @@
+<div class="loading-indicator" *ngIf="isLoading">
+  <app-wait></app-wait>
+</div>
+
+<div class="container-fluid p-3">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+      <h4 class="m-0 fw-bold text-primary">
+        <i class="bi bi-hdd-network me-2"></i>RFID Reader Status
+      </h4>
+      <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+          <i class="bi bi-circle-fill me-1"></i> Active
+        </span>
+        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
+          <i class="bi bi-circle-fill me-1"></i> Inactive
+        </span>
+        <button class="btn btn-outline-primary btn-sm ms-2" (click)="loadData()">
+          <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="row g-3" *ngIf="RData && RData.length > 0">
+        <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let RD of RData">
+          <div class="card h-100 shadow-sm border" [ngClass]="RD.status ? 'border-success' : 'border-danger'">
+            <div class="card-header text-white fw-bold d-flex justify-content-between align-items-center"
+              [ngClass]="RD.status ? 'bg-success' : 'bg-danger'">
+              <span>{{RD.Description || 'RFID Reader'}}</span>
+              <span class="badge bg-white" [ngClass]="RD.status ? 'text-success' : 'text-danger'">
+                {{RD.status ? 'Online' : 'Offline'}}
+              </span>
+            </div>
+            <div class="card-body bg-light py-3">
+              <div class="d-flex align-items-center text-muted">
+                <i class="bi bi-router me-2 fs-5"></i>
+                <div>
+                  <div class="small fw-bold text-dark">{{RD.ReaderIP}}</div>
+                  <div class="small">{{RD.Description}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center py-5 text-muted" *ngIf="!RData || RData.length === 0">
+        <i class="bi bi-exclamation-circle fs-1 d-block mb-2"></i>
+        No reader status records found.
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,164 @@
+<div class="report-dialog">
+
+  <!-- Header -->
+  <div class="dialog-header">
+
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <i class="bi bi-building header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2>Production Report</h2>
+        <p>Production Order Mapping Report</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+
+      <button class="export-btn" (click)="exportPdf()">
+        <i class="bi bi-file-earmark-pdf"></i>
+        <span>Export</span>
+      </button>
+
+      <button class="clear-btn" (click)="resetReport()">
+        <i class="bi bi-arrow-clockwise"></i>
+        <span>Clear</span>
+      </button>
+
+      <button mat-icon-button class="close-btn" (click)="closeDialog()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+<mat-form-field appearance="outline" (mousedown)="unitSelectRef.open()">
+  <mat-label>Production Unit</mat-label>
+  <mat-select #unitSelectRef [(ngModel)]="selectedUnit">
+    <mat-option *ngFor="let unit of productionUnits" [value]="unit">
+      {{ unit }}
+    </mat-option>
+  </mat-select>
+  <i class="bi bi-gear field-icon" matSuffix></i>
+</mat-form-field>
+
+<mat-form-field appearance="outline" (mousedown)="monthSelectRef.open()">
+  <mat-label>Month</mat-label>
+  <mat-select #monthSelectRef [(ngModel)]="selectedMonth">
+    <mat-option *ngFor="let month of months" [value]="month.value">
+      {{ month.name }}
+    </mat-option>
+  </mat-select>
+  <i class="bi bi-calendar3 field-icon" matSuffix></i>
+</mat-form-field>
+
+<mat-form-field appearance="outline" (mousedown)="yearSelectRef.open()">
+  <mat-label>Year</mat-label>
+  <mat-select #yearSelectRef [(ngModel)]="selectedYear">
+    <mat-option *ngFor="let year of years" [value]="year">
+      {{ year }}
+    </mat-option>
+  </mat-select>
+  <i class="bi bi-calendar-event field-icon" matSuffix></i>
+</mat-form-field>
+    <button class="show-btn" (click)="showReport()">
+      <i class="bi bi-search"></i>
+      <span>Show</span>
+    </button>
+
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+
+    <div class="table-scroll-container">
+
+      <table mat-table [dataSource]="dataSource" class="report-table">
+
+        <!-- Production Unit -->
+        <ng-container matColumnDef="productionUnit">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Production Unit</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="unit-badge" [ngClass]="getBadgeClass(row.Production_Unit)">
+              {{ row.Production_Unit }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Production Order -->
+        <ng-container matColumnDef="productionOrder">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Production Order</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="order-id">{{ row.Production_Order }}</span>
+          </td>
+        </ng-container>
+
+        <!-- From Date -->
+        <ng-container matColumnDef="fromDate">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">From Date</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="date-chip">
+              <i class="bi bi-arrow-right-circle date-icon"></i>
+              {{ row.FromDate | date:'dd-MM-yyyy' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- To Date -->
+        <ng-container matColumnDef="toDate">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">To Date</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="date-chip">
+              <i class="bi bi-arrow-left-circle date-icon"></i>
+              {{ row.Todate | date:'dd-MM-yyyy' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Order Month -->
+        <ng-container matColumnDef="orderMonth">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Order Month</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="month-pill">{{ row.Order_Month | number:'2.0' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Order Year -->
+        <ng-container matColumnDef="orderYear">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Order Year</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="year-text">{{ row.Order_Year }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="data-row"></tr>
+
+      </table>
+
+    </div>
+
+    <mat-paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 20, 30, dataSource.data.length]"
+      showFirstLastButtons>
+    </mat-paginator>
+
+  </div>
+
+</div>

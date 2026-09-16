@@ -1,0 +1,53 @@
+.custom-checkbox {
+    display: inline-block;
+    position: relative;
+    /* padding-left: 25px; */
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+  }
+  
+  .custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  .custom-checkbox .checkmark {
+    position: absolute;
+    top: -14px;
+    left: -9px;
+    height: 18px;
+    width: 18px;
+    background-color: #eee;
+    border: 2px solid #0066AC;
+    border-radius: 4px;
+  }
+  
+  .custom-checkbox input:checked ~ .checkmark {
+    background-color: #0066AC; /* Box color */
+    border-color: #0066AC;
+  }
+  
+  .custom-checkbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  .custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Tick mark style */
+  .custom-checkbox .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white; /* <-- Change this for tick color */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }

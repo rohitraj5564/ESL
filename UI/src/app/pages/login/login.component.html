@@ -1,0 +1,56 @@
+<div class="login-container">
+  <div class="login-box">
+    <!-- Top Progress Loading Bar -->
+    <div class="loading-bar-track" *ngIf="isLoading">
+      <div class="loading-bar-fill"></div>
+    </div>
+
+    <img src="../../../assets/logo.png" alt="Company Logo" class="company-logo" />
+    <h2>Login</h2>
+
+    <!-- Dynamic Error Message Banner -->
+    <div class="error-banner" *ngIf="errorMessage">
+      <i class="bi bi-exclamation-triangle-fill error-icon"></i>
+      <div class="error-text">{{ errorMessage }}</div>
+    </div>
+
+    <form autocomplete="off" (submit)="$event.preventDefault(); Login(UserName.value, Password.value)">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username" autocomplete="username" required placeholder="Enter your username" #UserName [ngClass]="{ 'error-border': usernameError }" [disabled]="isLoading" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input id="password" [type]="showPassword ? 'text' : 'password'" name="password" autocomplete="current-password" required placeholder="Enter your password" #Password [ngClass]="{ 'error-border': passwordError, 'blink-error': loginFailed }" [disabled]="isLoading" (keyup.enter)="Login(UserName.value, Password.value)" />
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'" [disabled]="isLoading">
+            <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn-login" [disabled]="isLoading">
+        <span *ngIf="!isLoading">Login</span>
+        <span *ngIf="isLoading" class="btn-loading">
+          <span class="spinner"></span>
+          <span>Logging in...</span>
+        </span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<img src="../../../assets/loginbg.jpeg" alt="background" class="bg" />
+
+<!-- Modal for key input -->
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <h3>Activation key is expired</h3>
+    <div class="form-group">
+      <input id="key" type="text" [(ngModel)]="keyInput" placeholder="Enter new activation key" required />
+    </div>
+    <div class="modal-buttons">
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="submitKey()">Activate</button>
+    </div>
+  </div>
+</div>

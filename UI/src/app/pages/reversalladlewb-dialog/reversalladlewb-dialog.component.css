@@ -1,0 +1,679 @@
+/* =========================================================
+   DIALOG CONTAINER - LIGHT MODE
+========================================================= */
+
+.dialogData {
+    padding: 24px 26px 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    user-select: none;
+    background: #f4f7fb;
+    border-radius: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: #1a2a3a;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #dde5f0;
+}
+
+h4[mat-dialog-title] {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    background: linear-gradient(90deg, #023c6f 0%, #0a5fa8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    color: #e03d3d;
+    cursor: pointer;
+    padding: 0 4px;
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+.close-btn:hover {
+    opacity: 0.75;
+    transform: scale(1.1);
+}
+
+/* =========================================================
+   LOCO ROW
+========================================================= */
+
+.loco-inline-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 14px 0 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.loco-inline-container > label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #023c6f;
+    white-space: nowrap;
+}
+
+.loco-select {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    border-radius: 8px;
+    border: 1.5px solid #c4d3e8;
+    background-color: #ffffff;
+    color: #1a2a3a;
+    min-width: 150px;
+    max-width: 300px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.loco-select:focus {
+    outline: none;
+    border-color: #023c6f;
+    box-shadow: 0 0 0 3px rgba(2, 60, 111, 0.10);
+}
+
+/* =========================================================
+   COUNT BADGE
+========================================================= */
+
+.count-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    background: #e0f0e8;
+    border: 1.5px solid #7ecda0;
+    border-radius: 8px;
+    padding: 5px 14px;
+}
+
+.count-container label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a5c30;
+}
+
+.count-container span {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0a6202;
+}
+
+/* =========================================================
+   TABLE SCROLL WRAPPER
+========================================================= */
+
+.table-scroll-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-top: 4px;
+    border-radius: 10px;
+    border: 1.5px solid #d0dce9;
+    box-shadow: 0 3px 12px rgba(2, 60, 111, 0.09);
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar {
+    width: 5px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+    background: #eef2f8;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #8aaac8;
+    border-radius: 4px;
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    table-layout: fixed;
+}
+
+thead {
+    text-align: center;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #023c6f;
+    padding: 10px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: #e8f2ff;
+    border: none;
+    box-shadow: 0 2px 3px rgba(2, 60, 111, 0.25);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+td {
+    padding: 8px 4px;
+    font-size: 11px;
+    text-align: center;
+    border-bottom: 1px solid #e4ecf5;
+    color: #1a2a3a;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+/* =========================================================
+   COLUMN WIDTHS
+========================================================= */
+
+th:nth-child(1),
+td:nth-child(1) {
+    width: 16%;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 13%;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 28%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 28%;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 15%;
+}
+
+/* =========================================================
+   TABLE ROWS
+========================================================= */
+
+tbody tr {
+    transition: background 0.12s;
+}
+
+tbody tr:nth-child(even) {
+    background: #f5f8fc;
+}
+
+tbody tr:hover {
+    background: #e8f0fb;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================================
+   DESTINATION SELECT
+========================================================= */
+
+.destination-select {
+    padding: 5px 4px;
+    border-radius: 7px;
+    border: 1.5px solid #c4d3e8;
+    width: 100%;
+    background-color: #ffffff;
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    color: #1a2a3a;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.destination-select:focus {
+    outline: none;
+    border-color: #0a5fa8;
+    box-shadow: 0 0 0 3px rgba(10, 95, 168, 0.11);
+}
+
+.destination-select:disabled {
+    background: #eef2f8;
+    color: #7a8fa6;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+p {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    padding: 18px 0;
+    font-size: 14px;
+}
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.submit-btn {
+    height: fit-content;
+    background: linear-gradient(135deg, #0a831a 0%, #12a820 100%);
+    color: white;
+    padding: 9px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 18px;
+    box-shadow: 0 4px 14px rgba(10, 131, 26, 0.25);
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #02630f 0%, #0a831a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(10, 131, 26, 0.32);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(10, 131, 26, 0.20);
+}
+
+/* =========================================================
+   MOVEMENT TYPE BADGES
+========================================================= */
+
+.movement-badge {
+    display: inline-block;
+    padding: 3px 2px;
+    border-radius: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.badge-full-rejection {
+    background-color: #E53935;
+    color: #FFFFFF;
+    border: none;
+}
+
+.badge-partial {
+    background-color: #F9A825;
+    color: #FFFFFF;
+    border: none;
+}
+
+.badge-full-consumption {
+    background-color: #E67E22;
+    color: #FFFFFF;
+    border: none;
+}
+
+.badge-available {
+    background-color: #2E7D32;
+    color: #FFFFFF;
+    border: none;
+}
+
+/* =========================================================
+   LADLE HISTORY
+========================================================= */
+
+.history-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.info-icon {
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+    object-fit: contain;
+}
+
+.info-icon:hover {
+    transform: scale(1.15);
+    opacity: 0.85;
+}
+
+/* =========================================================
+   HISTORY TOOLTIP
+========================================================= */
+
+.history-tooltip {
+    position: fixed;
+    background: #ffffff;
+    border: 1.5px solid #2E75B6;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(2, 60, 111, 0.25);
+    min-width: 200px;
+    max-width: 260px;
+    z-index: 99999;
+    animation: fadeIn 0.15s ease;
+    transform: translateX(-80%);
+    margin-top: -180px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-80%) translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-80%) translateY(0);
+    }
+}
+
+.history-tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #023c6f;
+    color: white;
+    padding: 7px 10px;
+    border-radius: 8px 8px 0 0;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.tooltip-close {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 2px;
+}
+
+.tooltip-close:hover {
+    opacity: 0.75;
+}
+
+.history-tooltip-body {
+    padding: 8px 10px;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.trail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 12px;
+    text-align: left;
+}
+
+.trail-item:last-child {
+    border-bottom: none;
+}
+
+.trail-step {
+    background: #2E75B6;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.trail-loc {
+    color: #1a2a3a;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.no-trail {
+    font-size: 11px;
+    color: #999;
+    text-align: center;
+    padding: 8px 0;
+    font-style: italic;
+}
+
+
+/* =========================================================
+   DARK MODE
+   Works when your application uses:
+   body.dark-theme
+========================================================= */
+
+:host-context(body.dark-theme) .dialogData {
+    background: #1b2635;
+    color: #e8edf3;
+}
+
+:host-context(body.dark-theme) .dialog-header {
+    border-bottom-color: #3a4a5c;
+}
+
+:host-context(body.dark-theme) h4[mat-dialog-title] {
+    background: linear-gradient(90deg, #5da9e9 0%, #9dccff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+:host-context(body.dark-theme) .loco-inline-container > label {
+    color: #9dccff;
+}
+
+:host-context(body.dark-theme) .loco-select {
+    background-color: #263545;
+    color: #edf4fb;
+    border-color: #4a6075;
+}
+
+:host-context(body.dark-theme) .loco-select option {
+    background: #263545;
+    color: #edf4fb;
+}
+
+:host-context(body.dark-theme) .loco-select:focus {
+    border-color: #5da9e9;
+    box-shadow: 0 0 0 3px rgba(93, 169, 233, 0.18);
+}
+
+
+/* COUNT */
+
+:host-context(body.dark-theme) .count-container {
+    background: #1f3d31;
+    border-color: #4d9470;
+}
+
+:host-context(body.dark-theme) .count-container label {
+    color: #a7e5bf;
+}
+
+:host-context(body.dark-theme) .count-container span {
+    color: #79e39a;
+}
+
+
+/* TABLE WRAPPER */
+
+:host-context(body.dark-theme) .table-scroll-wrapper {
+    border-color: #3e5265;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.35);
+}
+
+:host-context(body.dark-theme) .table-scroll-wrapper::-webkit-scrollbar-track {
+    background: #202d3a;
+}
+
+:host-context(body.dark-theme) .table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #50677c;
+}
+
+
+/* TABLE */
+
+:host-context(body.dark-theme) table {
+    background-color: #202c38;
+}
+
+:host-context(body.dark-theme) th {
+    background: #0b3d66;
+    color: #e8f3ff;
+}
+
+:host-context(body.dark-theme) td {
+    color: #e6edf5;
+    border-bottom-color: #394b5c;
+}
+
+:host-context(body.dark-theme) tbody tr {
+    background: #202c38;
+}
+
+:host-context(body.dark-theme) tbody tr:nth-child(even) {
+    background: #263442;
+}
+
+:host-context(body.dark-theme) tbody tr:hover {
+    background: #30465a;
+}
+
+
+/* DESTINATION SELECT */
+
+:host-context(body.dark-theme) .destination-select {
+    background-color: #263545;
+    color: #edf4fb;
+    border-color: #4a6075;
+}
+
+:host-context(body.dark-theme) .destination-select option {
+    background: #263545;
+    color: #edf4fb;
+}
+
+:host-context(body.dark-theme) .destination-select:focus {
+    border-color: #5da9e9;
+    box-shadow: 0 0 0 3px rgba(93, 169, 233, 0.18);
+}
+
+:host-context(body.dark-theme) .destination-select:disabled {
+    background: #1d2935;
+    color: #7f91a3;
+    border-color: #455666;
+}
+
+
+/* EMPTY TEXT */
+
+:host-context(body.dark-theme) p {
+    color: #aebdca;
+}
+
+
+/* TOOLTIP */
+
+:host-context(body.dark-theme) .history-tooltip {
+    background: #202c38;
+    border-color: #4f91c9;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.55);
+}
+
+:host-context(body.dark-theme) .history-tooltip-header {
+    background: #0b3d66;
+}
+
+:host-context(body.dark-theme) .history-tooltip-body {
+    color: #e6edf5;
+}
+
+:host-context(body.dark-theme) .trail-item {
+    border-bottom-color: #394b5c;
+}
+
+:host-context(body.dark-theme) .trail-loc {
+    color: #e6edf5;
+}
+
+:host-context(body.dark-theme) .no-trail {
+    color: #9baaba;
+}
+
+
+/* =========================================================
+   ANGULAR MATERIAL DIALOG WHITE BACKGROUND FIX
+
+   IMPORTANT:
+   Angular Material dialog container is outside the component,
+   so ::ng-deep is required for this component CSS.
+========================================================= */
+
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-dialog-container,
+:host-context(body.dark-theme) ::ng-deep .mat-mdc-dialog-surface {
+    background-color: #1b2635 !important;
+    color: #e8edf3 !important;
+}
+
+
+:host-context(body.dark-theme) ::ng-deep .mat-dialog-container {
+    background-color: #1b2635 !important;
+    color: #e8edf3 !important;
+}

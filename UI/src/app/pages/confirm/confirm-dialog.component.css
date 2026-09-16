@@ -1,0 +1,11 @@
+.confirm-dialog-container {
+  min-width: 320px;
+  text-align: center;
+}
+.dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 1.1rem;
+}

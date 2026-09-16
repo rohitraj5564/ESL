@@ -1,0 +1,239 @@
+<div class="cast-assignment-page" [class.dark-theme]="isDarkTheme">
+  <div class="card-header">
+    <div class="sub-header-left">
+      <div class="dashboard-page-title">
+        <span class="page-icon">📊</span>
+        <div>
+          <h1>Cast Assignment</h1>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="filter-section">
+    <div class="filter-card">
+
+      <div class="filter-grid">
+
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>From Date</mat-label>
+
+          <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" [max]="maxFromDate"
+            placeholder="DD-MM-YYYY" readonly />
+
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker">
+          </mat-datepicker-toggle>
+
+          <mat-datepicker #fromPicker panelClass="custom-datepicker">
+          </mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>To Date</mat-label>
+
+          <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" [max]="maxFromDate" placeholder="DD-MM-YYYY"
+            readonly />
+
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker">
+          </mat-datepicker-toggle>
+
+          <mat-datepicker #toPicker panelClass="custom-datepicker">
+          </mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select Location</mat-label>
+
+          <mat-select [(ngModel)]="selectedLocation">
+            <mat-option *ngFor="let loc of locations" [value]="loc">
+              {{ loc }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <button mat-raised-button type="button" class="search-btn" (click)="searchData()">
+
+          <i class="bi bi-search"></i>
+          <span>Search</span>
+
+        </button>
+
+        <button mat-raised-button type="button" class="clear-btn" (click)="clearFilter()">
+
+          <i class="bi bi-arrow-clockwise"></i>
+          <span>Clear</span>
+
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="table-section">
+
+    <div class="table-header">
+
+      <div class="table-title">
+
+        <h2>Production Transactions</h2>
+
+        <span>
+          Real Time Blast Furnace Monitoring
+        </span>
+
+      </div>
+
+      <button type="button" class="header-action-btn" (click)="openReport()">
+
+        <i class="bi bi-file-earmark-text"></i>
+        <span>Report</span>
+
+      </button>
+
+    </div>
+
+    <div class="table-container">
+
+      <table mat-table [dataSource]="pagedData">
+
+        <ng-container matColumnDef="Tran_ID">
+          <th mat-header-cell *matHeaderCellDef>
+            Transaction No.
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <div class="transaction-box">
+              {{ row.Tran_ID }}
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="GrossDate">
+          <th mat-header-cell *matHeaderCellDef>
+            Date (Gross Wt)
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.GrossDateTime | date:'dd-MM-yyyy' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="GrossTime">
+          <th mat-header-cell *matHeaderCellDef>
+            Time (Gross Wt)
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.GrossDateTime | date:'hh:mm a' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="LaddleNumber">
+          <th mat-header-cell *matHeaderCellDef>
+            Ladle No.
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.LaddleNumber }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="NetWT">
+          <th mat-header-cell *matHeaderCellDef>
+            Net Wt. (MT)
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.NetWT }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="GrossWT">
+          <th mat-header-cell *matHeaderCellDef>
+            Gross Wt. (MT)
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.GrossWT }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="TareWT">
+          <th mat-header-cell *matHeaderCellDef>
+            Tare Wt. (MT)
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            {{ row.TareWT }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="SenderPlant">
+          <th mat-header-cell *matHeaderCellDef>
+            Sender Plant
+          </th>
+
+          <td mat-cell *matCellDef="let row">
+            <span class="badge">
+              {{ row.SenderPlant }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="CastNumber">
+          <th mat-header-cell *matHeaderCellDef>
+            Cast No.
+          </th>
+
+          <td mat-cell *matCellDef="let row; let i = index">
+
+            <input type="text" class="cast-input" [(ngModel)]="row.CastNumber" placeholder="Cast Number"
+              [disabled]="i !== 0" />
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>
+            Action
+          </th>
+
+          <td mat-cell *matCellDef="let row; let i = index">
+
+            <div class="action-buttons">
+
+              <button type="button" class="edit-btn" matTooltip="Update Cast Number" (click)="editCastNo(row)"
+                [disabled]="i !== 0">
+
+                <span class="btn-glow"></span>
+
+                <i class="bi bi-pencil"></i>
+
+                <span>Update</span>
+
+              </button>
+
+            </div>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns">
+        </tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+
+      </table>
+
+    </div>
+
+    <mat-paginator class="custom-paginator" [length]="filteredData.length" [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 25]" (page)="onPageChange($event)">
+    </mat-paginator>
+
+  </div>
+
+</div>
+<app-footer></app-footer>

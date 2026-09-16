@@ -1,0 +1,403 @@
+.cast-assignment-report-page {
+    min-height: calc(100vh - 70px);
+    padding: 14px 20px 20px;
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(135deg,
+            #e0f2fe 0%,
+            #eef2ff 45%,
+            #f0fdf4 100%);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.table-section {
+    background: rgba(255, 255, 255, 0.9);
+
+    backdrop-filter: blur(18px);
+
+    border-radius: 20px;
+
+    padding: 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
+    box-shadow:
+        0 10px 35px rgba(15, 23, 42, 0.08);
+}
+
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 14px;
+
+    padding-bottom: 12px;
+
+    border-bottom:
+        2px dashed rgba(37, 99, 235, 0.18);
+}
+
+.table-title h2 {
+    margin: 0;
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(135deg,
+            #2563eb,
+            #7c3aed);
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+.table-title span {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 12px;
+
+    color: #64748b;
+
+    font-weight: 600;
+}
+
+.export-btn {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    height: 42px;
+
+    padding: 0 18px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(135deg,
+            #16a34a,
+            #22c55e);
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 6px 18px rgba(34, 197, 94, 0.28);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 24px rgba(34, 197, 94, 0.38);
+}
+
+.export-btn i {
+    font-size: 16px;
+}
+
+.table-container {
+    width: 100%;
+
+    overflow-x: auto;
+
+    overflow-y: auto;
+
+    border-radius: 16px;
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        #4f46e5 #e2e8f0;
+}
+
+table {
+    width: max-content;
+
+    min-width: 100%;
+
+    border-collapse: collapse;
+}
+
+th {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 10;
+
+    background:
+        linear-gradient(135deg,
+            #1e3a8a,
+            #312e81) !important;
+
+    color: #ffffff !important;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    padding: 10px 12px !important;
+
+    white-space: nowrap;
+
+    min-width: 120px;
+
+    height: 44px;
+}
+
+td {
+    padding: 8px 12px !important;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    color: #0f172a;
+
+    background:
+        rgba(255, 255, 255, 0.86);
+
+    border-bottom:
+        2px solid #eef2ff;
+
+    white-space: nowrap;
+
+    min-width: 120px;
+
+    height: 44px;
+}
+
+tr:hover td {
+    background: #f8fafc;
+}
+
+.transaction-box {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 34px;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(135deg,
+            #2563eb,
+            #60a5fa);
+
+    color: #ffffff;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+    box-shadow:
+        0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(135deg,
+            #7c3aed,
+            #4f46e5);
+
+    color: #ffffff;
+
+    padding: 5px 12px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 4px 12px rgba(124, 58, 237, 0.22);
+}
+
+.receiver-badge {
+    background:
+        linear-gradient(135deg,
+            #0f766e,
+            #14b8a6);
+}
+
+.no-data {
+    padding: 35px 20px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #64748b;
+}
+
+.table-container::-webkit-scrollbar {
+    width: 8px;
+
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #e2e8f0;
+
+    border-radius: 20px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(135deg,
+            #4f46e5,
+            #2563eb);
+
+    border-radius: 20px;
+}
+
+/* =========================================================
+   DARK MODE
+   Uses ThemeService: body.dark-theme
+========================================================= */
+
+:host-context(body.dark-theme) .cast-assignment-report-page {
+    background:
+        linear-gradient(135deg,
+            #020617 0%,
+            #0f172a 50%,
+            #111827 100%) !important;
+
+    color: #e2e8f0;
+}
+
+:host-context(body.dark-theme) .table-section {
+    background:
+        linear-gradient(135deg,
+            rgba(15, 23, 42, 0.97),
+            rgba(30, 41, 59, 0.95)) !important;
+
+    border-color:
+        rgba(255, 255, 255, 0.06);
+
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+:host-context(body.dark-theme) .table-header {
+    border-bottom-color:
+        rgba(96, 165, 250, 0.16);
+}
+
+:host-context(body.dark-theme) .table-title span {
+    color: #94a3b8 !important;
+}
+
+:host-context(body.dark-theme) th {
+    background:
+        linear-gradient(135deg,
+            #1e3a8a,
+            #312e81) !important;
+
+    color: #ffffff !important;
+}
+
+:host-context(body.dark-theme) td {
+    background: #1e293b !important;
+
+    color: #e2e8f0 !important;
+
+    border-bottom-color:
+        rgba(255, 255, 255, 0.06) !important;
+}
+
+:host-context(body.dark-theme) tr:hover td {
+    background: #26384d !important;
+}
+
+:host-context(body.dark-theme) .no-data {
+    color: #94a3b8 !important;
+}
+
+:host-context(body.dark-theme) .table-container {
+    scrollbar-color:
+        #4f46e5 #0f172a;
+}
+
+:host-context(body.dark-theme)
+.table-container::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+:host-context(body.dark-theme)
+.table-container::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(135deg,
+            #4f46e5,
+            #2563eb);
+}
+
+@media (max-width: 768px) {
+    .cast-assignment-report-page {
+        padding: 10px;
+    }
+
+    .table-section {
+        padding: 12px;
+
+        border-radius: 16px;
+    }
+
+    .table-header {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .table-title h2 {
+        font-size: 19px;
+    }
+
+    .export-btn {
+        width: 100%;
+    }
+
+    table {
+        min-width: 1200px;
+    }
+}

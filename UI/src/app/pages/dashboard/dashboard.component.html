@@ -1,0 +1,250 @@
+<div class="dashboard-root">
+
+  <!-- Loading Overlay -->
+  <div class="loading-indicator" *ngIf="isLoading">
+    <app-wait></app-wait>
+  </div>
+
+  <!--Dashboard Sub-Header with Live indicator, Export, and Filters-->
+  <div class="dashboard-sub-header">
+    <div class="sub-header-left">
+      <div class="dashboard-page-title">
+        <span class="page-icon">📊</span>
+        <div>
+          <h1>Real-Time Ladle Operations Analytics</h1>
+          <span class="page-subtitle">Steel Plant Hot Metal Tracking System</span>
+        </div>
+      </div>
+    </div>
+    <div class="sub-header-right">
+      <!-- View Toggle Buttons -->
+      <div class="view-toggle-group">
+        <button class="view-toggle-btn" (click)="navigateTo('esldashboard')">
+          <i class="bi bi-activity"></i> Live Tracking
+        </button>
+        <button class="view-toggle-btn active">
+          <i class="bi bi-bar-chart-line"></i> Analytic Dashboard
+        </button>
+      </div>
+      <div class="live-pill">
+        <span class="dot"></span> Live
+        <span class="divider"></span>
+        <span class="time">{{ lastUpdate }}</span>
+      </div>
+      <button mat-raised-button class="refresh-btn" (click)="refreshData()" [disabled]="isLoading" [matTooltip]="'Refresh analytical telemetry'">
+        <i class="bi bi-arrow-repeat icon" [class.spin]="isLoading"></i>
+        <span>Refresh</span>
+      </button>
+      <button mat-raised-button class="export-btn" (click)="openExportModal()" [matTooltip]="'Download data as Excel'">
+        <i class="bi bi-file-earmark-excel-fill icon excel-icon"></i>
+        <span class="export-text">Export</span>
+        <i class="bi bi-download icon download-icon"></i>
+      </button>
+    </div>
+  </div>
+
+  <!--Date Time Filter-->
+  <!-- <div class="filter-bar">
+    <div class="chips area-chips">
+      <button mat-stroked-button *ngFor="let time of timeRanges" (click)="selectedTime = time"
+        [class.active]="selectedTime === time">
+        {{ time }}
+      </button>
+    </div>
+    <span class="divider"></span>
+    <div class="chips area-chips">
+      <button mat-stroked-button *ngFor="let shift of shifts" (click)="selectedShift = shift"
+        [class.active]="selectedShift === shift">
+        {{ shift }}
+      </button>
+    </div>
+  </div> -->
+
+  <!--KPI Grid cards-->
+  <section class="kpi-grid">
+    
+    <mat-card *ngFor="let kpi of kpis" class="kpi-card" [ngClass]="kpi.color">
+      <div class="kpi-header">
+        <span>{{ kpi.title }}</span>
+        <mat-icon>{{ kpi.icon }}</mat-icon>
+      </div>
+      <div class="kpi-value">
+        {{ kpi.value }}<span class="unit">{{ kpi.unit }}</span>
+      </div>
+      <div class="kpi-footer">
+      </div>
+    </mat-card>
+  </section>
+
+  <!--Ladle Status Distribution chart-->
+  <section class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon green">📊</div>
+        <span>Ladle Status Distribution</span>
+      </div>
+      <div #ladleChart class="chart"></div>
+    </div>
+
+    <!--Trip Status Analytics Chart-->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon cyan">📈</div>
+        <span>Trip Status Analytics</span>
+      </div>
+      <div #tripChart class="chart"></div>
+    </div>
+
+    <!--Area-wise Ladle Distribution Chart-->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon orange">📍</div>
+        <span>Area-wise Ladle Distribution</span>
+      </div>
+      <div #areaChart class="chart"></div>
+    </div>
+  </section>
+
+  <!--Active Ladles Over Time Chart-->
+  <section class="chart-grid-two">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon cyan">📉</div>
+        <span>Ladles Movement Over Time</span>
+      </div>
+      <div #activeLadleChart class="chart large"></div>
+    </div>
+
+    <!--Trips Completed per Shift Chart-->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon orange">📊</div>
+        <span>Trips Completed</span>
+        <div class="view-toggle">
+          <button mat-button [class.active]="tripView === 'bar'" (click)="setTripView('bar')">Bar</button>
+          <button mat-button [class.active]="tripView === 'line'" (click)="setTripView('line')">Line</button>
+        </div>
+      </div>
+      <div #tripShiftChart class="chart large"></div>
+    </div>
+  </section>
+ <!--Ladle Retention Time Trend Chart-->
+<!-- <section class="chart-grid-one">
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-icon teal">⏱️</div>
+      <span>Ladle Retention Time Trend</span>
+    </div>
+    <div #retentionChart class="chart large"></div>
+  </div>
+</section> -->
+
+<!--Production Chart-->
+<section class="chart-grid-one">
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-icon green">📈</div>
+      <span>Production</span>
+    </div>
+    <div #productionChart class="chart large"></div>
+  </div>
+</section>
+
+<!--Consumption Chart-->
+<section class="chart-grid-one">
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-icon cyan">📉</div>
+      <span>Consumption</span>
+    </div>
+    <div #consumptionChart class="chart large"></div>
+  </div>
+</section>
+
+  <!--Average Turnaround Time per Ladle Chart-->
+  <!-- <section class="chart-grid-one">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-icon red ">⚡</div>
+        <span>Average Turnaround Time per Ladle</span>
+        <span class="threshold-pill">Threshold: 50 min</span>
+      </div>
+      <div #tatChart class="chart tall"></div>
+    </div>
+  </section> -->
+
+
+  
+  <!-- Date Range Export Modal -->
+  <div class="modal-overlay" *ngIf="showExportModal" (click)="closeExportModal($event)">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-icon">
+          <i class="bi bi-file-earmark-excel-fill"></i>
+        </div>
+        <div>
+          <h2 class="modal-title">Export Report</h2>
+          <p class="modal-subtitle">Select a date range to download data</p>
+        </div>
+        <button class="modal-close" (click)="showExportModal = false">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <!-- Date Inputs -->
+      <div class="modal-body">
+        <div class="date-fields">
+          <div class="date-field">
+            <label>From Date</label>
+            <div class="date-input-wrapper">
+              <i class="bi bi-calendar3"></i>
+              <input type="date" [(ngModel)]="exportFromDate" [max]="exportToDate || getTodayStr()" />
+            </div>
+          </div>
+          <div class="date-arrow">
+            <i class="bi bi-arrow-right"></i>
+          </div>
+          <div class="date-field">
+            <label>To Date</label>
+            <div class="date-input-wrapper">
+              <i class="bi bi-calendar3"></i>
+              <input type="date" [(ngModel)]="exportToDate" [min]="exportFromDate" [max]="getTodayStr()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="preset-chips">
+          <span class="preset-label">Quick select:</span>
+          <button *ngFor="let p of exportPresets" (click)="applyPreset(p.days)" class="preset-btn">{{ p.label
+            }}</button>
+        </div>
+
+        <!-- Selected Range Summary -->
+        <div class="range-summary" *ngIf="exportFromDate && exportToDate">
+          <i class="bi bi-info-circle"></i>
+          Exporting data from <strong>{{ exportFromDate }}</strong> to <strong>{{ exportToDate }}</strong>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="showExportModal = false">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+        <button class="btn-download" (click)="confirmExport()" [disabled]="!exportFromDate || !exportToDate">
+          <i class="bi bi-file-earmark-excel-fill"></i>
+          Download Excel
+          <i class="bi bi-download"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!--Footer-->
+  <app-footer></app-footer>
+
+</div>

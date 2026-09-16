@@ -1,0 +1,351 @@
+
+<div class="container-fluid">
+
+    <!-- ==================== USER INFO BAR ==================== -->
+    <div class="row userDetails mt-2">
+        <div class="col-md-12 d-flex justify-content-between align-items-center">
+
+            <div class="user-info-group">
+                <div class="user-info">
+                    <span class="label">User Name:</span>
+                    <span class="value">{{ userName }}</span>
+                </div>
+                <div class="user-info">
+                    <span class="label">Location Name:</span>
+                    <span class="value">{{ userLocationName }}</span>
+                </div>
+            </div>
+
+            <button class="report-btn" (click)="openRequestReportDialog()">
+                Reports
+                <i class="bi bi-download"></i>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- ✅ CHANGED: was <div class="row mt-2"> with two col-md-4 columns,
+         which left a third of the screen empty. Now a 2-column CSS grid
+         that fills the full width and collapses to 1 column on narrow
+         screens. -->
+    <div class="bf-grid mt-2">
+
+        <!-- ===== Empty Ladles Booking and Pending Booking Summary ===== -->
+        <div class="bf-col">
+            <mat-card class="ladle-card">
+                <mat-card-content>
+
+                    <!-- Empty Ladles Booking Table  -->
+                    <div class="ladle-section">
+                        <div class="table-title-full d-flex-between">
+                            <span>Empty Ladles Booking</span>
+                            <span>Count: {{emptyLadles.length}}</span>
+                        </div>
+                        <div class="table-container" #scrollableTable>
+                            <table class="mat-elevation-z8">
+                                <thead>
+                                    <tr>
+                                        <th class="col-slno">Sl. No</th>
+                                        <th>Ladle No</th>
+                                        <th>Location</th>
+                                        <th class="col-select">
+                                            <div>Select</div>
+                                            <app-custom-checkbox [(checked)]="isChecked" [indeterminate]="indeterminate"
+                                                (checkedChange)="toggleSelectAll($event)"></app-custom-checkbox>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let ladle of emptyLadles; let i = index">
+                                        <td class="col-slno">{{ i + 1 }}</td>
+                                        <td>{{ladle.ladleNo}}</td>
+                                        <td>{{ladle.sourceName}}</td>
+                                        <td class="col-select">
+                                            <app-custom-checkbox [(checked)]="ladle.isSelected"
+                                                (checkedChange)="onLadleCheckboxChange()"></app-custom-checkbox>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="emptyLadles.length === 0">
+                                        <td colspan="4" class="no-data-row">No empty ladles for booking</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Request button: submits selected empty ladles for booking -->
+                    <div class="action-row">
+                        <button class="submit-btn" (click)="bookedAvailableLadles()"> + Request + </button>
+                    </div>
+
+                    <!-- Pending Ladles Booking Summary Table  -->
+                    <div class="ladle-section">
+                        <div class="table-title-full d-flex-between">
+                            <span>Pending Ladles Booking Summary</span>
+                            <span>Count: {{ emptySummary.length }}</span>
+                        </div>
+                        <div class="table-container" #scrollableTable>
+                            <table class="mat-elevation-z8">
+                                <thead>
+                                    <tr>
+                                        <th class="col-slno">Sl. No</th>
+                                        <th>Ladle No</th>
+                                        <th>Status</th>
+                                        <th class="col-action">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ng-container>
+                                        <tr *ngFor="let ladle of emptySummary; let i = index">
+                                            <td class="col-slno">{{ i + 1 }}</td>
+                                            <td>{{ ladle.ladleNo }}</td>
+                                            <td>
+                                                <span
+                                                    [ngClass]="{
+                                                  'status-booked': ladle.bookingStatus === 'Booked' || !ladle.bookingStatus,
+                                                  'status-assigned': ladle.bookingStatus !== 'Booked' && ladle.bookingStatus }">
+
+                                                    {{ ladle.bookingStatus || 'Booked' }}
+                                                </span>
+                                            </td>
+                                            <td class="col-action">
+                                                <img src="../../../assets/delete.png" alt="Delete" class="infoImage"
+                                                    [class.disabled-btn]="ladle.bookingStatus !== 'Booked' && ladle.bookingStatus"
+                                                    (click)="ladle.bookingStatus === 'Booked' && deleteBookedReversalLadle(ladle)" />
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                    <tr *ngIf="emptySummary.length === 0">
+                                        <td colspan="4" class="no-data-row">No booking summary found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <!-- ===== Completed Ladles Booking Summary ===== -->
+        <div class="bf-col">
+            <mat-card class="ladle-card">
+                <mat-card-content>
+
+                    <!-- Complete Ladles Booking Summary -->
+                    <div class="ladle-section">
+                        <div class="table-title-full d-flex-between">
+                            <span>Complete Ladles Booking Summary</span>
+                            <span>Count: {{ completedSummary.length }}</span>
+                        </div>
+
+                        <div class="table-container" #scrollableTable>
+                            <table class="mat-elevation-z8">
+                                <thead>
+                                    <tr>
+                                        <th class="col-slno">Sl. No</th>
+                                        <th>Ladle No</th>
+                                        <th>Date and Time</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let completeItem of completedSummary; let idx = index">
+                                        <td class="col-slno">{{ idx + 1 }}</td>
+                                        <td>{{ completeItem.ladleNo }}</td>
+                                        <td>{{ completeItem.completedDateTime | date:'yyyy-MM-dd HH:mm' }}</td>
+                                    </tr>
+
+                                    <tr *ngIf="completedSummary.length === 0">
+                                        <td colspan="3" class="no-data-row">
+                                            No completed ladles yet
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Transfer Ladles Booking Summary -->
+                    <div class="ladle-section">
+                        <div class="table-title-full d-flex-between">
+                            <span>Transaction Ladles Summary</span>
+                            <span>Count: {{ transaction.length }}</span>
+                        </div>
+
+                        <div class="table-container" #scrollableTable>
+                            <table class="mat-elevation-z8">
+                                <thead>
+                                    <tr>
+                                        <th class="col-slno">Sl. No</th>
+                                        <th>Ladle No</th>
+                                        <th>Source Location</th>
+                                        <th>Status</th>
+                                        <th>Date and Time</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let transactionItem of transaction; let idx = index">
+                                        <td class="col-slno">{{ idx + 1 }}</td>
+                                        <td>{{ transactionItem.ladleNo }}</td>
+                                        <td>{{ transactionItem.sourceLocation }}</td>
+                                        <td> <span class="status-badge" [ngClass]="{
+                                            'status-assigned': transactionItem.status?.startsWith('Assigned'),
+                                            'status-completed': transactionItem.status === 'Completed' }">
+                                                {{ transactionItem.status }}
+                                            </span>
+                                        </td>
+                                        <td>{{ transactionItem.transferDateTime | date:'yyyy-MM-dd HH:mm' }}</td>
+                                    </tr>
+
+                                    <tr *ngIf="transaction.length === 0">
+                                        <td colspan="5" class="no-data-row">
+                                            No Transaction ladles found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+    </div>
+</div>
+
+<!-- ==================== CAST ASSIGNMENT POPUP ==================== -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+    <div class="popup-content" (click)="$event.stopPropagation()">
+        <!-- Popup Header -->
+        <div class="popup-header">
+            <span class="popup-title">⚙️ Cast Assignment</span>
+            <span class="close-icon" (click)="closePopup()">&#x2716;</span>
+        </div>
+
+        <div class="popup-data">
+            <div class="form-container">
+
+                <div class="form-row">
+                    <label class="form-label">Blast Furnace</label>
+                    <span class="form-value">{{ userLocationName }}</span>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Ladle No.</label>
+                    <span class="form-value">{{ selectedLadleNo }}</span>
+                </div>
+
+                <!-- Cast No input field -->
+                <div class="form-row">
+                    <label class="form-label">Cast No.</label>
+                    <div class="input-group">
+                        <input type="text" class="form-input" [(ngModel)]="castNoPart1" placeholder="First part"
+                            (keypress)="allowOnlyDigits($event, true)" maxlength="8" [readonly]="!isCastEditable" />
+                        <span class="dash-separator">-</span>
+                        <input type="text" class="form-input2" [(ngModel)]="castNoPart2" placeholder="2nd"
+                            (keypress)="allowOnlyDigits($event, false)" maxlength="1" [readonly]="!isCastEditable" />
+                        <button class="edit-cast-btn" (click)="toggleCastEdit()">
+                            <img [src]="isCastEditable ? '../../../assets/lock.png' : '../../../assets/edit.png'"
+                                alt="{{ isCastEditable ? 'Lock' : 'Edit' }}" class="edit-icon-img" />
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section Divider -->
+                <div class="section-divider">
+                    <span>Chemical Composition</span>
+                </div>
+
+                <!-- Chemical Composition Grid  -->
+                <div class="chemical-grid">
+                    <div class="chem-group">
+                        <label class="chem-label">C%</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.C" placeholder="0.00" maxlength="9"
+                            data-field="C" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                    <div class="chem-group">
+                        <label class="chem-label">Si</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.Si" placeholder="0.00" maxlength="9"
+                            data-field="Si" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                    <div class="chem-group">
+                        <label class="chem-label">Mn</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.Mn" placeholder="0.00" maxlength="9"
+                            data-field="Mn" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                    <div class="chem-group">
+                        <label class="chem-label">S</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.S" placeholder="0.00" maxlength="9"
+                            data-field="S" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                    <div class="chem-group">
+                        <label class="chem-label">P</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.P" placeholder="0.00" maxlength="9"
+                            data-field="P" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                    <div class="chem-group">
+                        <label class="chem-label">Ti</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.Ti" placeholder="0.00" maxlength="9"
+                            data-field="Ti" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                    <div class="chem-group">
+                        <label class="chem-label">Cr</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.Cr" placeholder="0.00" maxlength="9"
+                            data-field="Cr" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                    <div class="chem-group">
+                        <label class="chem-label">S+P</label>
+                        <input class="chem-input" [(ngModel)]="editChemical.SP" placeholder="0.00" maxlength="9"
+                            data-field="SP" (input)="allowDecimalInput($event)" [readonly]="!isCastEditable" />
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="submit-btn" (click)="submitCastAssignment()">Submit</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== PDF PREVIEW MODAL ==================== -->
+<div class="pdf-preview-overlay" *ngIf="showPdfPreview" (click)="closePdfPreview()">
+    <div class="pdf-preview-content" (click)="$event.stopPropagation()">
+        <div class="pdf-preview-header">
+            <span class="pdf-preview-title">
+                <i class="bi bi-file-earmark-pdf"></i>
+                Report Preview
+            </span>
+            <div class="pdf-preview-actions">
+                <div class="download-dropdown-wrapper" (clickOutside)="closeDownloadDropdown()">
+                    <button class="pdf-download-btn download-toggle-btn" (click)="toggleDownloadDropdown()">
+                        <i class="bi bi-download"></i>
+                        Download Report
+                        <i class="bi bi-chevron-down dropdown-arrow" [class.rotated]="showDownloadDropdown"></i>
+                    </button>
+
+                    <div class="download-dropdown-menu" *ngIf="showDownloadDropdown">
+                        <button class="dropdown-item" (click)="downloadPreviewedPDF(); closeDownloadDropdown()">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            PDF
+                        </button>
+                        <button class="dropdown-item" (click)="downloadPreviewedExcel(); closeDownloadDropdown()">
+                            <i class="bi bi-file-earmark-excel"></i>
+                            Excel
+                        </button>
+                    </div>
+                </div>
+
+                <span class="pdf-close-icon" (click)="closePdfPreview()">&#x2716;</span>
+            </div>
+        </div>
+        <div class="pdf-preview-body">
+            <iframe [src]="pdfPreviewUrl" class="pdf-preview-frame" title="Report Preview"></iframe>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

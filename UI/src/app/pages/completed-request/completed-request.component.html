@@ -1,0 +1,51 @@
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="page-header-icon">
+      <i class="bi bi-check-circle"></i>
+    </div>
+    <div class="page-header-text">
+      <h2>Completed Requests</h2>
+      <p>Ladle requests completed in the last 24 hours</p>
+    </div>
+  </div>
+
+  <div class="card-center-wrap">
+    <mat-card class="ladle-request-card">
+      <mat-card-content>
+
+        <div class="ladle-section">
+          <div class="table-title-full d-flex-between">
+            <span>Completed Requests</span>
+            <span class="count-badge">Ladles: {{ totalLadles }}</span>
+          </div>
+          <div class="table-container_Pending">
+            <table class="mat-elevation-z8 completed-summary-table">
+              <thead>
+                <tr>
+                  <th>Department</th>
+                  <th>Qty of Ladles</th>
+                  <th>Date Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of completedRequests">
+                  <td>{{ row.locationName }}</td>
+                  <td [title]="ladleTooltip(row)">
+                    <span class="qty-pill">{{ row.ladleCount }}</span>
+                  </td>
+                  <td>{{ row.completedDateTime | date: 'yyyy-MM-dd HH:mm' }}</td>
+                </tr>
+                <tr *ngIf="completedRequests.length === 0">
+                  <td colspan="3" class="no-data-row">No Completed Requests Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<app-footer></app-footer>

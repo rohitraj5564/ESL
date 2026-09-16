@@ -1,0 +1,229 @@
+<div class="cast-assignment-report-page">
+
+    <div class="table-section">
+
+        <div class="table-header">
+
+            <div class="table-title">
+
+                <h2>Cast Assignment Report</h2>
+
+                <span>
+                    Real Time Blast Furnace Report
+                </span>
+
+            </div>
+
+            <button type="button" class="export-btn" (click)="exportPDF()">
+
+                <i class="bi bi-file-earmark-pdf"></i>
+
+                <span>
+                    Export PDF
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table mat-table [dataSource]="dataSource">
+
+
+                <ng-container matColumnDef="Tran_ID">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Transaction No.
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        <div class="transaction-box">
+                            {{ row.Tran_ID }}
+                        </div>
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="GrossDate">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Date (Gross Wt)
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        {{ row.GrossDateTime | date:'dd-MM-yyyy' }}
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="GrossTime">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Time (Gross Wt)
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        {{ row.GrossDateTime | date:'hh:mm a' }}
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="LaddleNumber">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Laddle No.
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        {{ row.LaddleNumber }}
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="SenderPlant">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Sender Plant
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        <span class="badge">
+                            {{ row.SenderPlant }}
+                        </span>
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="NetWT">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Net Wt. (MT)
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        {{ row.NetWT }}
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="GrossWT">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Gross Wt. (MT)
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        {{ row.GrossWT }}
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="TareWT">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Tare Wt. (MT)
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        {{ row.TareWT }}
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="receiverPlant">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Receiver Plant
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        <span class="badge receiver-badge">
+                            {{ row.ReceiverPlant }}
+                        </span>
+
+                    </td>
+
+                </ng-container>
+
+
+                <ng-container matColumnDef="CastNumber">
+
+                    <th mat-header-cell *matHeaderCellDef>
+
+                        Cast No.
+
+                    </th>
+
+                    <td mat-cell *matCellDef="let row">
+
+                        {{ row.CastNumber }}
+
+                    </td>
+
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns">
+                </tr>
+
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                </tr>
+
+            </table>
+
+            <div class="no-data" *ngIf="dataSource.length === 0">
+
+                No report data found.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

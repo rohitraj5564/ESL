@@ -1,0 +1,150 @@
+/* ==================== Date Range Dialog ==================== */
+.daterange-dialog {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.daterange-header {
+  background-color: #005ca8;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.daterange-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.daterange-close {
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+
+.daterange-close:hover {
+  opacity: 1;
+}
+
+.daterange-body {
+  padding: 20px 20px 4px;
+  background-color: #ffffff;
+}
+
+.daterange-subtext {
+  font-size: 13px;
+  color: #667085;
+  margin: 0 0 16px;
+}
+
+.daterange-field {
+  margin-bottom: 12px;
+}
+
+.daterange-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #005ca8;
+  margin-bottom: 4px;
+}
+
+.daterange-form-field {
+  width: 100%;
+}
+
+::ng-deep .daterange-form-field .mat-mdc-text-field-wrapper {
+  background-color: #f4f9ff;
+  border-radius: 8px;
+}
+
+::ng-deep .daterange-form-field .mdc-notched-outline__leading,
+::ng-deep .daterange-form-field .mdc-notched-outline__notch,
+::ng-deep .daterange-form-field .mdc-notched-outline__trailing {
+  border-color: #c5ddf5 !important;
+}
+
+::ng-deep .daterange-form-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .daterange-form-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .daterange-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #005ca8 !important;
+}
+
+::ng-deep .daterange-form-field input {
+  font-size: 13px;
+  color: #222;
+  cursor: pointer;
+}
+
+::ng-deep .daterange-form-field .mat-datepicker-toggle {
+  color: #005ca8;
+}
+
+.daterange-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px;
+  background-color: #f4f9ff;
+  border-top: 1px solid #e0e0e0;
+}
+
+.daterange-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.daterange-btn:hover {
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background-color: #e6ecf3;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #d5deea;
+}
+
+.confirm-btn {
+  background-color: #005ca8;
+  color: #ffffff;
+}
+
+.confirm-btn:hover {
+  background-color: #003d75;
+}
+
+@media (max-width: 400px) {
+  .daterange-dialog {
+    width: 90vw;
+  }
+}
+
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  padding: 0 !important;
+}
+
+::ng-deep .mat-mdc-dialog-content {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+/* ==================== End Date Range Dialog ==================== */

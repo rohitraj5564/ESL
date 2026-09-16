@@ -1,0 +1,1787 @@
+/* ==================== PAGE BASE ==================== */
+
+:host {
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--color-bg, #f4f9ff);
+}
+
+.container-fluid {
+  width: 100%;
+  max-width: 100%;
+  min-height: calc(100vh - 110px);
+  margin: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 60px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background: var(--color-bg, #f4f9ff);
+  container-type: inline-size;
+  container-name: dashboardWrap;
+}
+
+.container-fluid > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.container-fluid > .row > [class*="col-"] {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* ==================== USER INFO ==================== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  align-items: start;
+  justify-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.col-bf,
+.col-reversal,
+.col-loco {
+  min-width: 0;
+  width: 100%;
+}
+
+/* User info */
+
+.userDetails {
+  padding: 15px;
+  user-select: none;
+  background: var(--color-bg-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 10px var(--color-shadow);
+  margin-bottom: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-info .label {
+  font-weight: 600;
+  color: var(--color-primary);
+  font-size: 15px;
+}
+
+.user-info .value {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+.userDetails-left {
+  display: flex;
+  gap: 40px;
+}
+
+.report-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--color-btn-primary);
+  color: var(--color-text-white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.report-btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Cards */
+
+.ladle-section {
+  margin-top: 12px;
+  user-select: none;
+}
+
+.table-title-full {
+  background: #3a76a6;
+  padding: 12px;
+  border-radius: 8px 8px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+.d-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+}
+
+.ladle-card,
+.ladle-card-pending,
+.ladle-request-card {
+  height: auto;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #c5ddf5;
+  border-radius: 12px;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.ladle-card {
+  padding-bottom: 12px;
+}
+
+/* ==================== CARD TOP HEADERS ==================== */
+
+.card-top-header {
+  min-height: 46px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #1E88E5 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-header-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-header-icon i {
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.card-header-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.card-header-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+:host-context(body.dark-theme) .card-top-header {
+  background: linear-gradient(135deg, #0c233c 0%, #12375e 50%, #1a4f85 100%);
+  border-bottom-color: rgba(56, 189, 248, 0.15);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+.ladle-card mat-card-content,
+.ladle-card-pending mat-card-content,
+.ladle-request-card mat-card-content {
+  padding-top: 4px !important;
+}
+
+.ladle-section:first-child {
+  margin-top: 6px !important;
+}
+
+/* Tables and scrolling */
+
+.table-container,
+.table-container_Pending,
+.table-container_Pending2 {
+  max-height: 190px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+  border: 1px solid #d9e3ed;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #005ca8 #f1f1f1;
+}
+
+.table-container_Pending {
+  max-height: 280px;
+}
+
+/* Scales with the viewport so an expanded trip has room.
+   ✅ overflow-x is hidden - the table always fits its column now. */
+.table-container_Pending2 {
+  max-height: clamp(240px, 30vh, 420px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.rejection-table {
+  max-height: 420px !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.table-container::-webkit-scrollbar,
+.table-container_Pending::-webkit-scrollbar,
+.table-container_Pending2::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track,
+.table-container_Pending::-webkit-scrollbar-track,
+.table-container_Pending2::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb,
+.table-container_Pending::-webkit-scrollbar-thumb,
+.table-container_Pending2::-webkit-scrollbar-thumb {
+  background: #005ca8;
+  border-radius: 8px;
+}
+
+/* Tables */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 13px;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #71bd44;
+  color: #ffffff;
+}
+
+th {
+  padding: 7px 4px;
+  font-weight: 600;
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.45);
+  border-bottom: 1px solid #63a93a;
+  font-size: 12px;
+  line-height: 1.2;
+  background: #71bd44;
+  color: #ffffff;
+  vertical-align: middle;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+th:last-child {
+  border-right: none;
+}
+
+tbody {
+  background: #ffffff;
+}
+
+tbody tr {
+  background: #ffffff;
+  color: #1e293b;
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:nth-child(even):not(.row-rejection):not(.row-partial):not(.row-full-consumption):not(.row-available) {
+  background: #f8d7cd;
+}
+
+tbody tr:hover {
+  background: #edf8e8;
+}
+
+td {
+  padding: 6px 4px;
+  text-align: center;
+  border-right: 1px solid #d4b9b9;
+  border-bottom: 1px solid #e7d5d5;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #1e293b;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td:last-child {
+  border-right: none;
+}
+
+.no-data-row {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  padding: 20px;
+  background: #ffffff;
+  white-space: normal;
+}
+
+/* =====================================================================
+   BOOKED STATUS COLUMN
+   "Booked by SMS" is the longest value in these tables, but
+   `table-layout: fixed` gives every column an equal share and the generic
+   td rule clips with an ellipsis - so at 3-column grid width it rendered
+   as "Booked b...". (With the sidebar open the container drops below
+   1300px, the grid becomes 2 columns, the cards get wider and it fits -
+   which is why it looked correct in that state.)
+
+   Give the status column a real share of the width and let it wrap to a
+   second line instead of truncating. Column positions hold whether or not
+   the Select column renders - it is last, and the only one behind
+   *ngIf="userLocationId === 3".
+   ===================================================================== */
+
+/* ---- BF1 / BF2 / BF3 tables ----
+   Ladle No | Date Time | Cast No | Booked Status | Chemical Info | Select */
+
+.col-bf table th:nth-child(1),
+.col-bf table td:nth-child(1) { width: 16%; }
+
+.col-bf table th:nth-child(2),
+.col-bf table td:nth-child(2) { width: 20%; }
+
+.col-bf table th:nth-child(3),
+.col-bf table td:nth-child(3) { width: 12%; }
+
+.col-bf table th:nth-child(4),
+.col-bf table td:nth-child(4) {
+  width: 26%;
+  white-space: normal;      /* ✅ wrap instead of ellipsis */
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.col-bf table th:nth-child(5),
+.col-bf table td:nth-child(5) { width: 14%; }
+
+.col-bf table th:nth-child(6),
+.col-bf table td:nth-child(6) { width: 12%; }
+
+/* ---- SMS / DIP / PCM / LRS tables ----
+   Ladle No | Cast No | Source | Destination | Booked Status | Select */
+
+.col-reversal table th:nth-child(1),
+.col-reversal table td:nth-child(1) { width: 16%; }
+
+.col-reversal table th:nth-child(2),
+.col-reversal table td:nth-child(2) { width: 12%; }
+
+.col-reversal table th:nth-child(3),
+.col-reversal table td:nth-child(3) { width: 14%; }
+
+.col-reversal table th:nth-child(4),
+.col-reversal table td:nth-child(4) { width: 16%; }
+
+.col-reversal table th:nth-child(5),
+.col-reversal table td:nth-child(5) {
+  width: 30%;
+  white-space: normal;      /* ✅ wrap instead of ellipsis */
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.col-reversal table th:nth-child(6),
+.col-reversal table td:nth-child(6) { width: 12%; }
+
+/* Keep BF chemical/info icons small and centered */
+
+.infoImage,
+img.infoImage,
+.chemical-info-icon,
+img.chemical-info-icon {
+  display: block;
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.infoImage:hover,
+.chemical-info-icon:hover {
+  transform: scale(1.08);
+}
+
+td img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+/* Checkbox */
+
+mat-checkbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  transform: scale(0.8);
+}
+
+/* Special row colors */
+
+.row-rejection td {
+  background: #d32e26 !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.row-partial td {
+  background: #fff000 !important;
+  color: #1e293b !important;
+}
+
+.row-full-consumption td {
+  background: #fea102 !important;
+  color: #1e293b !important;
+}
+
+.row-available td {
+  background: #00b129 !important;
+  color: #ffffff !important;
+}
+
+/* Legend */
+
+.rejection-color {
+  background: #d32e26;
+}
+
+.partial-color {
+  background: #fff000;
+}
+
+.full-consumption {
+  background: #fea102;
+}
+
+.available {
+  background: #029d27;
+}
+
+.ladle-legend {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 30px;
+  justify-content: center;
+  margin: 10px auto 0;
+  font-size: 13px;
+  border: 1px solid #d9e3ed;
+  padding: 15px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1e293b;
+  max-width: 500px;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.legend-item2,
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #1e293b;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 15px;
+  border-radius: 3px;
+  border: 1px solid #d9e3ed;
+}
+
+/* Popups */
+
+.popup-overlay,
+.bf-popup-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.bf-popup-overlay {
+  align-items: center;
+  z-index: 2100;
+  border-radius: 8px;
+}
+
+.popup-content,
+.bf-popup-content {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #c5ddf5;
+  border-radius: 14px;
+  width: 300px;
+  max-width: 90vw;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+}
+
+.popup-heading,
+.bf-popup-header {
+  background: #005ca8;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.popup-heading p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.bf-popup-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.close-icon,
+.bf-close-icon {
+  color: #ffffff;
+  font-size: 17px;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.close-icon:hover,
+.bf-close-icon:hover {
+  opacity: 1;
+}
+
+.popup-body,
+.bf-popup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 10px 14px 16px;
+}
+
+.chem-item,
+.bf-chem-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  margin: 4px 3px;
+  background: #f4f9ff;
+  border-radius: 8px;
+  border: 1px solid #c5ddf5;
+}
+
+.chem-label,
+.bf-chem-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #005ca8;
+}
+
+.chem-value,
+.bf-chem-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+  background: #ffffff;
+  border: 1px solid #c5ddf5;
+  border-radius: 5px;
+  padding: 2px 7px;
+  min-width: 36px;
+  text-align: center;
+}
+
+.bf-popup-ladle-badge {
+  background: #e8f4ff;
+  color: #005ca8;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  padding: 7px 0;
+  border-bottom: 1px solid #c5ddf5;
+}
+
+/* Buttons */
+
+.submit-btn {
+  height: fit-content;
+  background: #0a831a;
+  color: #ffffff;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  user-select: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: #02630f;
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.assignedBtn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #00b7b3;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.assignedBtn:hover {
+  background: #009f9c;
+}
+
+/* =====================================================================
+   LOCO MOVEMENT TABLE
+   Column widths total exactly 100% with no minimums anywhere, so the
+   table can never be wider than its column - no horizontal scrollbar.
+   ===================================================================== */
+
+.loco-movement-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Trip No */
+.loco-movement-table th:nth-child(1),
+.loco-movement-table td:nth-child(1) {
+  width: 30%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Loco No */
+.loco-movement-table th:nth-child(2),
+.loco-movement-table td:nth-child(2) {
+  width: 15%;
+}
+
+/* Details (expand/collapse icon) */
+.loco-movement-table th:nth-child(3),
+.loco-movement-table td:nth-child(3) {
+  width: 13%;
+}
+
+/* Transfer Loco — no min-width; the controls flex to fit instead */
+.loco-movement-table th:nth-child(4),
+.loco-movement-table td:nth-child(4) {
+  width: 42%;
+}
+
+/* Fixed row height keeps the summary rows on one line */
+.loco-movement-table th,
+.loco-movement-table td {
+  white-space: nowrap;
+  height: 56px;
+  vertical-align: middle;
+}
+
+.loco-movement-table tr {
+  height: 56px;
+}
+
+/* The expanded detail cell must NOT inherit the rules above.
+   `td[colspan]` is the <td colspan="4"> wrapping the inner table; without
+   this it is locked to 56px, nowrap and overflow:hidden, which clipped the
+   nested table and made it collide with the sticky header.
+   `:not(.no-data-row)` leaves "No Ladle Movement Found" on its own styling. */
+.loco-movement-table td[colspan]:not(.no-data-row) {
+  height: auto;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  vertical-align: top;
+  padding: 10px 12px 12px;
+  background: #eef4fa;
+  border-right: none;
+  border-bottom: 2px solid #c5ddf5;
+  text-align: left;
+}
+
+.loco-movement-table tbody tr:has(td[colspan]:not(.no-data-row)) {
+  height: auto;
+  background: #eef4fa;
+}
+
+.loco-movement-table tbody tr:has(td[colspan]:not(.no-data-row)):hover {
+  background: #eef4fa;
+}
+
+/* Transfer Loco — dropdown and button share the cell and shrink together.
+   NOTE: this must stay a real table-cell. display:flex removes it from the
+   table's column model, so width:42% stops applying and the contents
+   overflow (that is what clipped the Transfer button). */
+
+.transfer-cell {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  padding: 8px 6px !important;
+}
+
+.loco-movement-table td.transfer-cell {
+  overflow: visible;
+  text-overflow: unset;
+  white-space: nowrap;
+}
+
+.transfer-loco-select {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1px solid #c5ddf5;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 600;
+  height: 34px;
+  width: 86px;
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  text-align: center;
+  text-align-last: center;
+}
+
+.transferBtn {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #005ca8;
+  cursor: pointer;
+  font-size: 12.5px;
+  height: 34px;
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+}
+
+.transferBtn:hover:not(:disabled) {
+  background: #009f9c;
+}
+
+.transferBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+:host-context(body.dark-theme) .transfer-loco-select {
+  background: #182a3d;
+  color: #f4f7fa;
+  border-color: #405b72;
+}
+
+/* Loco status */
+
+.ladle-loco {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-size: 13px;
+  border: 1px solid #d9e3ed;
+  padding: 10px;
+  border-radius: 10px;
+  background: #ffffff;
+  margin-top: 20px;
+  align-items: center;
+  user-select: none;
+}
+
+.loco-button-container {
+  display: flex;
+  gap: 5px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 5px;
+  width: 100%;
+  justify-content: center;
+}
+
+.loco-btn {
+  background: #005ca8;
+  color: #ffffff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: not-allowed;
+}
+
+.openLoco {
+  background: #029d27;
+}
+
+.intransitLoco {
+  background: #fea102;
+}
+
+.bookedLoco {
+  background: #edf50e;
+  color: #1e293b;
+}
+
+.loco-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ladle-count {
+  font-size: 13px;
+  color: #ffffff;
+  margin-top: 3px;
+  font-weight: 700;
+  border: 2px solid #003d75;
+  background: #003d75;
+  border-radius: 5px;
+  padding: 5px;
+  min-width: 26px;
+  text-align: center;
+}
+
+.legend-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* =====================================================================
+   INNER TRIP DETAIL TABLE
+   A plain table with explicit column widths. The old version used the
+   scrollable-tbody hack (display:table on thead/tr, display:block on
+   tbody), which pulls those elements out of the table's column-sizing
+   algorithm so header widths stopped matching body widths.
+   ===================================================================== */
+
+.inner-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+  background: #ffffff;
+  min-width: 0;
+}
+
+/* the detail header must not compete with the outer sticky header */
+.inner-table thead {
+  position: static;
+  z-index: 1;
+  background: #016010;
+}
+
+.inner-table th {
+  padding: 9px 8px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 12px;
+  height: auto;
+  background: #016010;
+  color: #ffffff;
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+  border-bottom: none;
+  white-space: nowrap;
+}
+
+.inner-table th:last-child {
+  border-right: none;
+}
+
+.inner-table td {
+  padding: 9px 8px;
+  text-align: center;
+  font-size: 12px;
+  height: auto;
+  background: #f7fafc;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.inner-table td:last-child {
+  border-right: none;
+}
+
+.inner-table tbody tr:nth-child(even) td {
+  background: #eef3f8;
+}
+
+.inner-table tbody tr:hover td {
+  background: #e3eefb;
+}
+
+.inner-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 3 columns: Ladle No | Source | Destination */
+.inner-table th:nth-child(1),
+.inner-table td:nth-child(1) {
+  width: 34%;
+}
+
+.inner-table th:nth-child(2),
+.inner-table td:nth-child(2) {
+  width: 33%;
+}
+
+.inner-table th:nth-child(3),
+.inner-table td:nth-child(3) {
+  width: 33%;
+}
+
+/* delete icon inside the detail panel */
+.inner-table td .infoImage {
+  width: 22px !important;
+  height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+}
+
+.expandData {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  max-width: 30px;
+  max-height: 30px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.expandData:hover {
+  transform: scale(1.1);
+}
+
+/* Footer */
+
+.app-footer {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-footer-bg);
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.footer-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.footer-favicon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.footer-text {
+  color: var(--color-footer-text);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.footer-text strong {
+  color: var(--color-footer-text);
+}
+
+/* PDF preview */
+
+.pdf-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.pdf-preview-content {
+  width: 85vw;
+  height: 90vh;
+  max-width: 1100px;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #c5ddf5;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.pdf-preview-header {
+  background: #005ca8;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.pdf-preview-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdf-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pdf-download-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #005ca8;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.pdf-download-btn:hover {
+  background: #e6f0fa;
+  transform: translateY(-1px);
+}
+
+.pdf-close-icon {
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.pdf-close-icon:hover {
+  opacity: 1;
+}
+
+.pdf-preview-body {
+  flex: 1;
+  background: #ffffff;
+}
+
+.pdf-preview-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Dropdown */
+
+.download-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.download-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  margin-left: 4px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.download-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #c5ddf5;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  min-width: 140px;
+  overflow: hidden;
+  z-index: 10;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #005ca8;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background: #edf8e8;
+}
+
+.dropdown-item:nth-child(2) {
+  color: #0a831a;
+}
+
+
+/* ==================== PAGE DARK MODE ==================== */
+
+:host-context(body.dark-theme),
+:host-context(html.dark-theme) {
+  background: #0b1422 !important;
+}
+
+:host-context(body.dark-theme) .container-fluid,
+:host-context(html.dark-theme) .container-fluid {
+  background: #0b1422 !important;
+  color: #eef4f9;
+}
+
+:host-context(body.dark-theme) .container-fluid > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+:host-context(body.dark-theme) .ladle-card,
+:host-context(body.dark-theme) .ladle-card-pending,
+:host-context(body.dark-theme) .ladle-request-card {
+  background: #16263a;
+}
+
+/* ==================== END PAGE DARK MODE ==================== */
+
+/* ==================== DARK MODE ==================== */
+
+:host-context(body.dark-theme) .userDetails {
+  background: #16263a;
+  color: #f3f7fb;
+  border-color: #29445e;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+:host-context(body.dark-theme) .user-info .label {
+  color: #67b7ff;
+}
+
+:host-context(body.dark-theme) .user-info .value {
+  color: #f4f7fa;
+}
+
+:host-context(body.dark-theme) .ladle-card,
+:host-context(body.dark-theme) .ladle-card-pending,
+:host-context(body.dark-theme) .ladle-request-card {
+  background: #16263a;
+  border-color: #29445e;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+:host-context(body.dark-theme) .table-title-full {
+  background: #367eb0;
+}
+
+:host-context(body.dark-theme) .table-container,
+:host-context(body.dark-theme) .table-container_Pending,
+:host-context(body.dark-theme) .table-container_Pending2 {
+  background: #132335;
+  border-color: #35516b;
+  scrollbar-color: #58b637 #17283a;
+}
+
+:host-context(body.dark-theme) .table-container::-webkit-scrollbar-track,
+:host-context(body.dark-theme) .table-container_Pending::-webkit-scrollbar-track,
+:host-context(body.dark-theme) .table-container_Pending2::-webkit-scrollbar-track {
+  background: #17283a;
+}
+
+:host-context(body.dark-theme) .table-container::-webkit-scrollbar-thumb,
+:host-context(body.dark-theme) .table-container_Pending::-webkit-scrollbar-thumb,
+:host-context(body.dark-theme) .table-container_Pending2::-webkit-scrollbar-thumb {
+  background: #58b637;
+}
+
+:host-context(body.dark-theme) table {
+  background: #182a3d;
+  color: #f4f7fa;
+}
+
+:host-context(body.dark-theme) thead,
+:host-context(body.dark-theme) th {
+  background: #58b637;
+  color: #ffffff;
+  border-color: #79c963;
+}
+
+:host-context(body.dark-theme) tbody {
+  background: #182a3d;
+}
+
+:host-context(body.dark-theme) tbody tr {
+  background: #1c3044;
+  color: #f4f7fa;
+}
+
+:host-context(body.dark-theme) tbody tr:nth-child(even):not(.row-rejection):not(.row-partial):not(.row-full-consumption):not(.row-available) {
+  background: #263c50;
+}
+
+:host-context(body.dark-theme) tbody tr:hover {
+  background: #304d63;
+}
+
+:host-context(body.dark-theme) td {
+  color: #f2f6fa;
+  border-color: #405b72;
+}
+
+:host-context(body.dark-theme) .no-data-row {
+  background: #1c3044;
+  color: #d0d9e2;
+}
+
+/* dark styling for the expanded detail panel */
+:host-context(body.dark-theme) .loco-movement-table td[colspan]:not(.no-data-row) {
+  background: #12202f;
+  border-bottom-color: #35516b;
+}
+
+:host-context(body.dark-theme) .loco-movement-table tbody tr:has(td[colspan]:not(.no-data-row)),
+:host-context(body.dark-theme) .loco-movement-table tbody tr:has(td[colspan]:not(.no-data-row)):hover {
+  background: #12202f;
+}
+
+:host-context(body.dark-theme) .infoImage,
+:host-context(body.dark-theme) img.infoImage,
+:host-context(body.dark-theme) .chemical-info-icon,
+:host-context(body.dark-theme) img.chemical-info-icon {
+  width: 28px !important;
+  height: 28px !important;
+  max-width: 28px !important;
+  max-height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  object-fit: contain;
+}
+
+:host-context(body.dark-theme) .ladle-legend {
+  background: #16263a;
+  border-color: #35516b;
+  color: #e8f0f7;
+}
+
+:host-context(body.dark-theme) .legend-item2,
+:host-context(body.dark-theme) .legend-item {
+  color: #e8f0f7;
+}
+
+:host-context(body.dark-theme) .ladle-loco {
+  background: #16263a;
+  border-color: #35516b;
+}
+
+:host-context(body.dark-theme) .loco-btn {
+  background: #0b70b8;
+}
+
+:host-context(body.dark-theme) .openLoco {
+  background: #0aa83a;
+}
+
+:host-context(body.dark-theme) .intransitLoco {
+  background: #e58a00;
+}
+
+:host-context(body.dark-theme) .bookedLoco {
+  background: #e3e800;
+  color: #17202a;
+}
+
+:host-context(body.dark-theme) .ladle-count {
+  background: #0b4f83;
+  border-color: #0b4f83;
+}
+
+:host-context(body.dark-theme) .inner-table {
+  background: #16263a;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+:host-context(body.dark-theme) .inner-table thead,
+:host-context(body.dark-theme) .inner-table th {
+  background: #15803d;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+:host-context(body.dark-theme) .inner-table td {
+  background: #22384c;
+  color: #f2f6fa;
+  border-color: #405b72;
+}
+
+:host-context(body.dark-theme) .inner-table tbody tr:nth-child(even) td {
+  background: #1c3044;
+}
+
+:host-context(body.dark-theme) .inner-table tbody tr:hover td {
+  background: #304d63;
+}
+
+:host-context(body.dark-theme) .popup-content,
+:host-context(body.dark-theme) .bf-popup-content {
+  background: #16263a;
+  color: #f3f7fb;
+  border-color: #35516b;
+}
+
+:host-context(body.dark-theme) .popup-heading,
+:host-context(body.dark-theme) .bf-popup-header {
+  background: #176ba8;
+}
+
+:host-context(body.dark-theme) .chem-item,
+:host-context(body.dark-theme) .bf-chem-item {
+  background: #1b3044;
+  border-color: #405b72;
+}
+
+:host-context(body.dark-theme) .chem-label,
+:host-context(body.dark-theme) .bf-chem-label {
+  color: #6bbaff;
+}
+
+:host-context(body.dark-theme) .chem-value,
+:host-context(body.dark-theme) .bf-chem-value {
+  background: #22384c;
+  color: #f3f7fb;
+  border-color: #4b6a83;
+}
+
+:host-context(body.dark-theme) .pdf-preview-content {
+  background: #16263a;
+  color: #f3f7fb;
+  border-color: #35516b;
+}
+
+:host-context(body.dark-theme) .pdf-preview-header {
+  background: #176ba8;
+}
+
+:host-context(body.dark-theme) .pdf-preview-body {
+  background: #0f1b2a;
+}
+
+:host-context(body.dark-theme) .pdf-download-btn {
+  background: #22384c;
+  color: #6bbaff;
+}
+
+:host-context(body.dark-theme) .download-dropdown-menu {
+  background: #1b3044;
+  border-color: #405b72;
+}
+
+:host-context(body.dark-theme) .dropdown-item {
+  color: #6bbaff;
+}
+
+:host-context(body.dark-theme) .dropdown-item:hover {
+  background: #29445e;
+}
+
+:host-context(body.dark-theme) .dropdown-item:nth-child(2) {
+  color: #65d77d;
+}
+
+/* =====================================================================
+   RESPONSIVE GRID — driven by CONTAINER width (reacts correctly to the
+   sidebar opening/closing), with a viewport @media fallback for older
+   browsers that don't support container queries.
+   ===================================================================== */
+
+@supports (container-type: inline-size) {
+  @container dashboardWrap (min-width: 1301px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  @container dashboardWrap (max-width: 1300px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @container dashboardWrap (max-width: 700px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @container dashboardWrap (max-width: 1100px) {
+    th {
+      font-size: 11px;
+      padding: 6px 3px;
+    }
+
+    td {
+      font-size: 11px;
+      padding: 5px 3px;
+    }
+
+    .inner-table th,
+    .inner-table td {
+      font-size: 11px;
+      padding: 7px 5px;
+    }
+
+    .transfer-loco-select,
+    .transferBtn {
+      font-size: 12px;
+    }
+  }
+}
+
+/* Fallback (only applies if the browser doesn't support container queries) */
+@supports not (container-type: inline-size) {
+ @media (min-width: 1025px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .userDetails .col-md-12 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .userDetails-left {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .report-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .app-footer {
+    height: 44px;
+  }
+
+  .footer-favicon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .footer-text {
+    font-size: 12px;
+  }
+
+  .pdf-preview-content {
+    width: 96vw;
+    height: 92vh;
+  }
+
+  .pdf-preview-title {
+    font-size: 14px;
+  }
+
+  .pdf-download-btn {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  /* more room for an expanded trip on tablets */
+  .table-container_Pending2 {
+    max-height: 46vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .container-fluid {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .table-title-full {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  th {
+    font-size: 11px;
+    padding: 4px;
+  }
+
+  .ladle-legend {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .loco-button-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .legend-row {
+    gap: 10px;
+  }
+
+  /* ✅ no min-width anywhere - still totals 100% */
+  .loco-movement-table th:nth-child(1),
+  .loco-movement-table td:nth-child(1) {
+    width: 28%;
+  }
+
+  .loco-movement-table th:nth-child(2),
+  .loco-movement-table td:nth-child(2) {
+    width: 14%;
+  }
+
+  .loco-movement-table th:nth-child(3),
+  .loco-movement-table td:nth-child(3) {
+    width: 12%;
+  }
+
+  .loco-movement-table th:nth-child(4),
+  .loco-movement-table td:nth-child(4) {
+    width: 46%;
+  }
+
+  .transfer-loco-select {
+    font-size: 12px;
+    height: 31px;
+    padding: 6px 3px;
+    width: 74px;
+    margin-right: 4px;
+  }
+
+  .transferBtn {
+    font-size: 12px;
+    height: 31px;
+    padding: 6px 9px;
+  }
+
+  /* tighter detail panel on phones */
+  .loco-movement-table td[colspan]:not(.no-data-row) {
+    padding: 8px;
+  }
+
+  .inner-table th,
+  .inner-table td {
+    font-size: 11px;
+    padding: 7px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-fluid {
+    padding-bottom: 50px;
+  }
+
+  .app-footer {
+    height: 40px;
+    padding: 0 16px;
+  }
+
+  .footer-center {
+    gap: 8px;
+  }
+
+  .footer-favicon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .footer-text {
+    font-size: 11px;
+  }
+
+  .loco-movement-table td.transfer-cell {
+    white-space: normal;
+    padding: 8px 4px !important;
+  }
+
+  .transfer-loco-select,
+  .transferBtn {
+    display: block;
+    width: 100%;
+    margin: 0 auto 5px;
+  }
+
+  .transferBtn {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .ladle-legend {
+    font-size: 12px;
+    gap: 10px 20px;
+    padding: 10px;
+  }
+
+  .legend-color {
+    width: 13px;
+    height: 13px;
+  }
+}

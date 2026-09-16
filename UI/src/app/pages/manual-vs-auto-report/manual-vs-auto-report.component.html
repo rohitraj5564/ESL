@@ -1,0 +1,277 @@
+<div class="report-page-container" [class.dark-theme]="isDarkTheme">
+
+  <!-- Header Banner (Exact Slag Report Style) -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <i class="bi bi-robot header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2>Manual vs Automatic Assignment Report</h2>
+        <p>Comprehensive comparative analysis between Manual assignments and Automatic RFID system detection</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="export-btn" (click)="exportToExcel()" [disabled]="filteredData.length === 0" title="Download Excel Sheet">
+        <i class="bi bi-file-earmark-excel"></i>
+        <span>Export Excel</span>
+      </button>
+
+      <button class="clear-btn" (click)="clearFilters()" title="Reset to 24-hour default window">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Section (Exact Slag Report Style: From Date to To Date Search) -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="toPicker" [(ngModel)]="toInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <button class="show-btn" (click)="getFilteredData()" [disabled]="isLoading">
+      <i class="bi" [ngClass]="isLoading ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+      <span>{{ isLoading ? 'Searching...' : 'Search Report' }}</span>
+    </button>
+  </div>
+
+  <!-- KPI Metrics Banner (Exact Slag Report Style: 4 Cards) -->
+  <div class="metrics-container" *ngIf="rawData.length > 0">
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-blue">
+        <i class="bi bi-list-ol"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Total Assignments</span>
+        <span class="metric-val">{{ totalCount }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-orange">
+        <i class="bi bi-hand-index-thumb"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Manual Assignments</span>
+        <span class="metric-val">{{ manualCount }} <small>({{ manualPercentage }}%)</small></span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-purple">
+        <i class="bi bi-cpu"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Automatic Assignments</span>
+        <span class="metric-val">{{ autoCount }} <small>({{ autoPercentage }}%)</small></span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-green">
+        <i class="bi bi-pie-chart"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Automation Rate</span>
+        <span class="metric-val">{{ automationRate }} <small>%</small></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Wrapper (Exact Slag Report Style) -->
+  <div class="table-wrapper">
+
+    <!-- Quick Search bar & Type Filters inside table card -->
+    <div class="table-toolbar" *ngIf="rawData.length > 0">
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" (keyup)="applyFilter($event)" placeholder="Filter by Loco, Ladle, Track, Status, Reason...">
+      </div>
+
+      <div class="toolbar-right">
+        <!-- Quick Filter Type Toggle (All, Manual, Automatic) -->
+        <div class="type-filter-group">
+          <button class="filter-pill" [class.active]="selectedTypeFilter === 'ALL'" (click)="onTypeFilterChange('ALL')">
+            All ({{ totalCount }})
+          </button>
+          <button class="filter-pill manual-pill" [class.active]="selectedTypeFilter === 'MANUAL'" (click)="onTypeFilterChange('MANUAL')">
+            <i class="bi bi-hand-index-thumb"></i> Manual ({{ manualCount }})
+          </button>
+          <button class="filter-pill auto-pill" [class.active]="selectedTypeFilter === 'AUTOMATIC'" (click)="onTypeFilterChange('AUTOMATIC')">
+            <i class="bi bi-cpu"></i> Auto ({{ autoCount }})
+          </button>
+        </div>
+
+        <div class="result-count">
+          <span class="count-pill">{{ dataSource.filteredData.length }} / {{ rawData.length }} records</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Scroll Container -->
+    <div class="table-scroll-container">
+      <table mat-table [dataSource]="dataSource" matSort class="report-table">
+
+        <!-- SL.No -->
+        <ng-container matColumnDef="SLNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">SL.No</span>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <span class="sn-badge">{{ i + 1 }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Assignment Type -->
+        <ng-container matColumnDef="AssignmentType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Type</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="type-badge" [ngClass]="element.IsManual || element.AssignmentType === 'Manual' ? 'type-manual' : 'type-auto'">
+              <i class="bi" [ngClass]="element.IsManual || element.AssignmentType === 'Manual' ? 'bi-hand-index-thumb' : 'bi-cpu'"></i>
+              {{ element.AssignmentType || (element.IsManual ? 'Manual' : 'Automatic') }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Loco -->
+        <ng-container matColumnDef="LocoName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Loco</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="loco-badge">
+              <i class="bi bi-train-front me-1"></i>
+              {{ element.LocoName || '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Ladle -->
+        <ng-container matColumnDef="LadleName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Ladle No</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="ladle-badge">{{ element.LadleName || (element.LadleNumber ? 'Ladle ' + element.LadleNumber : '-') }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Track / Location -->
+        <ng-container matColumnDef="TouchPointType">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Track / Location</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="location-chip track-chip" *ngIf="element.TouchPointType">
+              <i class="bi bi-geo-alt me-1"></i>
+              {{ element.TouchPointType }}
+            </span>
+            <span class="text-muted" *ngIf="!element.TouchPointType">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Confidence Score -->
+        <ng-container matColumnDef="ConfidenceScore">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Confidence</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="score-pill" [ngClass]="(element.ConfidenceScore >= 80) ? 'score-high' : 'score-med'">
+              {{ element.ConfidenceScore ?? 0 }}%
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="MappingStatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Status</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="status-pill" [ngClass]="'status-' + ((element.MappingStatus || '') | lowercase)">
+              {{ element.MappingStatus || '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Reason / Details -->
+        <ng-container matColumnDef="MappingReason">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Details / Reason</span>
+          </th>
+          <td mat-cell *matCellDef="let element" class="reason-cell" [title]="element.MappingReason || ''">
+            <span class="reason-text">{{ element.MappingReason || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Mapping Time -->
+        <ng-container matColumnDef="MappingStartTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Mapping Time</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="datetime-text">
+              <i class="bi bi-clock me-1 text-muted"></i>
+              {{ element.MappingStartTime ? (element.MappingStartTime | date:'dd-MM-yyyy HH:mm:ss') : '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Created On -->
+        <ng-container matColumnDef="CreatedOn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Created On</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="datetime-text">
+              <i class="bi bi-clock me-1 text-muted"></i>
+              {{ element.CreatedOn ? (element.CreatedOn | date:'dd-MM-yyyy HH:mm:ss') : '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="data-row"></tr>
+      </table>
+
+      <!-- Loading State Overlay -->
+      <div class="table-loading-overlay" *ngIf="isLoading">
+        <i class="bi bi-arrow-repeat spin fs-2"></i>
+        <span>Loading Assignment Records...</span>
+      </div>
+
+      <!-- No Data State -->
+      <div class="no-data" *ngIf="rawData.length === 0 && !isLoading">
+        <i class="bi bi-inbox fs-2 d-block mb-2 text-muted"></i>
+        No assignment records found for the selected date range.
+      </div>
+    </div>
+
+    <!-- Paginator (Exact Slag Report Style) -->
+    <mat-paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      showFirstLastButtons
+      aria-label="Select page of assignments">
+    </mat-paginator>
+
+  </div>
+
+  <!-- Footer Component -->
+  <app-footer></app-footer>
+
+</div>

@@ -1,0 +1,212 @@
+<!-- ==================== PAGE ==================== -->
+
+<div class="dashboard-content" [class.dark-theme]="isDarkTheme">
+
+  <div class="mapping-card">
+<div class="sub-header-left">
+      <div class="dashboard-page-title">
+        <span class="page-icon">📊</span>
+        <div>
+          <h1>Production Order &amp; Batch Predecessor Mapping</h1>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FORM ==================== -->
+
+    <form [formGroup]="mappingForm">
+
+      <!-- ==================== ROW 1 — DATES ==================== -->
+
+      <div class="form-row-dates">
+
+        <!-- From Date -->
+
+        <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+
+          <mat-label>From Date</mat-label>
+
+          <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" placeholder="DD-MM-YYYY" readonly>
+
+          <mat-datepicker-toggle matIconSuffix [for]="fromPicker">
+          </mat-datepicker-toggle>
+
+          <mat-datepicker #fromPicker panelClass="custom-datepicker">
+          </mat-datepicker>
+
+          <mat-error *ngIf="
+              mappingForm.get('fromDate')?.hasError('required')
+            ">
+            From Date is required
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- To Date -->
+
+        <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+
+          <mat-label>To Date</mat-label>
+
+          <input matInput [matDatepicker]="toPicker" formControlName="toDate" placeholder="DD-MM-YYYY" readonly>
+
+          <mat-datepicker-toggle matIconSuffix [for]="toPicker">
+          </mat-datepicker-toggle>
+
+          <mat-datepicker #toPicker panelClass="custom-datepicker">
+          </mat-datepicker>
+
+          <mat-error *ngIf="
+              mappingForm.get('toDate')?.hasError('required')
+            ">
+            To Date is required
+          </mat-error>
+
+        </mat-form-field>
+
+      </div>
+
+
+      <!-- ==================== ROW 2 — FIELDS ==================== -->
+
+      <div class="form-row-fields">
+
+        <!-- Production Unit -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>
+            Production Unit
+          </mat-label>
+
+          <mat-select formControlName="productionUnit" (selectionChange)="onProductionUnitChange()">
+
+            <mat-option *ngFor="let unit of productionUnits" [value]="unit">
+
+              {{ unit }}
+
+            </mat-option>
+
+          </mat-select>
+
+          <mat-error *ngIf="
+              mappingForm.get('productionUnit')?.hasError('required')
+            ">
+            Production Unit is required
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- Production Order Number -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>
+            Production Order Number
+          </mat-label>
+
+          <input matInput formControlName="productionOrderNumber" autocomplete="off">
+
+          <mat-error *ngIf="
+              mappingForm
+                .get('productionOrderNumber')
+                ?.hasError('required')
+            ">
+            Production Order Number is required
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- Batch Predecessor -->
+
+        <mat-form-field appearance="outline">
+
+          <mat-label>
+            Batch Number Predecessor (Max 3 Characters)
+          </mat-label>
+
+          <input matInput maxlength="3" formControlName="batchPredecessor" autocomplete="off">
+
+          <mat-hint align="end">
+            {{
+            mappingForm.get('batchPredecessor')?.value?.length || 0
+            }}/3
+          </mat-hint>
+
+          <mat-error *ngIf="
+              mappingForm
+                .get('batchPredecessor')
+                ?.hasError('required')
+            ">
+            Batch Predecessor is required
+          </mat-error>
+
+          <mat-error *ngIf="
+              mappingForm
+                .get('batchPredecessor')
+                ?.hasError('maxlength')
+            ">
+            Maximum 3 characters allowed
+          </mat-error>
+
+        </mat-form-field>
+
+      </div>
+
+
+      <!-- ==================== SPACER ==================== -->
+
+      <div class="form-spacer"></div>
+
+    </form>
+
+
+    <!-- ==================== DIVIDER ==================== -->
+
+    <div class="form-divider"></div>
+
+
+    <!-- ==================== BUTTONS ==================== -->
+
+    <div class="button-section">
+
+      <!-- Update -->
+
+      <button mat-raised-button type="button" class="update-btn" (click)="updateData()">
+
+        <i class="bi bi-save"></i>
+        Update
+
+      </button>
+
+
+      <!-- Report -->
+
+      <button mat-stroked-button type="button" class="report-btn" (click)="openReport()">
+
+        <i class="bi bi-file-earmark-text"></i>
+        Report
+
+      </button>
+
+
+      <!-- Reset -->
+
+      <button mat-stroked-button type="button" class="reset-btn" (click)="resetForm()">
+
+        <i class="bi bi-arrow-clockwise"></i>
+        Reset
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<app-footer></app-footer>

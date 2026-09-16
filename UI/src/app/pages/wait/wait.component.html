@@ -1,0 +1,11 @@
+<ng-container *ngIf="err && err.length > 0 && err[0].ERRORCODE > 0; else wait">
+  <p class="errormsg">Sorry - whilst collecting data for {{msg}} we have received an error code {{err[0].ERRORCODE}} and message "{{err[0].ERRORDESCRIPTION}}"</p>
+</ng-container>
+<ng-template #wait>
+  <div class="container-wait">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <div class="msg">Please wait {{msg}}</div>
+</ng-template>

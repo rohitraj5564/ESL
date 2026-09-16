@@ -1,0 +1,416 @@
+/* ==========================================================================
+   ESL CHANNEL CARD & RIBBON HEADER COMPONENT
+   Matching Project Theme & Industrial Design System
+   ========================================================================== */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.channel-card-container {
+  position: relative;
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 4px 14px var(--color-shadow, rgba(0, 0, 0, 0.06));
+  margin-bottom: 20px;
+  padding: 0;
+  transition: all 0.25s ease;
+}
+
+.channel-card-container:hover {
+  box-shadow: 0 8px 22px var(--color-shadow-heavy, rgba(0, 0, 0, 0.12));
+  border-color: var(--color-border-light, #c5ddf5);
+}
+
+/* ==========================================================================
+   CHEVRON RIBBON HEADERS
+   ========================================================================== */
+.channel-header-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -8px;
+  margin-left: -8px;
+  position: relative;
+  z-index: 2;
+}
+
+.ribbon-content {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.18));
+}
+
+.ribbon-text, .ribbon-link {
+  display: inline-block;
+  color: #ffffff !important;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 6px 14px 6px 12px;
+  border-radius: 6px 0 0 6px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ribbon-link {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ribbon-link:hover {
+  text-decoration: none;
+}
+
+.ribbon-link:hover .ribbon-loc-title {
+  text-decoration: underline;
+}
+
+.tat-stat-badge, .hold-stat-badge {
+  display: inline-block;
+  cursor: help;
+  padding: 0 3px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.tat-stat-badge:hover, .hold-stat-badge:hover {
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+.ribbon-tail {
+  width: 0;
+  height: 0;
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid transparent;
+  border-left: 14px solid var(--color-primary, #005ca8); /* default project corporate blue */
+  display: inline-block;
+  margin-left: -1px;
+}
+
+/* Ribbon Color Themes (Aligned to Project Palette) */
+/* 1. Corporate PSL Blue Ribbon (BF 1, SMS, LRS) */
+.blue .ribbon-text, .blue .ribbon-link,
+.Blue .ribbon-text, .Blue .ribbon-link {
+  background: var(--color-primary, #005ca8);
+}
+.blue .ribbon-tail, .Blue .ribbon-tail {
+  border-left-color: var(--color-primary, #005ca8);
+}
+
+/* 2. Safety Orange Ribbon (BF 2, DIP) */
+.redbookmark .ribbon-text, .redbookmark .ribbon-link {
+  background: #f97316;
+}
+.redbookmark .ribbon-tail {
+  border-left-color: #f97316;
+}
+
+/* 3. Plant Green Ribbon (BF 3, PCM) */
+.green .ribbon-text, .green .ribbon-link {
+  background: var(--color-accent, #0aaf54);
+}
+.green .ribbon-tail {
+  border-left-color: var(--color-accent, #0aaf54);
+}
+
+.ribbon-action {
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #64748b);
+  cursor: pointer;
+  padding: 4px 10px;
+  transition: all 0.2s ease;
+}
+
+.ribbon-action:hover {
+  color: var(--color-primary, #005ca8);
+  transform: scale(1.1);
+}
+
+/* ==========================================================================
+   SOLID CENTER BOXES (WEIGHBRIDGE & IN TRANSIT)
+   ========================================================================== */
+.is-wb-card {
+  background: linear-gradient(135deg, var(--color-primary, #005ca8) 0%, var(--color-primary-dark, #003d75) 100%) !important;
+  border-color: var(--color-primary-hover, #004a8f) !important;
+  box-shadow: 0 6px 18px rgba(0, 92, 168, 0.3) !important;
+}
+
+body.dark-theme .is-wb-card {
+  background: linear-gradient(135deg, #0c2744 0%, #081729 100%) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.center-box-header {
+  padding: 10px 14px 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.center-box-title {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.center-box-body {
+  color: #ffffff;
+}
+
+.center-box-body .bullet-symbol {
+  color: #93c5fd !important;
+}
+
+.center-box-body .ladle-link {
+  color: #ffffff !important;
+}
+
+.center-box-body .ladle-link:hover {
+  color: #e0f2fe !important;
+}
+
+.center-box-body .weight-tag {
+  color: #fef08a !important;
+  background: rgba(254, 240, 138, 0.15);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   CARD BODY & LADLE BULLETS
+   ========================================================================== */
+.channel-body {
+  padding: 12px 16px;
+  position: relative;
+  min-height: 76px;
+}
+
+.ladles-list-wrapper {
+  max-height: 96px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.ladles-list-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+.ladles-list-wrapper::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb, #005ca8);
+  border-radius: 4px;
+}
+
+.ladle-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ladle-bullets li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+
+.bullet-symbol {
+  color: var(--color-primary, #005ca8);
+  font-size: 0.95rem;
+  margin-right: 2px;
+}
+
+body.dark-theme .bullet-symbol {
+  color: #38bdf8;
+}
+
+.ladle-link {
+  color: var(--color-text, #1e293b);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.ladle-link:hover {
+  color: var(--color-primary, #005ca8);
+  text-decoration: underline;
+}
+
+body.dark-theme .ladle-link:hover {
+  color: #38bdf8;
+}
+
+.red-text {
+  color: #ef4444 !important;
+  font-weight: 700 !important;
+}
+
+.weight-tag {
+  color: var(--color-primary, #005ca8);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+}
+
+body.dark-theme .weight-tag {
+  color: #38bdf8;
+}
+
+.dest-tag {
+  color: var(--color-accent, #0aaf54);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+body.dark-theme .dest-tag {
+  color: #4ade80;
+}
+
+.empty-channel-placeholder {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted, #94a3b8);
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   ASSIGN ARROW BUTTON (BOTTOM RIGHT OF BF)
+   ========================================================================== */
+.assign-arrow-container {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+}
+
+.arrow-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary, #005ca8), var(--color-chart-accent, #06b6d4));
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 92, 168, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+}
+
+.arrow-btn:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(0, 92, 168, 0.5);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   PORT CONNECTION DOTS
+   ========================================================================== */
+.port-dot {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.port-dot-right {
+  right: -7px;
+  background-color: #8b5cf6; /* Purple dot on right of BF */
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
+.port-dot-left {
+  left: -7px;
+  background-color: var(--color-primary, #005ca8); /* Blue dot on left of SMS/DIP/PCM/LRS */
+  box-shadow: 0 0 8px rgba(0, 92, 168, 0.6);
+}
+
+body.dark-theme .port-dot-left {
+  background-color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.dot-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+/* ==========================================================================
+   MODAL STYLING
+   ========================================================================== */
+.esl-modal-box {
+  background: var(--color-bg-card, #ffffff);
+  color: var(--color-text, #0f172a);
+  padding: 22px;
+  border-radius: 14px;
+}
+
+:host ::ng-deep .esl-modal-box,
+::ng-deep .esl-modal-box {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+::ng-deep body.dark-theme .esl-modal-box {
+  background: #0b1726 !important;
+  color: #f1f5f9 !important;
+}
+
+::ng-deep body.dark-theme .esl-modal-box table,
+::ng-deep body.dark-theme .esl-modal-box .table {
+  background-color: #0f2035 !important;
+  color: #f1f5f9 !important;
+}
+
+::ng-deep body.dark-theme .esl-modal-box th,
+::ng-deep body.dark-theme .esl-modal-box th.mat-mdc-header-cell {
+  background-color: #005ca8 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+::ng-deep body.dark-theme .esl-modal-box td,
+::ng-deep body.dark-theme .esl-modal-box td.mat-mdc-cell {
+  background-color: #0f2035 !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+::ng-deep body.dark-theme .esl-modal-box tr:nth-child(even) td {
+  background-color: #142a44 !important;
+}
+
+::ng-deep body.dark-theme .esl-modal-box tr:hover td {
+  background-color: #1e3f68 !important;
+  color: #ffffff !important;
+}
+
+.modal-inner-scroll {
+  max-height: 460px;
+  overflow-y: auto;
+}
+
+

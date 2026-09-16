@@ -1,0 +1,698 @@
+<!-- ==================== Main Container ==================== -->
+<div class="container-fluid px-0">
+
+  <!-- User Info Bar -->
+  <div class="row userDetails mt-2">
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center userDetails-left">
+        <div class="user-info">
+          <span class="label">User Name:</span>
+          <span class="value">{{ userName }}</span>
+        </div>
+        <div class="user-info">
+          <span class="label">Location Name:</span>
+          <span class="value">{{ userLocationName }}</span>
+        </div>
+      </div>
+
+      <button class="report-btn" (click)="openTransactionReportDialog()">
+        Reports
+        <i class="bi bi-download"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== Dashboard Grid ==================== -->
+  <div class="dashboard-grid mt-2">
+
+    <!-- ==================== BF Ladles Card ==================== -->
+    <div class="col-bf">
+      <mat-card class="ladle-card">
+        <!-- Main Card Header: Source -->
+        <div class="card-top-header header-source">
+          <div class="card-header-left">
+            <div class="card-header-icon">
+              <i class="bi bi-box-arrow-up-right"></i>
+            </div>
+            <span class="card-header-title">Source</span>
+          </div>
+          <span class="card-header-tag">BF Ladles</span>
+        </div>
+
+        <mat-card-content>
+
+          <!-- BF1 Ladles Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>BF1 Ladles (Casted/Available)</span>
+              <span>Count: {{ bf1Ladles.length || 0 }}</span>
+            </div>
+            <div class="table-container" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Ladle No</th>
+                    <th>Date Time</th>
+                    <th>Cast No</th>
+                    <th>Booked Status</th>
+                    <th>Chemical Info</th>
+                    <th *ngIf="userLocationId === 3">
+                      Select
+                      <mat-checkbox [(ngModel)]="bf1SelectAll" (change)="onBF1SelectAllChange()"
+                        [disabled]="areBFLadleCheckboxesDisabled">
+                      </mat-checkbox>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of bf1Ladles">
+                    <td>{{ row.ladleNo }}</td>
+                    <td>{{ row.createdDateTime | date: 'dd-MM-yyyy hh:mm' }}</td>
+                    <td>{{ row.castNo }}</td>
+                    <td>
+                      <ng-container *ngIf="row.BookingLocation === 'NA'; else bookedText">NA</ng-container>
+                      <ng-template #bookedText>Booked by {{ row.BookingLocation }}</ng-template>
+                    </td>
+                    <td>
+                      <img src="../../../assets/info.png" alt="Chemical Info" class="infoImage"
+                        (click)="openBFPopup(row)" />
+                    </td>
+                    <td *ngIf="userLocationId === 3">
+                      <mat-checkbox [(ngModel)]="row.checked" [disabled]="areBFLadleCheckboxesDisabled"
+                        (change)="onLadleCheckboxChange()">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr *ngIf="bf1Ladles.length === 0">
+                    <td colspan="6" class="no-data-row">No ladles have been cast yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- BF2 Ladles Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>BF2 Ladles (Casted/Available)</span>
+              <span>Count: {{ bf2Ladles.length || 0 }}</span>
+            </div>
+            <div class="table-container" id="bf2-container" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Ladle No</th>
+                    <th>Date Time</th>
+                    <th>Cast No</th>
+                    <th>Booked Status</th>
+                    <th>Chemical Info</th>
+                    <th *ngIf="userLocationId === 3">
+                      Select
+                      <mat-checkbox [(ngModel)]="bf2SelectAll" (change)="onBF2SelectAllChange()"
+                        [disabled]="areBFLadleCheckboxesDisabled">
+                      </mat-checkbox>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of bf2Ladles">
+                    <td>{{ row.ladleNo }}</td>
+                    <td>{{ row.createdDateTime | date: 'dd-MM-yyyy hh:mm' }}</td>
+                    <td>{{ row.castNo }}</td>
+                    <td>
+                      <ng-container *ngIf="row.BookingLocation === 'NA'; else bookedText">NA</ng-container>
+                      <ng-template #bookedText>Booked by {{ row.BookingLocation }}</ng-template>
+                    </td>
+                    <td>
+                      <img src="../../../assets/info.png" alt="Chemical Info" class="infoImage"
+                        (click)="openBFPopup(row)" />
+                    </td>
+                    <td *ngIf="userLocationId === 3">
+                      <mat-checkbox [(ngModel)]="row.checked" [disabled]="areBFLadleCheckboxesDisabled"
+                        (change)="onLadleCheckboxChange()">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr *ngIf="bf2Ladles.length === 0">
+                    <td colspan="6" class="no-data-row">No ladles have been cast yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- BF3 Ladles Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>BF3 Ladles (Casted/Available)</span>
+              <span>Count: {{ bf3Ladles.length || 0 }}</span>
+            </div>
+            <div class="table-container" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Ladle No</th>
+                    <th>Date Time</th>
+                    <th>Cast No</th>
+                    <th>Booked Status</th>
+                    <th>Chemical Info</th>
+                    <th *ngIf="userLocationId === 3">
+                      Select
+                      <mat-checkbox [(ngModel)]="bf3SelectAll" (change)="onBF3SelectAllChange()"
+                        [disabled]="areBFLadleCheckboxesDisabled">
+                      </mat-checkbox>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of bf3Ladles">
+                    <td>{{ row.ladleNo }}</td>
+                    <td>{{ row.createdDateTime | date: 'dd-MM-yyyy hh:mm' }}</td>
+                    <td>{{ row.castNo }}</td>
+                    <td>
+                      <ng-container *ngIf="row.BookingLocation === 'NA'; else bookedText">NA</ng-container>
+                      <ng-template #bookedText>Booked by {{ row.BookingLocation }}</ng-template>
+                    </td>
+                    <td>
+                      <img src="../../../assets/info.png" alt="Chemical Info" class="infoImage"
+                        (click)="openBFPopup(row)" />
+                    </td>
+                    <td *ngIf="userLocationId === 3">
+                      <mat-checkbox [(ngModel)]="row.checked" [disabled]="areBFLadleCheckboxesDisabled"
+                        (change)="onLadleCheckboxChange()">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr *ngIf="bf3Ladles.length === 0">
+                    <td colspan="6" class="no-data-row">No ladles have been cast yet</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </mat-card-content>
+
+        <!-- Add BF Ladles Button -->
+        <div class="row mt-3">
+          <div class="col-md-12 text-center">
+            <button class="submit-btn" *ngIf="userLocationId === 3" (click)="onAddBFLadlesClick()"
+              [disabled]="isAdd1ButtonDisabled"> + Add + </button>
+          </div>
+        </div>
+
+        <!-- BF Chemical Composition Popup -->
+        <div class="bf-popup-overlay" *ngIf="showBFPopup" (click)="closeBFPopup()">
+          <div class="bf-popup-content" (click)="$event.stopPropagation()">
+            <div class="bf-popup-header">
+              <span class="bf-popup-title">Chemical Composition</span>
+              <span class="bf-close-icon" (click)="closeBFPopup()">&#x2716;</span>
+            </div>
+            <div class="bf-popup-ladle-badge">Ladle No: {{ bfChemicalData['LadleNo'] }}</div>
+            <div class="bf-popup-grid">
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">C%</span>
+                <span class="bf-chem-value">{{ bfChemicalData['C%'] ?? 'NA' }}</span>
+              </div>
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">Si</span>
+                <span class="bf-chem-value">{{ bfChemicalData['SI'] ?? 'NA' }}</span>
+              </div>
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">Mn</span>
+                <span class="bf-chem-value">{{ bfChemicalData['Mn'] ?? 'NA' }}</span>
+              </div>
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">S</span>
+                <span class="bf-chem-value">{{ bfChemicalData['S'] ?? 'NA' }}</span>
+              </div>
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">P</span>
+                <span class="bf-chem-value">{{ bfChemicalData['P'] ?? 'NA' }}</span>
+              </div>
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">Ti</span>
+                <span class="bf-chem-value">{{ bfChemicalData['Ti'] ?? 'NA' }}</span>
+              </div>
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">Cr</span>
+                <span class="bf-chem-value">{{ bfChemicalData['Cr'] ?? 'NA' }}</span>
+              </div>
+              <div class="bf-chem-item">
+                <span class="bf-chem-label">S+P</span>
+                <span class="bf-chem-value">{{ bfChemicalData['S+P'] ?? 'NA' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </mat-card>
+    </div>
+
+    <!-- ==================== SMS / DIP / PCM / LRS Ladles Card ==================== -->
+    <div class="col-reversal">
+      <mat-card class="ladle-card-pending">
+        <!-- Main Card Header: Destination -->
+        <div class="card-top-header header-destination">
+          <div class="card-header-left">
+            <div class="card-header-icon">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <span class="card-header-title">Destination</span>
+          </div>
+          <span class="card-header-tag">SMS • DIP • PCM • LRS</span>
+        </div>
+
+        <mat-card-content>
+
+          <!-- SMS Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>SMS Ladles</span>
+              <span>Count: {{ smsLadles.length || 0 }}</span>
+            </div>
+            <div class="table-container" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Ladle No</th>
+                    <th>Cast No</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Booked Status</th>
+                    <th *ngIf="userLocationId === 3">
+                      Select
+                      <mat-checkbox [(ngModel)]="smsSelectAll" (change)="onSmsSelectAllChange()"
+                        [disabled]="areReversalCheckboxesDisabled">
+                      </mat-checkbox>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of smsLadles">
+                    <td>{{ row.ladleNo }}</td>
+                    <td>{{ row.castNo }}</td>
+                    <td>{{ row.sourceName }}</td>
+                    <td>{{ row.destinationName }}</td>
+                    <td>{{ row.isBooked }}</td>
+                    <td *ngIf="userLocationId === 3">
+                      <mat-checkbox [(ngModel)]="row.checked" [disabled]="areReversalCheckboxesDisabled"
+                        (change)="onReversalCheckboxChange()">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr *ngIf="smsLadles.length === 0">
+                    <td colspan="6" class="no-data-row">No Data Found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- DIP Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>DIP Ladles</span>
+              <span>Count: {{ dipLadles.length || 0 }}</span>
+            </div>
+            <div class="table-container" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Ladle No</th>
+                    <th>Cast No</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Booked Status</th>
+                    <th *ngIf="userLocationId === 3">
+                      Select
+                      <mat-checkbox [(ngModel)]="dipSelectAll" (change)="onDipSelectAllChange()"
+                        [disabled]="areReversalCheckboxesDisabled">
+                      </mat-checkbox>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of dipLadles">
+                    <td>{{ row.ladleNo }}</td>
+                    <td>{{ row.castNo }}</td>
+                    <td>{{ row.sourceName }}</td>
+                    <td>{{ row.destinationName }}</td>
+                    <td>{{ row.isBooked }}</td>
+                    <td *ngIf="userLocationId === 3">
+                      <mat-checkbox [(ngModel)]="row.checked" [disabled]="areReversalCheckboxesDisabled"
+                        (change)="onReversalCheckboxChange()">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr *ngIf="dipLadles.length === 0">
+                    <td colspan="6" class="no-data-row">No Data Found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- PCM Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>PCM Ladles</span>
+              <span>Count: {{ pcmLadles.length || 0 }}</span>
+            </div>
+            <div class="table-container" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Ladle No</th>
+                    <th>Cast No</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Booked Status</th>
+                    <th *ngIf="userLocationId === 3">
+                      Select
+                      <mat-checkbox [(ngModel)]="pcmSelectAll" (change)="onPcmSelectAllChange()"
+                        [disabled]="areReversalCheckboxesDisabled">
+                      </mat-checkbox>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of pcmLadles">
+                    <td>{{ row.ladleNo }}</td>
+                    <td>{{ row.castNo }}</td>
+                    <td>{{ row.sourceName }}</td>
+                    <td>{{ row.destinationName }}</td>
+                    <td>{{ row.isBooked }}</td>
+                    <td *ngIf="userLocationId === 3">
+                      <mat-checkbox [(ngModel)]="row.checked" [disabled]="areReversalCheckboxesDisabled"
+                        (change)="onReversalCheckboxChange()">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr *ngIf="pcmLadles.length === 0">
+                    <td colspan="6" class="no-data-row">No Data Found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- LRS Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>LRS Ladles</span>
+              <span>Count: {{ lrsLadles.length || 0 }}</span>
+            </div>
+            <div class="table-container" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Ladle No</th>
+                    <th>Cast No</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Booked Status</th>
+                    <th *ngIf="userLocationId === 3">
+                      Select
+                      <mat-checkbox [(ngModel)]="lrsSelectAll" (change)="onLrsSelectAllChange()"
+                        [disabled]="areReversalCheckboxesDisabled">
+                      </mat-checkbox>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of lrsLadles">
+                    <td>{{ row.ladleNo }}</td>
+                    <td>{{ row.castNo }}</td>
+                    <td>{{ row.sourceName }}</td>
+                    <td>{{ row.destinationName }}</td>
+                    <td>{{ row.isBooked }}</td>
+                    <td *ngIf="userLocationId === 3">
+                      <mat-checkbox [(ngModel)]="row.checked" [disabled]="areReversalCheckboxesDisabled"
+                        (change)="onReversalCheckboxChange()">
+                      </mat-checkbox>
+                    </td>
+                  </tr>
+                  <tr *ngIf="lrsLadles.length === 0">
+                    <td colspan="6" class="no-data-row">No Data Found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Add Reversal Ladles Button (visible only for location 3) -->
+          <div class="row mt-2">
+            <div class="col-md-12 text-center">
+              <button class="submit-btn" *ngIf="userLocationId === 3" (click)="onAddReversalLadlesClick()"
+                [disabled]="isAdd2ButtonDisabled"> + Add + </button>
+            </div>
+          </div>
+
+          <!-- Movement Type Color Legend -->
+          <div class="ladle-legend">
+            <div class="legend-item2">
+              <span class="legend-color rejection-color"></span>
+              Full Rejection
+            </div>
+            <div class="legend-item2">
+              <span class="legend-color partial-color"></span>
+              Partial Consumption
+            </div>
+            <div class="legend-item2">
+              <span class="legend-color full-consumption"></span>
+              Full Consumption
+            </div>
+            <div class="legend-item2">
+              <span class="legend-color available"></span>
+              Available
+            </div>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- ==================== Loco Movement Card ==================== -->
+    <div class="col-loco">
+      <mat-card class="ladle-request-card">
+        <!-- Main Card Header: Movement Type -->
+        <div class="card-top-header header-movement">
+          <div class="card-header-left">
+            <div class="card-header-icon">
+              <i class="bi bi-arrow-left-right"></i>
+            </div>
+            <span class="card-header-title">Movement Type</span>
+          </div>
+          <span class="card-header-tag">Loco Transit & Completed</span>
+        </div>
+
+        <mat-card-content>
+
+          <!-- Loco Movement Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>Loco Movement</span>
+              <span>Count: {{ intransitMovement.length || 0 }}</span>
+            </div>
+            <div class="table-container_Pending2" #scrollableTable>
+              <table class="mat-elevation-z8 loco-movement-table">
+                <thead>
+                  <tr>
+                    <th>Trip No</th>
+                    <th>Loco No</th>
+                    <th>Details</th>
+                    <th *ngIf="userLocationId === 3">Transfer Loco</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let row of intransitMovement; trackBy: trackByTripId">
+                    <tr>
+                      <td>{{ row.tripID }}</td>
+                      <td>{{ row.locoName }}</td>
+                      <td>
+                        <img
+                          [src]="expandedTripIds.has(row.tripID) ? '../../../assets/collapse.png' : '../../../assets/expand.png'"
+                          alt="Movement Info" class="expandData" (click)="toggleRowExpansion(row.tripID)"
+                          style="cursor: pointer;" />
+                      </td>
+                      <td *ngIf="userLocationId === 3" class="transfer-cell">
+                        <select class="transfer-loco-select" [(ngModel)]="transferLocoSelection[row.tripID]">
+                          <option [ngValue]="null" value="">Select</option>
+                          <option *ngFor="let loco of getAvailableTransferLocos(row.locoName)" [ngValue]="loco.LocoName">
+                            {{ loco.LocoName }}
+                          </option>
+                        </select>
+                        <button class="transferBtn"
+                          [disabled]="!transferLocoSelection[row.tripID]"
+                          (click)="onTransferLoco(row.tripID, row.locoName, transferLocoSelection[row.tripID])">
+                          Transfer
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="expandedTripIds.has(row.tripID)">
+                      <td colspan="4">
+                        <table class="inner-table">
+                          <thead>
+                            <tr>
+                              <th>Ladle No</th>
+                              <th>Source</th>
+                              <th>Destination</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let ladle of row.movementData">
+                              <td>{{ ladle.ladleNo }}</td>
+                              <td>{{ ladle.sourceName }}</td>
+                              <td>{{ ladle.destinationName }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <tr *ngIf="intransitMovement.length === 0">
+                    <td colspan="4" class="no-data-row">No Ladle Movement Found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Completed Movement Table -->
+          <div class="ladle-section">
+            <div class="table-title-full d-flex-between">
+              <span>Completed Movement</span>
+              <span>Count: {{ completedMovement.length || 0 }}</span>
+            </div>
+            <div class="table-container_Pending2" #scrollableTable>
+              <table class="mat-elevation-z8">
+                <thead>
+                  <tr>
+                    <th>Trip No</th>
+                    <th>Loco No</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let row of completedMovement">
+                    <tr>
+                      <td>{{ row.tripID }}</td>
+                      <td>{{ row.locoName }}</td>
+                      <td>
+                        <img
+                          [src]="expandedTripIds.has(row.tripID) ? '../../../assets/collapse.png' : '../../../assets/expand.png'"
+                          alt="Movement Info" class="expandData" (click)="toggleRowExpansion(row.tripID)"
+                          style="cursor: pointer;" />
+                      </td>
+                    </tr>
+                    <tr *ngIf="expandedTripIds.has(row.tripID)">
+                      <td colspan="3">
+                        <table class="inner-table">
+                          <thead>
+                            <tr>
+                              <th>Ladle No</th>
+                              <th>Source</th>
+                              <th>Destination</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let ladle of row.movementData">
+                              <td>{{ ladle.ladleNo }}</td>
+                              <td>{{ ladle.sourceName }}</td>
+                              <td>{{ ladle.destinationName }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <tr *ngIf="completedMovement.length === 0">
+                    <td colspan="3" class="no-data-row">No Ladle Movement Found</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Loco Status Buttons and Legend -->
+          <div class="ladle-loco">
+            <div class="loco-button-container">
+              <div class="loco-item" *ngFor="let loco of locoOccupied">
+                <button class="loco-btn" [ngClass]="{
+                  'intransitLoco': loco.IsOccupied === 1,
+                  'bookedLoco': loco.IsOccupied === 0 && loco.LadleCount > 0,
+                  'openLoco': loco.LadleCount === 0
+                }">
+                  {{ loco.LocoName }}
+                </button>
+                <div class="ladle-count">
+                  {{ loco.LadleCount }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Loco Status Color Legend -->
+            <div class="legend-row">
+              <div class="legend-item">
+                <span class="legend-color openLoco"></span>
+                Unassigned
+              </div>
+              <div class="legend-item">
+                <span class="legend-color intransitLoco"></span>
+                Assigned
+              </div>
+              <!-- <div class="legend-item">
+                <span class="legend-color bookedLoco"></span>
+                Booked
+              </div> -->
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+</div>
+<!-- ==================== End Main Container ==================== -->
+
+<!-- ==================== PDF PREVIEW MODAL ==================== -->
+<div class="pdf-preview-overlay" *ngIf="showPdfPreview" (click)="closePdfPreview()">
+  <div class="pdf-preview-content" (click)="$event.stopPropagation()">
+    <div class="pdf-preview-header">
+      <span class="pdf-preview-title">
+        <i class="bi bi-file-earmark-pdf"></i>
+        Report Preview
+      </span>
+      <div class="pdf-preview-actions">
+        <div class="download-dropdown-wrapper">
+          <button class="pdf-download-btn download-toggle-btn" (click)="toggleDownloadDropdown()">
+            <i class="bi bi-download"></i>
+            Download Report
+            <i class="bi bi-chevron-down dropdown-arrow" [class.rotated]="showDownloadDropdown"></i>
+          </button>
+
+          <div class="download-dropdown-menu" *ngIf="showDownloadDropdown">
+            <button class="dropdown-item" (click)="downloadPreviewedPDF(); closeDownloadDropdown()">
+              <i class="bi bi-file-earmark-pdf"></i>
+              PDF
+            </button>
+            <button class="dropdown-item" (click)="downloadPreviewedExcel(); closeDownloadDropdown()">
+              <i class="bi bi-file-earmark-excel"></i>
+              Excel
+            </button>
+          </div>
+        </div>
+
+        <span class="pdf-close-icon" (click)="closePdfPreview()">&#x2716;</span>
+      </div>
+    </div>
+    <div class="pdf-preview-body">
+      <iframe [src]="pdfPreviewUrl" class="pdf-preview-frame" title="Report Preview"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FOOTER SECTION ===================== -->
+
+<app-footer></app-footer>

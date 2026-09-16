@@ -1,0 +1,13 @@
+<div class="confirm-dialog-container p-3">
+  <h2 mat-dialog-title class="dialog-title text-center">
+    <mat-icon *ngIf="data.IsDelete" color="warn">warning</mat-icon>
+    <mat-icon *ngIf="data.IsSuccess" class="text-success">check_circle</mat-icon>
+    <mat-icon *ngIf="data.IsAlert" class="text-warning">info</mat-icon>
+    <mat-icon *ngIf="data.IsError" color="warn">error</mat-icon>
+    {{data.message || 'Are you sure?'}}
+  </h2>
+  <div mat-dialog-actions class="d-flex justify-content-center gap-2 mt-3">
+    <button mat-button class="btn btn-secondary px-3" (click)="close(false)" *ngIf="data.IsDelete">No</button>
+    <button mat-raised-button class="btn btn-primary px-3" (click)="close(true)">{{data.IsDelete ? 'Yes' : 'OK'}}</button>
+  </div>
+</div>

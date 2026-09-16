@@ -1,0 +1,490 @@
+.dialogData {
+    padding: 24px 26px 20px;
+    font-family: 'Outfit', Arial, sans-serif;
+    text-align: center;
+    user-select: none;
+    background: #f4f7fb;
+    border-radius: 14px;
+}
+
+/* ── Header ── */
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #dde5f0;
+}
+
+h4[mat-dialog-title] {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    background: linear-gradient(90deg, #023c6f 0%, #0a5fa8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-transform: uppercase;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    color: #e03d3d;
+    cursor: pointer;
+    padding: 0 4px;
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+.close-btn:hover {
+    opacity: 0.75;
+    transform: scale(1.1);
+}
+
+/* ── Loco row ── */
+
+.loco-inline-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 14px 0 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.loco-inline-container > label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #023c6f;
+    white-space: nowrap;
+}
+
+.loco-select {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: 'Outfit', Arial, sans-serif;
+    border-radius: 8px;
+    border: 1.5px solid #c4d3e8;
+    background-color: #fff;
+    color: #1a2a3a;
+    min-width: 150px;
+    max-width: 300px;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.loco-select:focus {
+    outline: none;
+    border-color: #023c6f;
+    box-shadow: 0 0 0 3px rgba(2, 60, 111, 0.10);
+}
+
+/* ── Count badge ── */
+
+.count-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    background: #e0f0e8;
+    border: 1.5px solid #7ecda0;
+    border-radius: 8px;
+    padding: 5px 14px;
+}
+
+.count-container label {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a5c30;
+}
+
+.count-container span {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0a6202;
+}
+
+/* ── Table scroll wrapper ── */
+
+.table-scroll-wrapper {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 4px;
+    border-radius: 10px;
+    border: 1.5px solid #d0dce9;
+    box-shadow: 0 3px 12px rgba(2, 60, 111, 0.09);
+    position: relative;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar {
+    width: 5px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+    background: #eef2f8;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #8aaac8;
+    border-radius: 4px;
+}
+
+/* ── Table ── */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+thead {
+    text-align: center;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #023c6f;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #e8f2ff;
+    border: none;
+    box-shadow: 0 2px 3px rgba(2, 60, 111, 0.25);
+}
+
+/* ── Action th ── */
+
+.th-action {
+    width: 48px;
+    padding: 6px 10px;
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 255, 255, 0.30);
+    cursor: pointer;
+    padding: 5px 7px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.15s;
+}
+
+.icon-btn:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.30);
+}
+
+.locked-btn {
+    background: rgba(224, 61, 61, 0.20);
+    border-color: rgba(224, 61, 61, 0.50);
+    box-shadow: 0 0 8px rgba(224, 61, 61, 0.30);
+}
+
+.unlocked-btn {
+    background: rgba(10, 131, 26, 0.20);
+    border-color: rgba(10, 131, 26, 0.50);
+    box-shadow: 0 0 8px rgba(10, 131, 26, 0.30);
+}
+
+.action-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+/* ── Table body ── */
+
+td {
+    padding: 10px 14px;
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 1px solid #e4ecf5;
+    color: #1a2a3a;
+    vertical-align: middle;
+}
+
+tbody tr {
+    transition: background-color 0.12s ease;
+}
+
+tbody tr:nth-child(even) {
+    background: #f5f8fc;
+}
+
+tbody tr:hover {
+    background: #e8f0fb;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ── Destination select ── */
+
+.destination-select {
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1.5px solid #c4d3e8;
+    width: 100%;
+    background-color: #fff;
+    font-size: 13px;
+    font-family: 'Outfit', Arial, sans-serif;
+    color: #1a2a3a;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.destination-select:focus {
+    outline: none;
+    border-color: #0a5fa8;
+    box-shadow: 0 0 0 3px rgba(10, 95, 168, 0.11);
+}
+
+.destination-select:disabled {
+    background: #eef2f8;
+    color: #7a8fa6;
+    cursor: not-allowed;
+    border-style: dashed;
+}
+
+/* ── Empty state ── */
+
+p {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    padding: 18px 0;
+    font-size: 14px;
+}
+
+/* ── Submit button ── */
+
+.submit-btn {
+    height: fit-content;
+    background: linear-gradient(135deg, #0a831a 0%, #12a820 100%);
+    color: white;
+    padding: 9px 28px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Outfit', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 18px;
+    box-shadow: 0 4px 14px rgba(10, 131, 26, 0.25);
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.submit-btn:hover {
+    background: linear-gradient(135deg, #02630f 0%, #0a831a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(10, 131, 26, 0.32);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(10, 131, 26, 0.20);
+}
+
+
+/* =========================================================
+   DARK MODE
+   Same pattern as Blast Furnace Component
+   ========================================================= */
+
+:host-context(body.dark-theme) .dialogData {
+    background-color: #16263a;
+    color: #f3f7fb;
+}
+
+/* ── Header ── */
+
+:host-context(body.dark-theme) .dialog-header {
+    border-bottom-color: #405b72;
+}
+
+:host-context(body.dark-theme) h4[mat-dialog-title] {
+    background: linear-gradient(90deg, #6bbaff 0%, #62b9ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+:host-context(body.dark-theme) .close-btn {
+    color: #ff6b6b;
+}
+
+/* ── Loco row ── */
+
+:host-context(body.dark-theme) .loco-inline-container > label {
+    color: #6bbaff;
+}
+
+:host-context(body.dark-theme) .loco-select {
+    background-color: #22384c;
+    color: #f3f7fb;
+    border-color: #4b6a83;
+}
+
+:host-context(body.dark-theme) .loco-select:focus {
+    border-color: #62b9ff;
+    box-shadow: 0 0 0 3px rgba(98, 185, 255, 0.15);
+}
+
+/* ── Count ── */
+
+:host-context(body.dark-theme) .count-container {
+    background-color: #1b3044;
+    border-color: #4595cf;
+}
+
+:host-context(body.dark-theme) .count-container label {
+    color: #b8d9f0;
+}
+
+:host-context(body.dark-theme) .count-container span {
+    color: #65d77d;
+}
+
+/* ── Table wrapper ── */
+
+:host-context(body.dark-theme) .table-scroll-wrapper {
+    background-color: #132335;
+    border-color: #35516b;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Scrollbar ── */
+
+:host-context(body.dark-theme) .table-scroll-wrapper::-webkit-scrollbar-track {
+    background: #17283a;
+}
+
+:host-context(body.dark-theme) .table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #58a93d;
+}
+
+:host-context(body.dark-theme) .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #6bc34d;
+}
+
+/* ── Table ── */
+
+:host-context(body.dark-theme) table {
+    background-color: #182a3d;
+    color: #f4f7fa;
+}
+
+:host-context(body.dark-theme) thead {
+    background-color: #58b637;
+    color: #ffffff;
+}
+
+:host-context(body.dark-theme) th {
+    background-color: #58b637;
+    color: #ffffff;
+    border-color: #79c963;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.30);
+}
+
+/* ── Table Body ── */
+
+:host-context(body.dark-theme) tbody {
+    background-color: #182a3d;
+}
+
+:host-context(body.dark-theme) tbody tr {
+    background-color: #1c3044;
+    color: #f4f7fa;
+}
+
+:host-context(body.dark-theme) tbody tr:nth-child(even) {
+    background-color: #263c50;
+}
+
+/* IMPORTANT - DARK MODE TABLE HOVER */
+
+:host-context(body.dark-theme) tbody tr:hover {
+    background-color: #304d63;
+}
+
+:host-context(body.dark-theme) td {
+    color: #f2f6fa;
+    border-color: #405b72;
+}
+
+/* ── Destination Select ── */
+
+:host-context(body.dark-theme) .destination-select {
+    background-color: #22384c;
+    color: #f3f7fb;
+    border-color: #4b6a83;
+}
+
+:host-context(body.dark-theme) .destination-select:focus {
+    border-color: #62b9ff;
+    box-shadow: 0 0 0 3px rgba(98, 185, 255, 0.15);
+}
+
+:host-context(body.dark-theme) .destination-select:disabled {
+    background-color: #2a3d50;
+    color: #aebdca;
+    border-color: #526b80;
+    border-style: dashed;
+}
+
+/* ── Dropdown options ── */
+
+:host-context(body.dark-theme) .loco-select option,
+:host-context(body.dark-theme) .destination-select option {
+    background-color: #22384c;
+    color: #f3f7fb;
+}
+
+/* ── Empty state ── */
+
+:host-context(body.dark-theme) p {
+    color: #c6d1dc;
+}
+
+/* ── Button ── */
+
+:host-context(body.dark-theme) .submit-btn {
+    background: linear-gradient(135deg, #159447, #0878bc);
+    color: #ffffff;
+}
+
+:host-context(body.dark-theme) .submit-btn:hover {
+    background: linear-gradient(135deg, #1caf52, #1687df);
+}
+
+/* ── Lock button ── */
+
+:host-context(body.dark-theme) .icon-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.30);
+}
+
+:host-context(body.dark-theme) .locked-btn {
+    background: rgba(224, 61, 61, 0.20);
+    border-color: rgba(224, 61, 61, 0.50);
+}
+
+:host-context(body.dark-theme) .unlocked-btn {
+    background: rgba(10, 131, 26, 0.20);
+    border-color: rgba(10, 131, 26, 0.50);
+}

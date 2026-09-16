@@ -1,0 +1,555 @@
+/* ==========================================================================
+   ESL SYNOPTIC DASHBOARD - INDUSTRIAL CORPORATE DESIGN SYSTEM
+   Leveraging Project Design Tokens & Variables
+   ========================================================================== */
+
+:host {
+  display: block;
+  font-family: Inter, Roboto, "Segoe UI", sans-serif;
+}
+
+.loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.esl-dashboard-page {
+  padding: 16px 20px;
+  padding-bottom: 45px;
+  background: var(--color-bg, #f8fafc);
+  min-height: calc(100vh - 130px);
+  box-sizing: border-box;
+  color: var(--color-text, #1e293b);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   DASHBOARD SUB-HEADER (MATCHING PROJECT PATTERN)
+   ========================================================================== */
+.dashboard-sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 12px 18px;
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  transition: background 0.3s ease;
+  margin-bottom: 16px;
+}
+
+.sub-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sub-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dashboard-page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-primary, #005ca8), var(--color-chart-accent, #06b6d4));
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  box-shadow: 0 0 14px rgba(0, 92, 168, 0.3);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.dashboard-page-title h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text, #1e293b);
+}
+
+body.dark-theme .dashboard-page-title h1 {
+  color: var(--color-text, #dbeafe);
+}
+
+.page-subtitle {
+  font-size: 12px;
+  color: var(--color-text-muted, #64748b);
+  display: block;
+}
+
+/* Live SCADA Pill */
+.live-pill {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--color-dashboard-pill, #f1f5f9);
+  border: 1px solid var(--color-border, #e2e8f0);
+}
+
+body.dark-theme .live-pill {
+  background: var(--color-primary-lighter, #111c2f);
+}
+
+.live-beacon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent, #0aaf54);
+  box-shadow: 0 0 8px var(--color-accent, #0aaf54);
+  animation: radarPulse 2s infinite ease-in-out;
+}
+
+@keyframes radarPulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 3px #0aaf54; }
+  50% { transform: scale(1.3); box-shadow: 0 0 10px #0aaf54; }
+  100% { transform: scale(0.9); box-shadow: 0 0 3px #0aaf54; }
+}
+
+.live-pill-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text, #1e293b);
+}
+
+/* Action Buttons */
+.esl-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--color-primary, #005ca8);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 92, 168, 0.3);
+  transition: all 0.2s ease;
+}
+
+.esl-btn-primary:hover {
+  background: var(--color-primary-hover, #004a8f);
+  transform: translateY(-1px);
+}
+
+.esl-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--color-bg-card, #ffffff);
+  color: var(--color-text, #1e293b);
+  border: 1px solid var(--color-border, #e2e8f0);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.esl-btn-outline:hover {
+  border-color: var(--color-primary, #005ca8);
+  color: var(--color-primary, #005ca8);
+}
+
+/* View Toggle Button Group */
+.view-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border, #e2e8f0);
+  gap: 0;
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: var(--color-bg-card, #ffffff);
+  color: var(--color-text-muted, #64748b);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.view-toggle-btn:not(:last-child) {
+  border-right: 1px solid var(--color-border, #e2e8f0);
+}
+
+.view-toggle-btn.active {
+  background: var(--color-primary, #005ca8);
+  color: #ffffff;
+}
+
+.view-toggle-btn:hover:not(.active) {
+  background: var(--color-bg-surface, #f4f9ff);
+  color: var(--color-primary, #005ca8);
+}
+
+body.dark-theme .view-toggle-btn {
+  background: var(--color-primary-lighter, #111c2f);
+  color: var(--color-text-muted, #94a3b8);
+}
+
+body.dark-theme .view-toggle-btn.active {
+  background: var(--color-primary, #005ca8);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   SYNOPTIC BOARD (4-COLUMN FLOW GRID WITH CONNECTORS)
+   ========================================================================== */
+.esl-synoptic-board {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.synoptic-grid-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+  flex: 1;
+}
+
+/* Column Widths */
+.col-left-bf {
+  flex: 0 0 21%;
+  max-width: 21%;
+}
+
+.connector-col {
+  flex: 0 0 4.5%;
+  max-width: 4.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.col-center-hub {
+  flex: 0 0 21%;
+  max-width: 21%;
+}
+
+.col-right-refining {
+  flex: 0 0 21%;
+  max-width: 21%;
+}
+
+.col-far-right-reports {
+  flex: 0 0 27%;
+  max-width: 27%;
+}
+
+/* Station Stacks */
+.station-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.station-slot {
+  position: relative;
+}
+
+.station-slot-sm {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+/* WB → InTransit spacer connector */
+.wb-intransit-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  margin: 4px 0;
+  position: relative;
+}
+
+.wb-intransit-connector::before {
+  content: '';
+  width: 2.5px;
+  height: 100%;
+  background: linear-gradient(180deg, #005ca8 0%, #06b6d4 100%);
+  border-radius: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background-size: 100% 200%;
+  animation: verticalFlow 1.6s linear infinite;
+}
+
+.wb-intransit-connector::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #06b6d4;
+  box-shadow: 0 0 8px 2px rgba(6, 182, 212, 0.6);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: dotGlow 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes verticalFlow {
+  0%   { background-position: 0 100%; }
+  100% { background-position: 0 -100%; }
+}
+
+/* ==========================================================================
+   STATS SUMMARY CARD (CENTER TOP)
+   ========================================================================== */
+.stats-summary-card {
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 4px 14px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.stat-line {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.text-total { color: var(--color-primary, #005ca8); }
+body.dark-theme .text-total { color: #38bdf8; }
+
+.text-active { color: var(--color-accent, #0aaf54); }
+body.dark-theme .text-active { color: #22c55e; }
+
+.text-idle {
+  color: #dc2626;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.text-idle:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+body.dark-theme .text-idle { color: #f87171; }
+
+.text-completed { color: #6366f1; }
+body.dark-theme .text-completed { color: #818cf8; }
+
+.text-pending { color: #ea580c; }
+body.dark-theme .text-pending { color: #fb923c; }
+
+.center-station-box {
+  margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   CONNECTOR SVG & ANIMATED FLOW PULSES
+   ========================================================================== */
+.connector-svg {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  overflow: visible;
+}
+
+.flow-pulse-line {
+  animation: moltenFlowPulse 1.8s linear infinite;
+}
+
+@keyframes moltenFlowPulse {
+  from { stroke-dashoffset: 20; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Junction Dot Nodes */
+.junction-dot {
+  animation: dotGlow 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+@keyframes dotGlow {
+  0%   { opacity: 0.7; r: 4; }
+  50%  { opacity: 1;   r: 5.5; }
+  100% { opacity: 0.7; r: 4; }
+}
+
+/* ==========================================================================
+   PRODUCTION & QUALITY REPORT PANELS (FAR RIGHT)
+   ========================================================================== */
+.report-panel-card {
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 12px;
+  box-shadow: 0 4px 14px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  overflow: hidden;
+}
+
+.report-header-ribbon {
+  display: inline-flex;
+  align-items: center;
+  margin-top: -6px;
+  margin-left: -6px;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.15));
+}
+
+.report-ribbon-text {
+  background: var(--color-table-header-bg, #71bd44);
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 6px 0 0 6px;
+}
+
+.report-ribbon-tail {
+  width: 0;
+  height: 0;
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid transparent;
+  border-left: 14px solid var(--color-table-header-bg, #71bd44);
+  display: inline-block;
+  margin-left: -1px;
+}
+
+.report-table-box {
+  padding: 12px 14px;
+}
+
+.quality-scroll-box {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.report-data-table {
+  width: 100%;
+  font-size: 0.78rem;
+  border-collapse: collapse;
+}
+
+.report-data-table th {
+  background: var(--color-bg-surface, #f4f9ff);
+  color: var(--color-text-muted, #64748b);
+  font-weight: 700;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+body.dark-theme .report-data-table th {
+  background: var(--color-primary-lighter, #111c2f);
+}
+
+.report-data-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  color: var(--color-text, #1e293b);
+}
+
+body.dark-theme .report-data-table td {
+  color: var(--color-text, #dbeafe);
+}
+
+.report-data-table tr:hover td {
+  background: var(--color-primary-lighter, #f4f9ff);
+}
+
+body.dark-theme .report-data-table tr:hover td {
+  background: #15253e;
+}
+
+.furnace-summary-row td {
+  font-size: 0.84rem;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+  padding-top: 8px;
+  padding-bottom: 5px;
+  color: var(--color-primary, #005ca8) !important;
+}
+
+body.dark-theme .furnace-summary-row td {
+  color: #38bdf8 !important;
+}
+
+.unit-sub-row td {
+  color: var(--color-text-muted, #64748b) !important;
+  font-size: 0.76rem;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.loc-badge {
+  font-weight: 700;
+  color: var(--color-primary, #005ca8);
+}
+
+body.dark-theme .loc-badge {
+  color: #38bdf8;
+}
+
+.text-primary-time {
+  color: var(--color-accent, #0aaf54);
+  font-weight: 600;
+}
+
+/* Modal Styling */
+.esl-modal-box {
+  background: var(--color-bg-card, #ffffff);
+  color: var(--color-text, #0f172a);
+  padding: 22px;
+  border-radius: 14px;
+}
+
+body.dark-theme .esl-modal-box {
+  background: var(--color-bg-card, #0f1e30);
+  color: var(--color-text, #dbeafe);
+}
+
+.modal-inner-scroll {
+  max-height: 460px;
+  overflow-y: auto;
+}

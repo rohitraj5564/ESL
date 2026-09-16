@@ -1,0 +1,62 @@
+<div class="dialogData">
+    <div class="dialog-header">
+        <h4 mat-dialog-title>Create ladle movement</h4>
+        <button class="close-btn" #closeBtn (click)="closeDialog()">×</button>
+    </div>
+    <div class="loco-inline-container">
+        <label for="locoSelect">Loco: </label>
+        <select id="locoSelect" class="loco-select" [(ngModel)]="selectedLocoID" (ngModelChange)="onLocoChange($event)">
+            <option value="" disabled>Select loco</option>
+            <option *ngFor="let loco of locoOptions" [value]="loco.LocoID">
+                {{ loco.LocoName }}
+            </option>
+        </select>
+        <div class="count-container">
+            <label for="locoSelect">Count:</label>
+            <span>{{ data.length }}</span>
+        </div>
+    </div>
+
+    <div *ngIf="data.length > 0" class="table-scroll-wrapper">
+        <table class="mat-elevation-z8 table-responsive">
+            <thead>
+                <tr>
+                    <th>Ladle No</th>
+                    <th>Cast No</th>
+                    <th>Source Location</th>
+                    <th>Predicted Location</th>
+                    <th class="th-action">
+                        <button class="icon-btn" [class.locked-btn]="isAllLocked" [class.unlocked-btn]="!isAllLocked"
+                            (click)="toggleAllLock()" [title]="isAllLocked ? 'Click to Edit All' : 'Click to Lock All'">
+                            <img [src]="isAllLocked ? '../../../assets/locked.png' : '../../../assets/unlocked.png'"
+                                [alt]="isAllLocked ? 'Locked' : 'Edit'" class="action-icon" />
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ladle of data">
+                    <td>{{ ladle.ladleNo }}</td>
+                    <td>{{ ladle.castNo }}</td>
+                    <td>{{ ladle.locationName }}</td>
+                    <td>
+                        <!-- <select [(ngModel)]="ladle.destination" class="destination-select"
+                            [disabled]="isAllLocked">
+                            <option *ngFor="let option of destinations" [value]="option">{{ option }}</option>
+                        </select> -->
+                        <select [(ngModel)]="ladle.destination" class="destination-select"
+                            [disabled]="isAllLocked || ladle.BookingLocation !== 'NA'">
+                            <option *ngFor="let option of destinations" [value]="option">{{ option }}</option>
+                        </select>
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="data.length === 0">
+        <p>No ladle selected.</p>
+    </div>
+    <button class="submit-btn" [disabled]="isSubmitting" (click)="submitLadleMovement()">+ Create +</button>
+</div>

@@ -1,0 +1,84 @@
+<div class="dialogData">
+    <div class="dialog-header">
+        <h4 mat-dialog-title>Create ladle movement</h4>
+        <button class="close-btn" (click)="closeDialog()">×</button>
+    </div>
+    <div class="loco-inline-container">
+        <label for="locoSelect">Loco:</label>
+        <select id="locoSelect" class="loco-select" [(ngModel)]="selectedLocoID" (ngModelChange)="onLocoChange($event)">
+            <option value="" disabled>Select loco</option>
+            <option *ngFor="let loco of locoOptions" [value]="loco.LocoID">
+                {{ loco.LocoName }}
+            </option>
+        </select>
+        <div class="count-container">
+            <label for="locoSelect">Count:</label>
+            <span>{{ data.length }}</span>
+        </div>
+    </div>
+    <div *ngIf="data.length > 0" class="table-scroll-wrapper">
+        <table class="mat-elevation-z8 table-responsive">
+            <thead>
+                <tr>
+                    <th>Ladle No</th>
+                    <th>Source</th>
+                    <th>Movement Type</th>
+                    <th>Destination</th>
+                    <th>Ladle History</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ladle of data">
+                    <td class="col-ladle">{{ ladle.ladleNo }}</td>
+                    <td class="col-source">{{ ladle.sourceName }}</td>
+                    <td class="col-movtype">
+                        <span class="movement-badge" [ngClass]="{
+                                'badge-full-rejection':   ladle.movementType === 'Full Rejection',
+                                'badge-partial':          ladle.movementType === 'Partial Consumption',
+                                'badge-full-consumption': ladle.movementType === 'Full Consumption',
+                                'badge-available':        ladle.movementType === 'Available'
+                            }">
+                            {{ ladle.movementType }}
+                        </span>
+                    </td>
+                    <td class="col-dest">
+                        <select [(ngModel)]="ladle.destination" class="destination-select"
+                            [disabled]="ladle.destinationName !== 'NA' && ladle.movementType !== 'Full Consumption'">
+                            <option value="" disabled selected></option>
+                            <option *ngFor="let option of ladle.availableDestinations" [value]="option">
+                                {{ option }}
+                            </option>
+                        </select>
+                    </td>
+                    <td class="col-history">
+                        <div class="history-wrapper">
+                            <img src="assets/info.png" class="info-icon" alt="History" (click)="toggleHistory(ladle)" />
+                            <div class="history-tooltip" *ngIf="ladle.showHistory">
+                                <div class="history-tooltip-header">
+                                    <span>{{ ladle.ladleNo }} — History</span>
+                                    <button class="tooltip-close" (click)="toggleHistory(ladle)">×</button>
+                                </div>
+                                <div class="history-tooltip-body">
+                                    <div *ngIf="ladle.trailDetails && ladle.trailDetails.length > 0">
+                                        <div *ngFor="let trail of ladle.trailDetails; let i = index" class="trail-item">
+                                            <span class="trail-step">{{ i + 1 }}</span>
+                                            <span class="trail-loc">{{ trail.display }}</span>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="!ladle.trailDetails || ladle.trailDetails.length === 0"
+                                        class="no-trail">
+                                        No history found
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="data.length === 0">
+        <p>No ladle selected.</p>
+    </div>
+    <button class="submit-btn" [disabled]="isSubmitting" (click)="submitLadleMovement()">+ Create +</button>
+</div>

@@ -1,0 +1,161 @@
+﻿<div class="container-fluid">
+
+    <!-- ===================== USER DETAILS SECTION ===================== -->
+    <div class="row userDetails mt-2">
+        <div class="col-md-12 d-flex justify-content-between align-items-center">
+            <div class="user-info">
+                <span class="label">User Name:</span>
+                <span class="value">{{ userName }}</span>
+            </div>
+            <div class="user-info">
+                <span class="label">Location Name:</span>
+                <span class="value">{{ userLocationName }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- ===================== USER DETAILS SECTION END ===================== -->
+
+    <div class="row mt-2">
+
+        <!-- ===================== TRANSACTION LADLES SUMMARY CARD ===================== -->
+        <div class="col-md-4">
+            <mat-card class="ladle-card">
+                <mat-card-content>
+                    <div class="ladle-section">
+                        <div class="table-title-full d-flex-between">
+                            <span>Transaction Ladles Summary</span>
+                            <span>Count: {{ transaction.length }}</span>
+                        </div>
+                        <div class="table-container" #scrollableTable>
+                            <table class="mat-elevation-z8">
+                                <thead>
+                                    <tr>
+                                        <th>Sl. No</th>
+                                        <th>Ladle No</th>
+                                        <th>Source Location</th>
+                                        <th>Status</th>
+                                        <th>Date and Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let transactionItem of transaction; let idx = index">
+                                        <td>{{ idx + 1 }}</td>
+                                        <td>{{ transactionItem.ladleNo }}</td>
+                                        <td>{{ transactionItem.sourceLocation }}</td>
+                                        <td>
+                                            <span class="status-badge" [ngClass]="{
+                                                'status-assigned': transactionItem.status?.startsWith('Assigned'),
+                                                'status-completed': transactionItem.status === 'Completed'
+                                            }">
+                                                {{ transactionItem.status }}
+                                            </span>
+                                        </td>
+                                        <td>{{ transactionItem.transferDateTime | date:'yyyy-MM-dd HH:mm' }}</td>
+                                    </tr>
+                                    <tr *ngIf="transaction.length === 0">
+                                        <td colspan="5" class="no-data-row">No Transaction ladles found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <!-- ===================== TRANSACTION LADLES SUMMARY CARD END ===================== -->
+
+        <!-- ===================== PENDING TASK CARD ===================== -->
+        <div class="col-md-4">
+            <mat-card class="ladle-card">
+                <mat-card-content>
+                    <div class="ladle-section">
+                        <div class="table-title-full d-flex-between">
+                            <span>Pending Task</span>
+                            <span>Count: {{ reversalLadles.length }}</span>
+                        </div>
+                        <div class="table-container" #scrollableTable>
+                            <table class="mat-elevation-z8">
+                                <thead>
+                                    <tr>
+                                        <th>Sl. No</th>
+                                        <th>Ladle No</th>
+                                        <th>Trip Count</th>
+                                        <th>
+                                            <div>Select</div>
+                                            <app-custom-checkbox [(checked)]="isChecked" [indeterminate]="indeterminate"
+                                                (checkedChange)="toggleSelectAll($event)"></app-custom-checkbox>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Loop through each ladle in pending list -->
+                                    <tr *ngFor="let ladle of reversalLadles; let i = index">
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ ladle.ladleNo }}</td>
+                                        <td>{{ ladle.chemicalComp }}</td>
+                                        <td>
+                                            <!-- Row-level checkbox -->
+                                            <app-custom-checkbox [(checked)]="ladle.isSelected"
+                                                (checkedChange)="onLadleCheckboxChange()"></app-custom-checkbox>
+                                        </td>
+                                    </tr>
+
+                                    <tr *ngIf="reversalLadles.length === 0">
+                                        <td colspan="4" class="no-data-row">No pending task found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-12 text-center">
+                            <button class="submit-btn" (click)="proceedLadleMovement()"> + Proceed + </button>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <!-- ===================== PENDING TASK CARD END ===================== -->
+
+        <!-- ===================== SUMMARY CARD ===================== -->
+        <div class="col-md-4">
+            <mat-card class="ladle-card-pending">
+                <mat-card-content>
+                    <div class="ladle-section">
+                        <div class="table-title-full d-flex-between">
+                            <span>Summary</span>
+                            <span>Count: {{ summary.length }}</span>
+                        </div>
+                        <div class="table-container" #scrollableTable>
+                            <table class="mat-elevation-z8">
+                                <thead>
+                                    <tr>
+                                        <th>Sl. No</th>
+                                        <th>Ladle No</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Loop through each summary item -->
+                                    <tr *ngFor="let item of summary; let i = index">
+                                        <td>{{ i + 1 }}</td>
+                                        <td>{{ item.ladleNo }}</td>
+                                        <td>{{ item.type }}</td>
+                                    </tr>
+                                    <!-- Empty state row -->
+                                    <tr *ngIf="summary.length === 0">
+                                        <td colspan="3" class="no-data-row">No summary found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <!-- ===================== SUMMARY CARD END ===================== -->
+
+    </div>
+</div>
+<app-footer></app-footer>

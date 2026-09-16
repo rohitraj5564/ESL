@@ -1,0 +1,209 @@
+<div class="app">
+  <!-- 1. COMMAND HEADER & STATBAR -->
+  <header class="header">
+    <div class="brand">
+      <span class="brand-mark">🚂</span>
+      <div>
+        <h1>Bokaro Yard | Ladle & Loco Telemetry</h1>
+        <p>BF1 / BF2 / BF3 ➔ Weighbridge (WB) ➔ SMS / DIP / PCM / LRS</p>
+      </div>
+    </div>
+
+    <!-- Quick Satellite Basemap Selector -->
+    <div class="layer-switch-strip">
+      <button 
+        class="layer-pill" 
+        [class.active]="currentBaseLayerName === 'Bright Satellite'" 
+        (click)="switchBaseLayer('Bright Satellite')">
+        🛰️ Bright Sat
+      </button>
+      <button 
+        class="layer-pill" 
+        [class.active]="currentBaseLayerName === 'Google Satellite'" 
+        (click)="switchBaseLayer('Google Satellite')">
+        🌍 Google Sat
+      </button>
+      <button 
+        class="layer-pill" 
+        [class.active]="currentBaseLayerName === 'Voyager (Bright)'" 
+        (click)="switchBaseLayer('Voyager (Bright)')">
+        🗺️ Voyager
+      </button>
+      <button 
+        class="layer-pill" 
+        [class.active]="currentBaseLayerName === 'Dark Tactical'" 
+        (click)="switchBaseLayer('Dark Tactical')">
+        🌑 Dark
+      </button>
+      <button 
+        class="layer-pill" 
+        [class.active]="currentBaseLayerName === 'Light Map'" 
+        (click)="switchBaseLayer('Light Map')">
+        📍 Street
+      </button>
+    </div>
+
+    <!-- Header StatBar -->
+    <div class="statbar">
+      <div class="stat">
+        <span class="stat-value">{{ getActiveLocosCount() }}/{{ state?.locos?.length || 0 }}</span>
+        <span class="stat-label">Locos Active</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ getLoadedLadlesCount() }}</span>
+        <span class="stat-label">Ladles Loaded</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ getAtWeighbridgeCount() }}</span>
+        <span class="stat-label">At Weighbridge</span>
+      </div>
+      <div class="conn" [class.live]="connected" [class.down]="!connected">
+        <span class="dot"></span> {{ isApiData ? 'Live API' : (connected ? 'Simulated (Live)' : 'Reconnecting…') }}
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. MAIN 3D MAP & INDUSTRIAL SIDEBAR -->
+  <main class="main">
+    <!-- Map Container -->
+    <div class="map-wrap">
+      @if (getTrackedLoco(); as tracked) {
+        <div class="tracking-chip">
+          <span class="dot" [style.background]="getLocoStatus(tracked.status).color"></span>
+          Tracking {{ tracked.id }} ({{ tracked.speedKmh }} km/h)
+          <button (click)="selectLoco(null)" title="Release Camera Tracking">✖</button>
+        </div>
+      }
+      <div id="map" class="map"></div>
+    </div>
+
+    <!-- Multi-Tab Telemetry Sidebar -->
+    <aside class="sidebar">
+      <!-- Tabs Navigation -->
+      <div class="tabs">
+        <button 
+          class="tab" 
+          [class.active]="activeTab === 'Locos'" 
+          (click)="activeTab = 'Locos'">
+          Locos ({{ state?.locos?.length || 0 }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="activeTab === 'Ladles'" 
+          (click)="activeTab = 'Ladles'">
+          Ladles ({{ state?.ladles?.length || 0 }})
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="activeTab === 'Weighbridge'" 
+          (click)="activeTab = 'Weighbridge'">
+          Weighbridge
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="activeTab === 'Events'" 
+          (click)="activeTab = 'Events'">
+          Events
+        </button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="tab-content">
+        <!-- TAB 1: LOCOS -->
+        @if (activeTab === 'Locos') {
+          <div class="panel-list">
+            @for (loco of state?.locos; track loco.id) {
+              <div 
+                class="row-card clickable" 
+                [class.tracked]="loco.id === trackedLocoId"
+                (click)="selectLoco(loco.id === trackedLocoId ? null : loco.id)">
+                <div class="row-top">
+                  <span class="row-title">{{ loco.id }}</span>
+                  <span class="badge" [style.color]="getLocoStatus(loco.status).color">
+                    <span class="dot" [style.background]="getLocoStatus(loco.status).color"></span>
+                    {{ getLocoStatus(loco.status).label }}
+                  </span>
+                </div>
+                <div class="row-meta">
+                  <span>Ladles: {{ loco.ladleIds.length ? loco.ladleIds.join(', ') : '—' }}</span>
+                  <span>{{ loco.speedKmh }} km/h</span>
+                </div>
+                @if (loco.destination) {
+                  <div class="row-meta">
+                    <span class="dest-text">➔ {{ loco.destination }}</span>
+                    <span>🧭 {{ Math.round(loco.bearing) }}°</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- TAB 2: LADLES -->
+        @if (activeTab === 'Ladles') {
+          <div class="panel-list">
+            @for (ladle of state?.ladles; track ladle.id) {
+              <div class="row-card">
+                <div class="row-top">
+                  <span class="row-title">{{ ladle.id }}</span>
+                  <span class="badge" [style.color]="getLadleStatus(ladle.status).color">
+                    <span class="dot" [style.background]="getLadleStatus(ladle.status).color"></span>
+                    {{ getLadleStatus(ladle.status).label }}
+                  </span>
+                </div>
+                <div class="row-meta">
+                  <span>&#64; {{ ladle.locationNode }}</span>
+                  <span>
+                    {{ ladle.netKg > 0 ? (ladle.netKg | number) + ' kg net' : 'tare ' + (ladle.tareKg | number) + ' kg' }}
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- TAB 3: WEIGHBRIDGE -->
+        @if (activeTab === 'Weighbridge') {
+          <div class="panel-list">
+            <div class="row-card">
+              <div class="row-top">
+                <span class="row-title">Weighbridge Status</span>
+                <span class="badge" [style.color]="state?.weighbridge?.busy ? '#a855f7' : '#22c55e'">
+                  <span class="dot" [style.background]="state?.weighbridge?.busy ? '#a855f7' : '#22c55e'"></span>
+                  {{ state?.weighbridge?.busy ? 'Weighing' : 'Free' }}
+                </span>
+              </div>
+              @if (getWeighbridgeOccupant(); as occupant) {
+                <div class="row-meta" style="margin-top: 6px; color: #f8fafc;">
+                  <span>On bridge: <strong>{{ occupant.id }}</strong> ({{ occupant.ladleIds.join(', ') }})</span>
+                </div>
+              }
+            </div>
+
+            <div class="row-card">
+              <div class="row-top">
+                <span class="row-title">Queue ({{ state?.weighbridge?.queue?.length || 0 }})</span>
+              </div>
+              <div class="row-meta" style="margin-top: 4px;">
+                <span>{{ state?.weighbridge?.queue?.join(', ') || 'No locos waiting' }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- TAB 4: EVENTS LOG -->
+        @if (activeTab === 'Events') {
+          <div class="panel-list">
+            @for (e of state?.events; track $index) {
+              <div class="event-row">
+                <span class="event-time">{{ e.created_at | date:'HH:mm:ss' }}</span>
+                <span class="event-type" [ngClass]="'type-' + e.type.toLowerCase()">{{ e.type }}</span>
+                <span class="event-msg">{{ e.message }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </aside>
+  </main>
+</div>

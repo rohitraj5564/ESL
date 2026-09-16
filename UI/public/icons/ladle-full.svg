@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 34" width="26" height="34">
+  <defs>
+    <!-- Molten metal glowing core -->
+    <radialGradient id="moltenCore" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="25%" stop-color="#fde047"/>
+      <stop offset="50%" stop-color="#f97316"/>
+      <stop offset="85%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </radialGradient>
+    <linearGradient id="ladleShell" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="40%" stop-color="#475569"/>
+      <stop offset="70%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="glowRing" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff7a00"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <filter id="heatAura" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Heat Aura under car -->
+  <ellipse cx="13" cy="20" rx="10" ry="7" fill="#ff5722" opacity="0.45" filter="url(#heatAura)"/>
+
+  <!-- Rail Car Flatbed Underframe -->
+  <rect x="1" y="24" width="24" height="4" rx="1" fill="#0f172a" stroke="#475569" stroke-width="0.8"/>
+  <circle cx="6" cy="28" r="3.2" fill="#334155" stroke="#64748b" stroke-width="1.2"/>
+  <circle cx="6" cy="28" r="1.3" fill="#0f172a"/>
+  <circle cx="20" cy="28" r="3.2" fill="#334155" stroke="#64748b" stroke-width="1.2"/>
+  <circle cx="20" cy="28" r="1.3" fill="#0f172a"/>
+  <!-- Coupler bar -->
+  <rect x="0" y="25" width="2" height="2" rx="0.5" fill="#64748b"/>
+  <rect x="24" y="25" width="2" height="2" rx="0.5" fill="#64748b"/>
+
+  <!-- Ladle Cradle / Trunnion Supports -->
+  <path d="M4 24 L7 16 L10 24 Z" fill="#1e293b"/>
+  <path d="M22 24 L19 16 L16 24 Z" fill="#1e293b"/>
+
+  <!-- Torpedo/Bucket Ladle Outer Shell -->
+  <path d="M4 14 Q3 22 13 23 Q23 22 22 14 Q22 9 13 9 Q4 9 4 14 Z" fill="url(#ladleShell)" stroke="#0f172a" stroke-width="0.9"/>
+  
+  <!-- Ladle Trunnions (Pivot pins) -->
+  <circle cx="3" cy="14" r="1.5" fill="#e2e8f0" stroke="#0f172a" stroke-width="0.6"/>
+  <circle cx="23" cy="14" r="1.5" fill="#e2e8f0" stroke="#0f172a" stroke-width="0.6"/>
+
+  <!-- Top Rim / Opening of Ladle -->
+  <ellipse cx="13" cy="10" rx="8" ry="3.5" fill="#7f1d1d" stroke="#f97316" stroke-width="0.8"/>
+  
+  <!-- Glowing Molten Iron Core -->
+  <ellipse cx="13" cy="10" rx="6.8" ry="2.6" fill="url(#moltenCore)"/>
+  <ellipse cx="13" cy="9.6" rx="3.5" ry="1.2" fill="#fffef0" opacity="0.9"/>
+
+  <!-- Hot Molten Slag flecks -->
+  <circle cx="11" cy="9.8" r="0.6" fill="#fef08a"/>
+  <circle cx="15.5" cy="10.2" r="0.5" fill="#fed7aa"/>
+</svg>

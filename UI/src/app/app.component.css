@@ -1,0 +1,22 @@
+.app-main-content {
+  transition: margin-left 0.3s ease;
+  margin-left: 0;
+  padding-top: 0;
+}
+
+.app-main-content.has-sidebar {
+  margin-left: 65px;
+  padding-top: 70px;
+}
+
+@media (min-width: 768px) {
+  .app-main-content.has-sidebar.sidebar-open {
+    margin-left: 280px;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-main-content.has-sidebar {
+    margin-left: 0;
+  }
+}

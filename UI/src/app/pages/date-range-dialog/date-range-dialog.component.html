@@ -1,0 +1,43 @@
+<div class="daterange-dialog">
+  <div class="daterange-header">
+    <span class="daterange-title">
+      <i class="bi bi-calendar-range"></i>
+      Select Report Date Range
+    </span>
+    <span class="daterange-close" (click)="onCancel()">&#x2716;</span>
+  </div>
+
+  <div class="daterange-body">
+    <p class="daterange-subtext">Choose the date range for the ladle movement report.</p>
+
+    <div class="daterange-field">
+      <label class="daterange-label">From Date</label>
+      <mat-form-field appearance="outline" class="daterange-form-field">
+        <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate"
+          [max]="maxDate" placeholder="Select start date" readonly
+          (click)="fromPicker.open()">
+        <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker panelClass="custom-datepicker"></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="daterange-field">
+      <label class="daterange-label">To Date</label>
+      <mat-form-field appearance="outline" class="daterange-form-field">
+        <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate"
+          [min]="fromDate" [max]="maxDate" placeholder="Select end date" readonly
+          (click)="toPicker.open()">
+        <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker panelClass="custom-datepicker"></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="daterange-footer">
+    <button class="daterange-btn cancel-btn" (click)="onCancel()">Cancel</button>
+    <button class="daterange-btn confirm-btn" (click)="onConfirm()">
+      <i class="bi bi-eye"></i>
+      View Report
+    </button>
+  </div>
+</div>

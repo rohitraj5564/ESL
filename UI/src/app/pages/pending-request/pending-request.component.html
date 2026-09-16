@@ -1,0 +1,51 @@
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="page-header-icon">
+      <i class="bi bi-arrow-repeat"></i>
+    </div>
+    <div class="page-header-text">
+      <h2>Pending Requests</h2>
+      <p>Ladle requests awaiting completion</p>
+    </div>
+  </div>
+
+  <div class="card-center-wrap">
+    <mat-card class="ladle-request-card">
+      <mat-card-content>
+
+        <div class="ladle-section">
+          <div class="table-title-full d-flex-between">
+            <span>Pending Requests</span>
+            <span class="count-badge">Ladles: {{ totalLadles }}</span>
+          </div>
+          <div class="table-container_Pending">
+            <table class="mat-elevation-z8 pending-summary-table">
+              <thead>
+                <tr>
+                  <th>Department</th>
+                  <th>Qty of Ladles</th>
+                  <th>Date Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of pendingRequests">
+                  <td>{{ row.locationName }}</td>
+                  <td [title]="ladleTooltip(row)">
+                    <span class="qty-pill">{{ row.ladleCount }}</span>
+                  </td>
+                  <td>{{ row.createdDateTime | date: 'yyyy-MM-dd HH:mm' }}</td>
+                </tr>
+                <tr *ngIf="pendingRequests.length === 0">
+                  <td colspan="3" class="no-data-row">No Pending Requests Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<app-footer></app-footer>

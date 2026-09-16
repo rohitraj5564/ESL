@@ -1,0 +1,293 @@
+<!-- Loading Overlay -->
+<div class="loading-indicator" *ngIf="isLoading">
+  <app-wait></app-wait>
+</div>
+
+<div class="esl-dashboard-page">
+  <!-- Sub-Header Matching Project Aesthetic -->
+  <div class="dashboard-sub-header">
+    <div class="sub-header-left">
+      <div class="dashboard-page-title">
+        <div class="page-icon">
+          <i class="bi bi-activity"></i>
+        </div>
+        <div>
+          <h1 class="m-0">Live Ladle Movement Overview</h1>
+          <span class="page-subtitle">Real-Time Hot Metal Synoptic Flow &amp; Logistics Telemetry</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-header-right">
+      <!-- Live SCADA Pulse Pill -->
+      <div class="live-pill" *ngIf="serviceData?.serviceActiveDatetime">
+        <span class="live-beacon"></span>
+        <span class="live-pill-text font-monospace">
+          {{ serviceData.serviceActiveDatetime | date:'dd-MM-yyyy HH:mm:ss' }}
+        </span>
+      </div>
+
+      <!-- View Toggle Buttons -->
+      <div class="view-toggle-group">
+        <button class="view-toggle-btn" [class.active]="activeView === 'esldashboard'" (click)="setView('esldashboard')">
+          <i class="bi bi-activity"></i> Live Tracking
+        </button>
+        <button class="view-toggle-btn" [class.active]="activeView === 'dashboard'" (click)="setView('dashboard')">
+          <i class="bi bi-bar-chart-line"></i> Analytic Dashboard
+        </button>
+      </div>
+
+      <!-- Sync Button -->
+      <button class="esl-btn-primary" (click)="refreshData()" title="Sync Telemetry">
+        <i class="bi bi-arrow-repeat"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Synoptic Layout Board (4-Column Layout with Animated Flow Conduits) -->
+  <div class="esl-synoptic-board">
+    <div class="synoptic-grid-row">
+
+      <!-- ==================== COLUMN 1: BLAST FURNACES (LEFT) ==================== -->
+      <div class="synoptic-col col-left-bf" #bfCol>
+        <div class="station-stack">
+          <div class="station-slot" #bf1Slot>
+            <app-eslchannel [eslLocationData]="bf1Data" divId="20" channelName="BF 1" ellipsId="19"
+              (refreshDataEvent)="refreshData()" className="blue"></app-eslchannel>
+          </div>
+
+          <div class="station-slot" #bf2Slot>
+            <app-eslchannel [eslLocationData]="bf2Data" divId="22" channelName="BF 2" ellipsId="19"
+              (refreshDataEvent)="refreshData()" className="redbookmark"></app-eslchannel>
+          </div>
+
+          <div class="station-slot" #bf3Slot>
+            <app-eslchannel [eslLocationData]="bf3Data" divId="25" channelName="BF 3" ellipsId="19"
+              (refreshDataEvent)="refreshData()" className="green"></app-eslchannel>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== CONNECTOR BRACKET 1: BF -> WEIGHBRIDGE ==================== -->
+      <div class="connector-col" #connectorCol1>
+        <svg class="connector-svg" [attr.viewBox]="'0 0 60 ' + gridHeight" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="bf-flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#005ca8" />
+              <stop offset="100%" stop-color="#06b6d4" />
+            </linearGradient>
+          </defs>
+
+          <!-- Base Track Lines -->
+          <path [attr.d]="bfConnPath1" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="bfConnPath2" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="bfConnPath3" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+
+          <!-- Animated Dashed Flow Lines -->
+          <path [attr.d]="bfConnPath1" fill="none" stroke="url(#bf-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="bfConnPath2" fill="none" stroke="url(#bf-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="bfConnPath3" fill="none" stroke="url(#bf-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+
+          <!-- Junction Dots: left edge BF1, BF2, BF3 -->
+          <circle [attr.cy]="bf1Y" cx="0" r="5" fill="#7c3aed" class="junction-dot" />
+          <circle [attr.cy]="bf2Y" cx="0" r="5" fill="#7c3aed" class="junction-dot" />
+          <circle [attr.cy]="bf3Y" cx="0" r="5" fill="#7c3aed" class="junction-dot" />
+          <!-- Center Merge Dot aligned with WB -->
+          <circle cx="25" [attr.cy]="wbYLeft" r="4.5" fill="#06b6d4" class="junction-dot" />
+        </svg>
+      </div>
+
+      <!-- ==================== COLUMN 2: SUMMARY & WEIGHBRIDGE (CENTER) ==================== -->
+      <div class="synoptic-col col-center-hub" #centerCol>
+        <!-- Stats Summary Card -->
+        <div class="stats-summary-card">
+          <div class="stat-line text-total">Total Ladles: {{totalLadleCount}}</div>
+          <div class="stat-line text-active">Active Ladles: {{activeLadleCount}}</div>
+          <div class="stat-line text-idle" (click)="open(idealLadle)" title="Click to inspect standby/idle inventory">
+            Idle Ladles : {{inactiveLadleCount}}
+          </div>
+          <div class="stat-line text-completed">Completed Trips: {{completetripscount}}</div>
+          <div class="stat-line text-pending">Pending Trips: {{pendingtripscount}}</div>
+        </div>
+
+        <!-- Weighbridge Box -->
+        <div class="center-station-box" #wbBox>
+          <app-eslchannel [eslLocationData]="wbData" channelName="Weighbridge" divId="14" ellipsId="11"
+            className="Txt_Weighbridge"></app-eslchannel>
+        </div>
+
+        <!-- WB → InTransit vertical connector -->
+        <div class="wb-intransit-connector"></div>
+
+        <!-- In Transit Box -->
+        <div class="center-station-box" #inTransitBox>
+          <app-eslchannel [eslLocationData]="InTransitData" channelName="In Transit" divId="14" ellipsId="11"
+            className="Txt_Intransit"></app-eslchannel>
+        </div>
+      </div>
+
+      <!-- ==================== CONNECTOR BRACKET 2: WB/InTransit -> SMS/DIP/PCM/LRS ==================== -->
+      <div class="connector-col" #connectorCol2>
+        <svg class="connector-svg" [attr.viewBox]="'0 0 60 ' + gridHeight" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="refine-flow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#005ca8" />
+              <stop offset="100%" stop-color="#06b6d4" />
+            </linearGradient>
+            <linearGradient id="refine-vert-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#005ca8" />
+              <stop offset="100%" stop-color="#06b6d4" />
+            </linearGradient>
+          </defs>
+
+          <!-- ── WB → SMS, DIP, PCM, LRS (base track) ── -->
+          <path [attr.d]="wbConnPath1" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="wbConnPath2" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="wbConnPath3" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="wbConnPath4" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <!-- ── WB → InTransit vertical (center spine, x=30) ── -->
+          <path [attr.d]="wbConnPath5" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <!-- ── InTransit → SMS, DIP, PCM, LRS (base track) ── -->
+          <path [attr.d]="itConnPath1" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="itConnPath2" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="itConnPath3" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+          <path [attr.d]="itConnPath4" fill="none" stroke="rgba(6,182,212,0.18)" stroke-width="2" />
+
+          <!-- ── WB animated paths ── -->
+          <path [attr.d]="wbConnPath1" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="wbConnPath2" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="wbConnPath3" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="wbConnPath4" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <!-- WB→InTransit vertical animated (vertical gradient) -->
+          <path [attr.d]="wbConnPath5" fill="none" stroke="url(#refine-vert-grad)" stroke-width="2.5" stroke-dasharray="5 8" class="flow-pulse-line" />
+          <!-- ── InTransit animated paths ── -->
+          <path [attr.d]="itConnPath1" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="itConnPath2" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="itConnPath3" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+          <path [attr.d]="itConnPath4" fill="none" stroke="url(#refine-flow-grad)" stroke-width="2.5" stroke-dasharray="6 10" class="flow-pulse-line" />
+
+          <!-- Source Dot: WB -->
+          <circle cx="0" [attr.cy]="wbYRight" r="5" fill="#7c3aed" class="junction-dot" />
+          <!-- WB spine branch dot -->
+          <circle cx="30" [attr.cy]="wbYRight" r="4.5" fill="#06b6d4" class="junction-dot" />
+          <!-- Source Dot: InTransit -->
+          <circle cx="0" [attr.cy]="inTransitYRight" r="5" fill="#7c3aed" class="junction-dot" />
+          <!-- InTransit spine branch dot -->
+          <circle cx="30" [attr.cy]="inTransitYRight" r="4.5" fill="#06b6d4" class="junction-dot" />
+          <!-- Endpoint Dots at SMS, DIP, PCM, LRS (right edge) -->
+          <circle cx="60" [attr.cy]="smsY" r="4" fill="#06b6d4" class="junction-dot" />
+          <circle cx="60" [attr.cy]="dipY" r="4" fill="#06b6d4" class="junction-dot" />
+          <circle cx="60" [attr.cy]="pcmY" r="4" fill="#06b6d4" class="junction-dot" />
+          <circle cx="60" [attr.cy]="lrsY" r="4" fill="#06b6d4" class="junction-dot" />
+        </svg>
+      </div>
+
+      <!-- ==================== COLUMN 3: REFINING & CASTING (RIGHT) ==================== -->
+      <div class="synoptic-col col-right-refining" #refiningCol>
+        <div class="station-stack">
+          <div class="station-slot-sm" #smsSlot>
+            <app-eslchannel [eslLocationData]="smsData" divId="2" channelName="SMS" ellipsId="2"
+              className="Blue" [isLink]="true"></app-eslchannel>
+          </div>
+
+          <div class="station-slot-sm" #dipSlot>
+            <app-eslchannel [eslLocationData]="dipData" divId="5" channelName="DIP" ellipsId="2"
+              className="redbookmark" [isLink]="true"></app-eslchannel>
+          </div>
+
+          <div class="station-slot-sm" #pcmSlot>
+            <app-eslchannel [eslLocationData]="pcmData" divId="8" channelName="PCM" ellipsId="2"
+              className="green" [isLink]="true"></app-eslchannel>
+          </div>
+
+          <div class="station-slot-sm" #lrsSlot>
+            <app-eslchannel [eslLocationData]="lrsData" divId="11" channelName="LRS" ellipsId="2"
+              className="Blue" [isLink]="true"></app-eslchannel>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== COLUMN 4: PRODUCTION & QUALITY DATA (FAR RIGHT) ==================== -->
+      <div class="synoptic-col col-far-right-reports" style="padding-left: 12px;">
+        <!-- Production Data Panel -->
+        <div class="report-panel-card mb-3">
+          <div class="report-header-ribbon">
+            <span class="report-ribbon-text">Production Data</span>
+            <span class="report-ribbon-tail"></span>
+          </div>
+
+          <div class="report-table-box">
+            <div *ngIf="!productionInputData || productionInputData?.length === 0" class="text-muted p-2 small">
+              No production records available
+            </div>
+            <table class="report-data-table w-100" *ngIf="productionInputData && productionInputData.length > 0">
+              <ng-container *ngFor="let data of productionInputData">
+                <tr class="furnace-summary-row">
+                  <td class="fw-bold">{{data.LocationName}}</td>
+                  <td class="text-end fw-bold">{{data.TotalProduction}}</td>
+                </tr>
+                <tr *ngFor="let unit of data.ProductionUnits" class="unit-sub-row">
+                  <td class="ps-3">{{unit.LocationName}}</td>
+                  <td class="text-end">{{unit.TotalProduction}}</td>
+                </tr>
+              </ng-container>
+            </table>
+          </div>
+        </div>
+
+        <!-- Quality Data Panel -->
+        <div class="report-panel-card">
+          <div class="report-header-ribbon">
+            <span class="report-ribbon-text">Quality Data</span>
+            <span class="report-ribbon-tail"></span>
+          </div>
+
+          <div class="report-table-box quality-scroll-box">
+            <table class="report-data-table quality-table w-100">
+              <thead>
+                <tr>
+                  <th>Location</th>
+                  <th class="text-center">Cast No.</th>
+                  <th class="text-center">Cast Open Time</th>
+                  <th class="text-center">LIMS Data Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let lims of qualityData">
+                  <td><span class="loc-badge">{{lims.LocationName}}</span></td>
+                  <td class="text-center font-monospace fw-bold">{{lims.CastNo}}</td>
+                  <td class="text-center">{{lims.CastingTime}}</td>
+                  <td class="text-center text-primary-time">{{lims.SampleDateTimeSTR}}</td>
+                </tr>
+                <tr *ngIf="!qualityData || qualityData.length === 0">
+                  <td colspan="4" class="text-center text-muted py-2">No LIMS data records</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<app-footer></app-footer>
+
+<!-- Standby / Idle Ladle Modal Template -->
+<ng-template #idealLadle>
+  <div class="esl-modal-box">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+      <h4 class="m-0 fw-bold text-danger">Standby &amp; Idle Ladles Inventory ({{inactiveLadleCount}})</h4>
+      <button type="button" class="btn-close" (click)="closeDialog()"></button>
+    </div>
+    <div class="modal-inner-scroll">
+      <app-bfreport [inputdata]="inactiveLadle"></app-bfreport>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+      <button type="button" class="btn btn-secondary px-4" (click)="closeDialog()">Close</button>
+    </div>
+  </div>
+</ng-template>
+

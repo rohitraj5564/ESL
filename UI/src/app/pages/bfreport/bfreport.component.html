@@ -1,0 +1,27 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-striped" #sortReport="matSort" mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="Name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Ladle Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.Name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="LastLocationDateTimeSTR">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Location Date Time </th>
+      <td mat-cell *matCellDef="let element"> {{element.LastLocationDateTimeSTR}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="LastLocationName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Location Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.LastLocationName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="TimeSpentSTR">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Time Spent </th>
+      <td mat-cell *matCellDef="let element"> {{element.TimeSpentSTR}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+</div>

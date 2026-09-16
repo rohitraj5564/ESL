@@ -1,0 +1,177 @@
+<div class="channel-card-container" [ngClass]="{'is-wb-card': channelName === 'Weighbridge' || channelName === 'In Transit'}">
+  <!-- Ribbon Header for BF and Refining Stations -->
+  <div class="channel-header-ribbon" [ngClass]="className" *ngIf="channelName !== 'Weighbridge' && channelName !== 'In Transit'">
+    <div class="ribbon-content">
+      <span class="ribbon-text" *ngIf="!isLink">
+        {{channelName}}({{getLadeleCount()}})
+      </span>
+      <a class="ribbon-link" *ngIf="isLink" (click)="openLadleDetails(ladleDetail, channelName)"
+         [matTooltip]="'Click to view ' + channelName + ' Ladle Dwell &amp; TAT History'">
+        <span class="ribbon-loc-title">{{channelName}}({{getLadeleCount()}})</span>
+        <span class="tat-stat-badge"
+              [matTooltip]="tatDefinition"
+              matTooltipPosition="above">({{getAvgTat()}})</span>
+        <span class="hold-stat-badge"
+              [matTooltip]="holdingDefinition"
+              matTooltipPosition="above">({{HoldingSTR()}})</span>
+      </a>
+      <span class="ribbon-tail"></span>
+    </div>
+    <div class="ribbon-action" (click)="changeActiveMenu(channelName)" title="Open Location Report">
+      <i class="bi bi-box-arrow-up-right"></i>
+    </div>
+  </div>
+
+  <!-- Header for Solid Center Boxes (Weighbridge / In Transit) -->
+  <div class="center-box-header" *ngIf="channelName === 'Weighbridge' || channelName === 'In Transit'">
+    <div class="center-box-title">{{channelName}}({{getLadeleCount()}})</div>
+  </div>
+
+  <!-- Card Body Content -->
+  <div class="channel-body" [ngClass]="{'center-box-body': channelName === 'Weighbridge' || channelName === 'In Transit'}">
+    <!-- Port Dot for Right Stations (SMS, DIP, PCM, LRS) -->
+    <div class="port-dot port-dot-left" *ngIf="isLink" title="Conduit Input Connection">
+      <span class="dot-pulse"></span>
+    </div>
+
+    <!-- Active Ladles List -->
+    <div class="ladles-list-wrapper">
+      <ul class="ladle-bullets" *ngIf="eslLocationData && eslLocationData.LadleList && eslLocationData.LadleList.length > 0">
+        <li *ngFor="let data of eslLocationData.LadleList">
+          <span class="bullet-symbol">&bull;</span>
+          <a class="ladle-link"
+            [ngClass]="{'red-text': compareTimeSpan(data.TimeSpentSTR)}"
+            (click)="open(content, channelName)"
+            (mouseover)="mousehoverEvent(data)"
+            [matTooltip]="'Cast No: ' + casteNo + ' | C: ' + cp + '% | Si: ' + sip + '% | Mn: ' + mnp + '% | S: ' + sp + '% | P: ' + pp + '% | Analyst: ' + Analyst">
+            {{ data.Name }}({{data.TimeSpentSTR}})
+          </a>
+          <span *ngIf="data.NetWeightSTR" [ngClass]="{'red-text': compareTimeSpan(data.TimeSpentSTR)}" class="weight-tag">[{{data.NetWeightSTR}}]</span>
+          <span *ngIf="data.State && data.State === 4 && data.AcceptedLocationName !== 'Unassign'" class="dest-tag"
+            [ngClass]="{'red-text': compareTimeSpan(data.TimeSpentSTR)}">&rarr; {{data.AcceptedLocationName}}</span>
+        </li>
+      </ul>
+      <div *ngIf="!eslLocationData || !eslLocationData.LadleList || eslLocationData.LadleList.length === 0" class="empty-channel-placeholder">
+        &nbsp;
+      </div>
+    </div>
+
+    <!-- Assign Arrow Button on Bottom Right for Blast Furnaces -->
+    <div class="assign-arrow-container" *ngIf="ellipsId === '19' && (RoleName === 'Cast house' || RoleName === 'Admin')">
+      <a (click)="openLadleAssign(ladleAssign, eslLocationData, channelName)" class="arrow-btn" title="Assign Ladle Target Unit">
+        <i class="bi bi-chevron-right"></i>
+      </a>
+    </div>
+
+    <!-- Port Dot for Left Stations (BF 1, BF 2, BF 3) -->
+    <div class="port-dot port-dot-right" *ngIf="ellipsId === '19'" title="Conduit Output Connection">
+      <span class="dot-pulse"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Location Operational Report -->
+<ng-template #content>
+  <div class="esl-modal-box">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+      <h4 class="m-0 fw-bold">{{channelName}} Operational Report</h4>
+      <button type="button" class="btn-close" (click)="closeDialog()"></button>
+    </div>
+    <div class="modal-inner-scroll">
+      <app-bfreport *ngIf="isBfGroup" [inputdata]="dataSource.data"></app-bfreport>
+      <app-wgreport *ngIf="channelName === 'Weighbridge'" [inputdata]="dataSource.data"></app-wgreport>
+      <app-smsreport *ngIf="issmsGroup" [inputdata]="dataSource.data"></app-smsreport>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+      <button type="button" class="btn btn-secondary px-4" (click)="closeDialog()">Close</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Modal: Station Ladle Detail -->
+<ng-template #ladleDetail>
+  <div class="esl-modal-box">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+      <div>
+        <h4 class="m-0 fw-bold">{{channelName}} Ladle Registry &amp; Dwell Record</h4>
+        <div class="d-flex gap-2 mt-1">
+          <span [matTooltip]="tatDefinition" class="badge bg-primary text-white" style="cursor: help;">
+            <i class="bi bi-stopwatch me-1"></i>Avg TAT: {{getAvgTat()}}
+          </span>
+          <span [matTooltip]="holdingDefinition" class="badge bg-warning text-dark" style="cursor: help;">
+            <i class="bi bi-hourglass-split me-1"></i>Avg Hold Time: {{HoldingSTR()}}
+          </span>
+        </div>
+      </div>
+      <button type="button" class="btn-close" (click)="closeDialog()"></button>
+    </div>
+    <div class="table-responsive modal-inner-scroll">
+      <table class="table table-bordered table-striped" mat-table [dataSource]="dataSourceLadleDetails" matSort>
+        <ng-container matColumnDef="LadleName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Ladle Identifier</th>
+          <td mat-cell *matCellDef="let element" class="fw-bold"> {{element.Name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="LastLocation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Previous Station</th>
+          <td mat-cell *matCellDef="let element"> {{getPreviousStation(element)}} </td>
+        </ng-container>
+        <ng-container matColumnDef="TimeSpent">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Station Dwell Duration</th>
+          <td mat-cell *matCellDef="let element" class="font-monospace"> {{element.TimeSpentSTR}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsLadleDetails; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsLadleDetails;"></tr>
+      </table>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+      <button type="button" class="btn btn-secondary px-4" (click)="closeDialog()">Close</button>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Modal: Ladle Assignment & Dispatch -->
+<ng-template #ladleAssign>
+  <div class="esl-modal-box">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+      <h4 class="m-0 fw-bold text-primary">Hot Metal Ladle Dispatch Routing</h4>
+      <button type="button" class="btn-close" (click)="closeDialog()"></button>
+    </div>
+    <div class="table-responsive modal-inner-scroll">
+      <table class="table table-bordered align-middle" mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="LadleName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Ladle Identifier</th>
+          <td mat-cell *matCellDef="let element" class="fw-bold"> {{element.LadleName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Unit">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Destination Receiving Unit</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-form-field appearance="outline" class="w-100" style="margin-top: 8px;">
+              <mat-label>Select Destination</mat-label>
+              <mat-select [(ngModel)]="element.AssignedProductionUit">
+                <mat-option value="SMS">Steel Melt Shop (SMS)</mat-option>
+                <mat-option value="PCM">Pig Casting Machine (PCM)</mat-option>
+                <mat-option value="DIP">Ductile Iron Pipe (DIP)</mat-option>
+                <mat-option value="Unassign">Unassign / Yard</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+      <div>
+        <span class="text-success fw-bold" *ngIf="isSuccessResult"><i class="bi bi-check-circle"></i> Routing updated successfully!</span>
+        <span class="text-danger fw-bold" *ngIf="isFailResult"><i class="bi bi-exclamation-circle"></i> Failed to save routing.</span>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-primary px-4" (click)="AssignClick()">Confirm Routing</button>
+        <button type="button" class="btn btn-secondary px-3" (click)="closeDialog()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

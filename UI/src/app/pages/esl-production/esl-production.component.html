@@ -1,0 +1,433 @@
+﻿<div class="container-fluid px-0">
+
+  <!-- ==================== USER INFO BAR ==================== -->
+  <div class="row userDetails mt-2">
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center userDetails-left">
+        <div class="user-info">
+          <span class="label">User Name:</span>
+          <span class="value">{{ userName }}</span>
+        </div>
+        <div class="user-info">
+          <span class="label">Location Name:</span>
+          <span class="value">{{ userLocationName }}</span>
+        </div>
+      </div>
+
+      <button class="report-btn" (click)="openRequestReportDialog()">
+        Reports
+        <i class="bi bi-download"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN 2-CARD GRID ====================
+       Card 1 : Available Ladles  ->  Booking Summary
+       Card 2 : Pickup Summary    ->  Completed Request
+       (Pending Task table removed)
+  ============================================================== -->
+  <div class="production-grid mt-2">
+
+    <!-- ============ CARD 1 : Available Ladles + Booking Summary ============ -->
+    <mat-card class="ladle-card">
+      <mat-card-content class="card-body-stack">
+
+        <!-- ---------- Available Ladles ---------- -->
+        <div class="ladle-section">
+          <div class="table-title-full">
+            <span class="section-title">Available Ladles</span>
+            <span class="count-chip">Count: {{ availableLadles.length }}</span>
+          </div>
+
+          <div class="table-container" #scrollableTable>
+            <table class="available-table">
+              <thead>
+                <tr>
+                  <th>Sl. No</th>
+                  <th>Ladle No</th>
+                  <th>Chem.</th>
+                  <th>Location</th>
+                  <th>Type</th>
+                  <th>
+                    <div class="select-head">
+                      <span>Select</span>
+                      <app-custom-checkbox [(checked)]="isChecked" [indeterminate]="indeterminate"
+                        (checkedChange)="toggleSelectAll($event)"></app-custom-checkbox>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let ladle of availableLadles; let i = index">
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td class="cell-strong">{{ ladle.ladleNo }}</td>
+                    <td>
+                      <img [src]="ladle.isExpanded ? '../../../assets/collapse.png' : '../../../assets/expand.png'"
+                        class="infoImage" (click)="toggleExpand(ladle)" />
+                    </td>
+                    <td>{{ ladle.sourceLocation }}</td>
+                    <td>{{ ladle.movementType }}</td>
+                    <td>
+                      <app-custom-checkbox [(checked)]="ladle.isSelected"
+                        (checkedChange)="onLadleCheckboxChange()"></app-custom-checkbox>
+                    </td>
+                  </tr>
+
+                  <tr *ngIf="ladle.isExpanded" class="expanded-row">
+                    <td colspan="6">
+                      <div class="chemical-data">
+                        <table class="chemical-table">
+                          <thead>
+                            <tr>
+                              <th>C%</th>
+                              <th>Si</th>
+                              <th>Mn</th>
+                              <th>S</th>
+                              <th>P</th>
+                              <th>Ti</th>
+                              <th>Cr</th>
+                              <th>S+P</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{{ ladle.chemicalData['C%'] }}</td>
+                              <td>{{ ladle.chemicalData['Si'] }}</td>
+                              <td>{{ ladle.chemicalData['Mn'] }}</td>
+                              <td>{{ ladle.chemicalData['S'] }}</td>
+                              <td>{{ ladle.chemicalData['P'] }}</td>
+                              <td>{{ ladle.chemicalData['Ti'] }}</td>
+                              <td>{{ ladle.chemicalData['Cr'] }}</td>
+                              <td>{{ ladle.chemicalData['S+P'] }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+
+                <tr *ngIf="availableLadles.length === 0">
+                  <td colspan="6" class="no-data-row">No available ladles found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-actions">
+          <button class="submit-btn" (click)="bookedAvailableLadles()"> + Request + </button>
+        </div>
+
+        <!-- ---------- Booking Summary ---------- -->
+        <div class="ladle-section">
+          <div class="table-title-full">
+            <span class="section-title">Booking Summary</span>
+            <span class="count-chip">Count: {{ bookedSummary.length }}</span>
+          </div>
+
+          <div class="table-container" #scrollableTable>
+            <table class="booking-table">
+              <thead>
+                <tr>
+                  <th>Sl. No</th>
+                  <th>Ladle No</th>
+                  <th>Status</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let ladle of bookedSummary; let i = index">
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td class="cell-strong">{{ ladle.ladleNo }}</td>
+                    <td>
+                      <span [ngClass]="{
+                              'status-booked': ladle.bookingStatus === 'Booked' || !ladle.bookingStatus,
+                              'status-assigned': ladle.bookingStatus !== 'Booked' && ladle.bookingStatus }">
+                        {{ ladle.bookingStatus || 'Booked' }}
+                      </span>
+                    </td>
+                    <td>
+                      <img src="../../../assets/delete.png" class="infoImage"
+                        [class.disabled-btn]="ladle.bookingStatus !== 'Booked' && ladle.bookingStatus"
+                        (click)="ladle.bookingStatus === 'Booked' && deleteBookedLadle(ladle)" />
+                    </td>
+                  </tr>
+                </ng-container>
+
+                <tr *ngIf="bookedSummary.length === 0">
+                  <td colspan="4" class="no-data-row">No booking summary found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- ============ CARD 2 : Pickup Summary + Completed Request ============ -->
+    <mat-card class="ladle-card">
+      <mat-card-content class="card-body-stack">
+
+        <!-- ---------- Pickup Summary ---------- -->
+        <div class="ladle-section">
+          <div class="table-title-full">
+            <span class="section-title">Pickup Summary</span>
+            <span class="count-chip">Count: {{ pickupSummary.length }}</span>
+          </div>
+
+          <div class="table-container" #scrollableTable>
+            <table class="pickup-table">
+              <thead>
+                <tr>
+                  <th>Sl. No</th>
+                  <th>Ladle No</th>
+                  <th>Chem.</th>
+                  <th>State</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let ladle of pickupSummary; let i = index">
+                  <tr>
+                    <td>{{ i + 1 }}</td>
+                    <td class="cell-strong">{{ ladle.ladleNo }}</td>
+                    <td>
+                      <img [src]="ladle.isExpanded ? '../../../assets/collapse.png' : '../../../assets/expand.png'"
+                        class="infoImage" (click)="toggleExpand(ladle)" />
+                    </td>
+                    <td>{{ ladle.revType }}</td>
+                  </tr>
+
+                  <tr *ngIf="ladle.isExpanded" class="expanded-row">
+                    <td colspan="4">
+                      <div class="chemical-data">
+                        <table class="chemical-table">
+                          <thead>
+                            <tr>
+                              <th>C%</th>
+                              <th>Si</th>
+                              <th>Mn</th>
+                              <th>S</th>
+                              <th>P</th>
+                              <th>Ti</th>
+                              <th>Cr</th>
+                              <th>S+P</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{{ ladle.chemicalData['C%'] }}</td>
+                              <td>{{ ladle.chemicalData['Si'] }}</td>
+                              <td>{{ ladle.chemicalData['Mn'] }}</td>
+                              <td>{{ ladle.chemicalData['S'] }}</td>
+                              <td>{{ ladle.chemicalData['P'] }}</td>
+                              <td>{{ ladle.chemicalData['Ti'] }}</td>
+                              <td>{{ ladle.chemicalData['Cr'] }}</td>
+                              <td>{{ ladle.chemicalData['S+P'] }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+
+                <tr *ngIf="pickupSummary.length === 0">
+                  <td colspan="4" class="no-data-row">No pickup summary found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ---------- Completed Request ---------- -->
+        <div class="ladle-section">
+          <div class="table-title-full">
+            <span class="section-title">Completed Request</span>
+            <span class="count-chip">Count: {{ completedRequests.length || 0 }}</span>
+          </div>
+
+          <div class="table-container" #scrollableTable>
+            <table class="completed-table">
+              <thead>
+                <tr>
+                  <th>Dept.</th>
+                  <th>No. of Ladles</th>
+                  <th>Date Time</th>
+                  <th>Chem.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of completedRequests">
+                  <td class="cell-strong">{{ row.locationName }}</td>
+                  <td>{{ row.ladleNo ? row.ladleNo : row.nosOfLadle }}</td>
+                  <td>{{ row.completedDateTime | date: 'yyyy-MM-dd HH:mm' }}</td>
+                  <td>
+                    <img src="../../../assets/info.png" class="info-icon" (click)="openPopup(row)" />
+                  </td>
+                </tr>
+
+                <tr *ngIf="completedRequests.length === 0">
+                  <td colspan="4" class="no-data-row">No Completed Requests Found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Transfer Ladles Booking Summary (kept for reference)
+        <div class="ladle-section mt-3">
+            <div class="table-title-full d-flex-between">
+                <span>Transaction Ladles Summary</span>
+                <span>Count: {{ transaction.length }}</span>
+            </div>
+            ...
+        </div> -->
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>
+
+<!-- ==================== EDIT LADLE REQUEST MODAL ==================== -->
+<div class="modal" *ngIf="showEditPopup">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h2>Edit Ladle Request</h2>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="form-group">
+        <label>Request No:</label>
+        <input type="text" [value]="selectedLadle?.requestNo" disabled />
+      </div>
+
+      <div class="form-group">
+        <label>No. of Ladles:</label>
+        <input type="text" [(ngModel)]="editLadleCount" (input)="validateLadleCount($event)" />
+      </div>
+
+      <div class="edit-chemical-container">
+        <div class="edit-row">
+          <div class="edit-group">
+            <label>[C%]</label>
+            <input [(ngModel)]="editChemical.C">
+          </div>
+          <div class="edit-group">
+            <label>[Si]</label>
+            <input [(ngModel)]="editChemical.Si">
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-group">
+            <label>[Mn]</label>
+            <input [(ngModel)]="editChemical.Mn">
+          </div>
+          <div class="edit-group">
+            <label>[S]</label>
+            <input [(ngModel)]="editChemical.S">
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-group">
+            <label>[P]</label>
+            <input [(ngModel)]="editChemical.P">
+          </div>
+          <div class="edit-group">
+            <label>[Ti]</label>
+            <input [(ngModel)]="editChemical.Ti">
+          </div>
+        </div>
+        <div class="edit-row">
+          <div class="edit-group">
+            <label>[Cr]</label>
+            <input [(ngModel)]="editChemical.Cr">
+          </div>
+          <div class="edit-group">
+            <label>[S+P]</label>
+            <input [(ngModel)]="editChemical.SP">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn" (click)="confirmUpdateLadle()">Update</button>
+      <button class="modal-clear" (click)="closeEditPopup()">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== CHEMICAL COMPOSITION POPUP ==================== -->
+<div class="popup-overlay" *ngIf="showPopup" (click)="closePopup()">
+  <div class="popup-content" (click)="$event.stopPropagation()">
+    <span class="close-icon" (click)="closePopup()">&#x2716;</span>
+    <div class="popup-heading">
+      <p>Chemical Composition</p>
+    </div>
+    <div class="popup-body">
+      <div class="popup-left">
+        <ul>
+          <li><strong>C% :</strong> {{ chemicalData['C%'] }}</li>
+          <li><strong>Si :</strong> {{ chemicalData['Si'] }}</li>
+          <li><strong>Mn :</strong> {{ chemicalData['Mn'] }}</li>
+          <li><strong>S :</strong> {{ chemicalData['S'] }}</li>
+        </ul>
+      </div>
+      <div class="popup-right">
+        <ul>
+          <li><strong>P :</strong> {{ chemicalData['P'] }}</li>
+          <li><strong>Ti :</strong> {{ chemicalData['Ti'] }}</li>
+          <li><strong>Cr :</strong> {{ chemicalData['Cr'] }}</li>
+          <li><strong>S+P :</strong> {{ chemicalData['S+P'] }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PDF PREVIEW MODAL ==================== -->
+<div class="pdf-preview-overlay" *ngIf="showPdfPreview" (click)="closePdfPreview()">
+  <div class="pdf-preview-content" (click)="$event.stopPropagation()">
+    <div class="pdf-preview-header">
+      <span class="pdf-preview-title">
+        <i class="bi bi-file-earmark-pdf"></i>
+        Report Preview
+      </span>
+      <div class="pdf-preview-actions">
+        <div class="download-dropdown-wrapper">
+          <button class="pdf-download-btn download-toggle-btn" (click)="toggleDownloadDropdown()">
+            <i class="bi bi-download"></i>
+            Download Report
+            <i class="bi bi-chevron-down dropdown-arrow" [class.rotated]="showDownloadDropdown"></i>
+          </button>
+
+          <div class="download-dropdown-menu" *ngIf="showDownloadDropdown">
+            <button class="dropdown-item" (click)="downloadPreviewedPDF(); closeDownloadDropdown()">
+              <i class="bi bi-file-earmark-pdf"></i>
+              PDF
+            </button>
+            <button class="dropdown-item" (click)="downloadPreviewedExcel(); closeDownloadDropdown()">
+              <i class="bi bi-file-earmark-excel"></i>
+              Excel
+            </button>
+          </div>
+        </div>
+
+        <span class="pdf-close-icon" (click)="closePdfPreview()">&#x2716;</span>
+      </div>
+    </div>
+    <div class="pdf-preview-body">
+      <iframe [src]="pdfPreviewUrl" class="pdf-preview-frame" title="Report Preview"></iframe>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

@@ -1,0 +1,42 @@
+# ==========================================
+# Root .gitignore for ESL (API & UI)
+# ==========================================
+
+# --- UI (Angular / Node) ---
+UI/node_modules/
+UI/dist/
+UI/.angular/
+UI/.kilo/
+UI/.vscode/
+UI/npm-debug.log*
+UI/yarn-error.log*
+UI/testem.log
+UI/.sass-cache/
+UI/connect.lock
+UI/coverage/
+node_modules/
+dist/
+.angular/
+
+# --- API (.NET / Visual Studio) ---
+API/**/.vs/
+API/**/bin/
+API/**/obj/
+API/**/[Dd]ebug/
+API/**/[Rr]elease/
+API/**/x64/
+API/**/x86/
+API/**/*.user
+API/**/*.suo
+API/**/*.userosscache
+API/**/*.sln.docstates
+API/**/[Tt]est[Rr]esult*/
+API/**/[Bb]uild[Ll]og.*
+.vs/
+bin/
+obj/
+
+# --- OS generated files ---
+.DS_Store
+Thumbs.db
+desktop.ini

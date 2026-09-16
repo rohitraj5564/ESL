@@ -1,0 +1,7 @@
+<app-navbar *ngIf="showNav"></app-navbar>
+
+<div class="app-main-content"
+  [class.has-sidebar]="showNav"
+  [class.sidebar-open]="showNav && (layoutService.sidebarOpen$ | async)">
+  <router-outlet></router-outlet>
+</div>

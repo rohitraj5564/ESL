@@ -1,0 +1,213 @@
+<div class="report-dialog" [class.dark-theme]="isDarkTheme">
+
+  <!-- Header -->
+  <div class="dialog-header">
+
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <i class="bi bi-building header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2>Cast Assignment Report</h2>
+        <p>Real Time Blast Furnace Report</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+
+      <button class="export-btn" (click)="exportPDF()"
+        [disabled]="dataSource.data.length === 0">
+        <i class="bi bi-file-earmark-pdf"></i>
+        <span>Export</span>
+      </button>
+
+      <button class="clear-btn" (click)="clearFilters()">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Clear</span>
+      </button>
+
+      <button mat-icon-button class="close-btn" (click)="closeDialog()" *ngIf="isDialog">
+        <i class="bi bi-x-lg"></i>
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate"
+        placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker">
+      </mat-datepicker-toggle>
+      <mat-datepicker #fromPicker panelClass="custom-datepicker">
+      </mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate"
+        placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker">
+      </mat-datepicker-toggle>
+      <mat-datepicker #toPicker panelClass="custom-datepicker">
+      </mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="location-field">
+      <mat-label>Location</mat-label>
+      <mat-select [(ngModel)]="selectedLocation" placeholder="All">
+        <mat-option value="">All</mat-option>
+        <mat-option *ngFor="let loc of locations" [value]="loc">
+          {{ loc }}
+        </mat-option>
+      </mat-select>
+      <i class="bi bi-geo-alt field-icon" matSuffix></i>
+    </mat-form-field>
+
+    <button class="show-btn" (click)="searchReport()" [disabled]="isLoading">
+      <i class="bi" [ngClass]="isLoading ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+      <span>{{ isLoading ? 'Searching...' : 'Show' }}</span>
+    </button>
+
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+
+    <div class="table-scroll-container" *ngIf="hasSearched">
+
+      <table mat-table [dataSource]="dataSource" class="report-table">
+
+        <!-- Transaction ID -->
+        <ng-container matColumnDef="Tran_ID">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Transaction No.</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <div class="transaction-box">{{ row.Tran_ID }}</div>
+          </td>
+        </ng-container>
+
+        <!-- Gross Date -->
+        <ng-container matColumnDef="GrossDate">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Date (Gross Wt)</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="date-chip">
+              <i class="bi bi-arrow-right-circle date-icon"></i>
+              {{ row.GrossDateTime | date:'dd-MM-yyyy' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Gross Time -->
+        <ng-container matColumnDef="GrossTime">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Time (Gross Wt)</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.GrossDateTime | date:'hh:mm a' }}
+          </td>
+        </ng-container>
+
+        <!-- Ladle Number -->
+        <ng-container matColumnDef="LaddleNumber">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Laddle No.</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.LaddleNumber }}
+          </td>
+        </ng-container>
+
+        <!-- Sender Plant -->
+        <ng-container matColumnDef="SenderPlant">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Sender Plant</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="unit-badge badge-sapphire">{{ row.SenderPlant }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Net Weight -->
+        <ng-container matColumnDef="NetWT">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Net Wt. (MT)</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.NetWT }}
+          </td>
+        </ng-container>
+
+        <!-- Gross Weight -->
+        <ng-container matColumnDef="GrossWT">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Gross Wt. (MT)</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.GrossWT }}
+          </td>
+        </ng-container>
+
+        <!-- Tare Weight -->
+        <ng-container matColumnDef="TareWT">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Tare Wt. (MT)</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.TareWT }}
+          </td>
+        </ng-container>
+
+        <!-- Receiver Plant -->
+        <ng-container matColumnDef="receiverPlant">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Receiver Plant</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="unit-badge badge-emerald">{{ row.ReceiverPlant }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Cast Number -->
+        <ng-container matColumnDef="CastNumber">
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="col-header">Cast No.</span>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <span class="order-id">{{ row.CastNumber }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="data-row"></tr>
+
+      </table>
+
+      <!-- No Data -->
+      <div class="no-data" *ngIf="dataSource.data.length === 0 && !isLoading">
+        No report data found for the selected filters.
+      </div>
+
+    </div>
+
+    <mat-paginator
+      *ngIf="hasSearched && dataSource.data.length > 0"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [pageSize]="10"
+      showFirstLastButtons
+      aria-label="Select page of report">
+    </mat-paginator>
+
+  </div>
+
+  <!-- Footer -->
+  <app-footer *ngIf="!isDialog"></app-footer>
+
+</div>

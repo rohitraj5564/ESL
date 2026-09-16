@@ -1,0 +1,294 @@
+<div class="report-page-container" [class.dark-theme]="isDarkTheme">
+
+  <!-- Header Banner -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <i class="bi bi-speedometer2 header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2>Ladle Weighment Report</h2>
+        <p>Comprehensive Tare, Gross & Net Weighment Analysis from ESL Weighbridge</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="export-btn" (click)="exportToExcel()" [disabled]="reportData.length === 0" title="Download Excel Sheet">
+        <i class="bi bi-file-earmark-excel"></i>
+        <span>Export Excel</span>
+      </button>
+
+      <button class="clear-btn" (click)="clearFilters()" title="Reset Date Filters">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Section (From Date to To Date Search) -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="toPicker" [(ngModel)]="toInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <button class="show-btn" (click)="getFilteredData()" [disabled]="isLoading">
+      <i class="bi" [ngClass]="isLoading ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+      <span>{{ isLoading ? 'Searching...' : 'Search Report' }}</span>
+    </button>
+  </div>
+
+  <!-- KPI Metrics Banner -->
+  <div class="metrics-container" *ngIf="reportData.length > 0">
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-blue">
+        <i class="bi bi-list-ol"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Total Transactions</span>
+        <span class="metric-val">{{ reportData.length }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-orange">
+        <i class="bi bi-box-arrow-in-down-right"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Total Gross Weight</span>
+        <span class="metric-val">{{ totalGrossWeight | number:'1.2-2' }} <small>MT</small></span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-purple">
+        <i class="bi bi-box"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Total Tare Weight</span>
+        <span class="metric-val">{{ totalTareWeight | number:'1.2-2' }} <small>MT</small></span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-green">
+        <i class="bi bi-check2-circle"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Total Net Weight</span>
+        <span class="metric-val">{{ totalNetWeight | number:'1.2-2' }} <small>MT</small></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Wrapper -->
+  <div class="table-wrapper">
+
+    <!-- Quick Search bar inside table card -->
+    <div class="table-toolbar" *ngIf="reportData.length > 0">
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" (keyup)="applyFilter($event)" placeholder="Filter by Ladle #, Tx #, Cast #, Location...">
+      </div>
+      <div class="result-count">
+        <span class="count-pill">{{ dataSource.filteredData.length }} / {{ reportData.length }} records</span>
+      </div>
+    </div>
+
+    <!-- Table Scroll Container -->
+    <div class="table-scroll-container">
+      <table mat-table [dataSource]="dataSource" matSort class="report-table">
+
+        <!-- SL.No -->
+        <ng-container matColumnDef="SLNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">SL.No</span>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <span class="sn-badge">{{ element.SLNo ?? (i + 1) }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Ladle No -->
+        <ng-container matColumnDef="LadleNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Ladle No</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="ladle-badge">{{ element.LadleNo || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Transaction No -->
+        <ng-container matColumnDef="TransactionNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Transaction No</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="transaction-box">{{ element.TransactionNo ?? element.TransactionNumber ?? '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Consumption No -->
+        <ng-container matColumnDef="ConsumptionNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Consumption No</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="consumption-box">{{ element.ConsumptionNo ?? element.ConsumptionNumber ?? '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Cast No -->
+        <ng-container matColumnDef="CastNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Cast No</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="cast-badge" *ngIf="element.CastNo || element.CastNumber">{{ element.CastNo ?? element.CastNumber }}</span>
+            <span class="text-muted" *ngIf="!element.CastNo && !element.CastNumber">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Trip Date Time -->
+        <ng-container matColumnDef="TripDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Trip Date Time</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="datetime-text">
+              <i class="bi bi-clock me-1 text-muted"></i>
+              {{ element.TripDateTime ? (element.TripDateTime | date:'dd-MM-yyyy HH:mm:ss') : '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Sender Location -->
+        <ng-container matColumnDef="SenderLocation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Sender Location</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="location-chip sender-chip" *ngIf="element.SenderLocation">
+              <i class="bi bi-arrow-up-right-circle me-1"></i>
+              {{ element.SenderLocation }}
+            </span>
+            <span class="text-muted" *ngIf="!element.SenderLocation">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Receiver Location -->
+        <ng-container matColumnDef="ReceiverLocation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Receiver Location</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="location-chip receiver-chip" *ngIf="element.ReceiverLocation">
+              <i class="bi bi-arrow-down-left-circle me-1"></i>
+              {{ element.ReceiverLocation }}
+            </span>
+            <span class="text-muted" *ngIf="!element.ReceiverLocation">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Tare Weight -->
+        <ng-container matColumnDef="TareWeight">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Tare Weight</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="wt-value tare-val" *ngIf="element.TareWeight != null">{{ element.TareWeight | number:'1.2-2' }} MT</span>
+            <span class="text-muted" *ngIf="element.TareWeight == null">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Tare Weight DateTime -->
+        <ng-container matColumnDef="TareWeightDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Tare Weight DateTime</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="datetime-text" *ngIf="element.TareWeightDateTime">
+              {{ element.TareWeightDateTime | date:'dd-MM-yyyy HH:mm:ss' }}
+            </span>
+            <span class="text-muted" *ngIf="!element.TareWeightDateTime">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Gross Weight -->
+        <ng-container matColumnDef="GrossWeight">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Gross Weight</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="wt-value gross-val" *ngIf="element.GrossWeight != null">{{ element.GrossWeight | number:'1.2-2' }} MT</span>
+            <span class="text-muted" *ngIf="element.GrossWeight == null">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Gross Weight DateTime -->
+        <ng-container matColumnDef="GrossWeightDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Gross Weight DateTime</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="datetime-text" *ngIf="element.GrossWeightDateTime">
+              {{ element.GrossWeightDateTime | date:'dd-MM-yyyy HH:mm:ss' }}
+            </span>
+            <span class="text-muted" *ngIf="!element.GrossWeightDateTime">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Net Weight -->
+        <ng-container matColumnDef="NetWeight">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Net Weight</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="net-wt-badge" *ngIf="element.NetWeight != null" [class.negative-net]="element.NetWeight < 0">
+              {{ element.NetWeight | number:'1.2-2' }} MT
+            </span>
+            <span class="text-muted" *ngIf="element.NetWeight == null">-</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="data-row"></tr>
+      </table>
+
+      <!-- Loading State -->
+      <div class="table-loading-overlay" *ngIf="isLoading">
+        <i class="bi bi-arrow-repeat spin fs-2"></i>
+        <span>Loading Weighment Transactions...</span>
+      </div>
+
+      <!-- No Data State -->
+      <div class="no-data" *ngIf="reportData.length === 0 && !isLoading">
+        <i class="bi bi-inbox fs-2 d-block mb-2 text-muted"></i>
+        No ladle weighment records found for the selected date range.
+      </div>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      showFirstLastButtons
+      aria-label="Select page of weighment transactions">
+    </mat-paginator>
+
+  </div>
+
+  <!-- Footer Component -->
+  <app-footer></app-footer>
+
+</div>

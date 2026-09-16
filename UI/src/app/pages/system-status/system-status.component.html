@@ -1,0 +1,346 @@
+<!-- System Status Page -->
+<div class="system-status-page">
+
+  <!-- Sub-Header -->
+  <div class="ss-sub-header">
+    <div class="ss-header-left">
+      <div class="ss-page-icon">
+        <i class="bi bi-display"></i>
+      </div>
+      <div>
+        <h1 class="m-0">System Status</h1>
+        <span class="ss-subtitle">Real-Time Hardware & Application Health Monitor</span>
+      </div>
+    </div>
+
+    <div class="ss-header-right">
+      <!-- Live pill -->
+      <div class="live-pill">
+        <span class="live-beacon"></span>
+        <span class="font-monospace">{{ lastUpdate }}</span>
+      </div>
+
+      <!-- 4-way Toggle -->
+      <div class="ss-toggle-group">
+        <button class="ss-toggle-btn"
+                [class.active]="activeTab === 'reader'"
+                (click)="setTab('reader')">
+          <i class="bi bi-hdd-network"></i>
+          <span>Reader Status</span>
+        </button>
+        <button class="ss-toggle-btn"
+                [class.active]="activeTab === 'camera'"
+                (click)="setTab('camera')">
+          <i class="bi bi-camera-video"></i>
+          <span>Camera Status</span>
+        </button>
+        <button class="ss-toggle-btn"
+                [class.active]="activeTab === 'controller'"
+                (click)="setTab('controller')">
+          <i class="bi bi-cpu"></i>
+          <span>Controller Status</span>
+        </button>
+        <button class="ss-toggle-btn"
+                [class.active]="activeTab === 'application'"
+                (click)="setTab('application')">
+          <i class="bi bi-app-indicator"></i>
+          <span>Application Status</span>
+        </button>
+      </div>
+
+      <!-- Refresh Button -->
+      <button class="ss-refresh-btn" (click)="refreshData()" title="Refresh Status">
+        <i class="bi bi-arrow-clockwise"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="loading-indicator" *ngIf="isLoading">
+    <app-wait></app-wait>
+  </div>
+
+  <div *ngIf="!isLoading">
+
+    <!-- ======================== READER STATUS TAB ======================== -->
+    <div class="ss-tab-panel" *ngIf="activeTab === 'reader'">
+      <div class="ss-status-grid">
+        <!-- Summary Row -->
+        <div class="ss-summary-bar">
+          <div class="ss-summary-chip online">
+            <i class="bi bi-circle-fill"></i>
+            Online: <strong>{{ readerOnlineCount }}</strong>
+          </div>
+          <div class="ss-summary-chip offline">
+            <i class="bi bi-circle-fill"></i>
+            Offline: <strong>{{ readerOfflineCount }}</strong>
+          </div>
+          <div class="ss-summary-chip total">
+            <i class="bi bi-hdd-network"></i>
+            Total: <strong>{{ readerList.length }}</strong>
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="ss-cards-grid" *ngIf="readerList && readerList.length > 0">
+          <div class="ss-device-card" *ngFor="let item of readerList"
+               [class.card-online]="item.isReaderOnline"
+               [class.card-offline]="!item.isReaderOnline">
+            <div class="ss-card-header">
+              <div class="ss-card-icon">
+                <i class="bi bi-router-fill"></i>
+              </div>
+              <div class="ss-card-title">
+                <span class="ss-device-name">{{ item.LocationName || 'Reader' }}</span>
+                <span class="ss-status-badge" [class.badge-online]="item.isReaderOnline" [class.badge-offline]="!item.isReaderOnline">
+                  <span class="ss-badge-dot"></span>
+                  {{ item.isReaderOnline ? 'Online' : 'Offline' }}
+                </span>
+              </div>
+            </div>
+            <div class="ss-card-body">
+              <div class="ss-info-row">
+                <i class="bi bi-geo-alt"></i>
+                <span class="ss-info-label">Location</span>
+                <span class="ss-info-value fw-semibold">{{ item.LocationName || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-ethernet"></i>
+                <span class="ss-info-label">Reader IP</span>
+                <span class="ss-info-value font-monospace">{{ item.ReaderIP || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-clock-history"></i>
+                <span class="ss-info-label">Last Ping</span>
+                <span class="ss-info-value font-monospace text-time">{{ item.readerLastPing }}</span>
+              </div>
+            </div>
+            <div class="ss-card-footer" [class.footer-online]="item.isReaderOnline" [class.footer-offline]="!item.isReaderOnline">
+              <i class="bi" [class.bi-wifi]="item.isReaderOnline" [class.bi-wifi-off]="!item.isReaderOnline"></i>
+              {{ item.isReaderOnline ? 'Connected & Reading' : 'No Reading (> 10 mins)' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="ss-empty-state" *ngIf="!readerList || readerList.length === 0">
+          <i class="bi bi-hdd-network ss-empty-icon"></i>
+          <p class="ss-empty-title">No Reader Records</p>
+          <p class="ss-empty-subtitle">No RFID reader records found in System Status database.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== CAMERA STATUS TAB ======================== -->
+    <div class="ss-tab-panel" *ngIf="activeTab === 'camera'">
+      <div class="ss-status-grid">
+        <!-- Summary Row -->
+        <div class="ss-summary-bar">
+          <div class="ss-summary-chip online">
+            <i class="bi bi-circle-fill"></i>
+            Online: <strong>{{ cameraOnlineCount }}</strong>
+          </div>
+          <div class="ss-summary-chip offline">
+            <i class="bi bi-circle-fill"></i>
+            Offline: <strong>{{ cameraOfflineCount }}</strong>
+          </div>
+          <div class="ss-summary-chip total">
+            <i class="bi bi-camera-video"></i>
+            Total: <strong>{{ cameraList.length }}</strong>
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="ss-cards-grid" *ngIf="cameraList && cameraList.length > 0">
+          <div class="ss-device-card" *ngFor="let item of cameraList"
+               [class.card-online]="item.isCameraOnline"
+               [class.card-offline]="!item.isCameraOnline">
+            <div class="ss-card-header">
+              <div class="ss-card-icon">
+                <i class="bi bi-camera-video-fill"></i>
+              </div>
+              <div class="ss-card-title">
+                <span class="ss-device-name">{{ item.LocationName || 'Camera' }}</span>
+                <span class="ss-status-badge" [class.badge-online]="item.isCameraOnline" [class.badge-offline]="!item.isCameraOnline">
+                  <span class="ss-badge-dot"></span>
+                  {{ item.isCameraOnline ? 'Online' : 'Offline' }}
+                </span>
+              </div>
+            </div>
+            <div class="ss-card-body">
+              <div class="ss-info-row">
+                <i class="bi bi-geo-alt"></i>
+                <span class="ss-info-label">Location</span>
+                <span class="ss-info-value fw-semibold">{{ item.LocationName || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-ethernet"></i>
+                <span class="ss-info-label">Camera IP</span>
+                <span class="ss-info-value font-monospace">{{ item.CameraIP || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-clock-history"></i>
+                <span class="ss-info-label">Last Ping</span>
+                <span class="ss-info-value font-monospace text-time">{{ item.cameraLastPing }}</span>
+              </div>
+            </div>
+            <div class="ss-card-footer" [class.footer-online]="item.isCameraOnline" [class.footer-offline]="!item.isCameraOnline">
+              <i class="bi" [class.bi-camera-video]="item.isCameraOnline" [class.bi-camera-video-off]="!item.isCameraOnline"></i>
+              {{ item.isCameraOnline ? 'Camera Stream Active' : 'No Signal (> 10 mins)' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="ss-empty-state" *ngIf="!cameraList || cameraList.length === 0">
+          <i class="bi bi-camera-video ss-empty-icon"></i>
+          <p class="ss-empty-title">No Camera Records</p>
+          <p class="ss-empty-subtitle">No camera records configured in System Status database.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== CONTROLLER STATUS TAB ======================== -->
+    <div class="ss-tab-panel" *ngIf="activeTab === 'controller'">
+      <div class="ss-status-grid">
+        <!-- Summary Row -->
+        <div class="ss-summary-bar">
+          <div class="ss-summary-chip online">
+            <i class="bi bi-circle-fill"></i>
+            Online: <strong>{{ controllerOnlineCount }}</strong>
+          </div>
+          <div class="ss-summary-chip offline">
+            <i class="bi bi-circle-fill"></i>
+            Offline: <strong>{{ controllerOfflineCount }}</strong>
+          </div>
+          <div class="ss-summary-chip total">
+            <i class="bi bi-cpu"></i>
+            Total: <strong>{{ controllerList.length }}</strong>
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="ss-cards-grid" *ngIf="controllerList && controllerList.length > 0">
+          <div class="ss-device-card" *ngFor="let item of controllerList"
+               [class.card-online]="item.isControllerOnline"
+               [class.card-offline]="!item.isControllerOnline">
+            <div class="ss-card-header">
+              <div class="ss-card-icon">
+                <i class="bi bi-cpu-fill"></i>
+              </div>
+              <div class="ss-card-title">
+                <span class="ss-device-name">{{ item.LocationName || 'Controller' }}</span>
+                <span class="ss-status-badge" [class.badge-online]="item.isControllerOnline" [class.badge-offline]="!item.isControllerOnline">
+                  <span class="ss-badge-dot"></span>
+                  {{ item.isControllerOnline ? 'Online' : 'Offline' }}
+                </span>
+              </div>
+            </div>
+            <div class="ss-card-body">
+              <div class="ss-info-row">
+                <i class="bi bi-geo-alt"></i>
+                <span class="ss-info-label">Location</span>
+                <span class="ss-info-value fw-semibold">{{ item.LocationName || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-ethernet"></i>
+                <span class="ss-info-label">Controller 1 IP</span>
+                <span class="ss-info-value font-monospace">{{ item.Controller_1IP || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-ethernet"></i>
+                <span class="ss-info-label">Controller 2 IP</span>
+                <span class="ss-info-value font-monospace">{{ item.Controller_2IP || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-clock-history"></i>
+                <span class="ss-info-label">Last Ping</span>
+                <span class="ss-info-value font-monospace text-time">{{ item.controllerLastPing }}</span>
+              </div>
+            </div>
+            <div class="ss-card-footer" [class.footer-online]="item.isControllerOnline" [class.footer-offline]="!item.isControllerOnline">
+              <i class="bi" [class.bi-cpu]="item.isControllerOnline" [class.bi-slash-circle]="!item.isControllerOnline"></i>
+              {{ item.isControllerOnline ? 'Controller Active & Communicating' : 'No Communication (> 10 mins)' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="ss-empty-state" *ngIf="!controllerList || controllerList.length === 0">
+          <i class="bi bi-cpu ss-empty-icon"></i>
+          <p class="ss-empty-title">No Controller Records</p>
+          <p class="ss-empty-subtitle">No controller records configured in System Status database.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================== APPLICATION STATUS TAB ======================== -->
+    <div class="ss-tab-panel" *ngIf="activeTab === 'application'">
+      <div class="ss-status-grid">
+        <!-- Summary Row -->
+        <div class="ss-summary-bar">
+          <div class="ss-summary-chip online">
+            <i class="bi bi-circle-fill"></i>
+            Running: <strong>{{ appRunningCount }}</strong>
+          </div>
+          <div class="ss-summary-chip offline">
+            <i class="bi bi-circle-fill"></i>
+            Stopped: <strong>{{ appStoppedCount }}</strong>
+          </div>
+          <div class="ss-summary-chip total">
+            <i class="bi bi-app-indicator"></i>
+            Total: <strong>{{ applicationList.length }}</strong>
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="ss-cards-grid" *ngIf="applicationList && applicationList.length > 0">
+          <div class="ss-device-card" *ngFor="let item of applicationList"
+               [class.card-online]="item.isAppRunning"
+               [class.card-offline]="!item.isAppRunning">
+            <div class="ss-card-header">
+              <div class="ss-card-icon">
+                <i class="bi bi-app-indicator"></i>
+              </div>
+              <div class="ss-card-title">
+                <span class="ss-device-name">{{ item.LocationName || 'Application' }}</span>
+                <span class="ss-status-badge" [class.badge-online]="item.isAppRunning" [class.badge-offline]="!item.isAppRunning">
+                  <span class="ss-badge-dot"></span>
+                  {{ item.isAppRunning ? 'Running' : 'Stopped' }}
+                </span>
+              </div>
+            </div>
+            <div class="ss-card-body">
+              <div class="ss-info-row">
+                <i class="bi bi-geo-alt"></i>
+                <span class="ss-info-label">Location</span>
+                <span class="ss-info-value fw-semibold">{{ item.LocationName || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-ethernet"></i>
+                <span class="ss-info-label">Application IP</span>
+                <span class="ss-info-value font-monospace">{{ item.ReaderIP || item.Controller_1IP || item.CameraIP || '—' }}</span>
+              </div>
+              <div class="ss-info-row">
+                <i class="bi bi-clock-history"></i>
+                <span class="ss-info-label">Last Ping</span>
+                <span class="ss-info-value font-monospace text-time">{{ item.appLastPing }}</span>
+              </div>
+            </div>
+            <div class="ss-card-footer" [class.footer-online]="item.isAppRunning" [class.footer-offline]="!item.isAppRunning">
+              <i class="bi" [class.bi-check-circle-fill]="item.isAppRunning" [class.bi-x-circle-fill]="!item.isAppRunning"></i>
+              {{ item.isAppRunning ? 'Application Service Running' : 'Application Service Stopped' }}
+            </div>
+          </div>
+        </div>
+
+        <div class="ss-empty-state" *ngIf="!applicationList || applicationList.length === 0">
+          <i class="bi bi-app-indicator ss-empty-icon"></i>
+          <p class="ss-empty-title">No Application Records</p>
+          <p class="ss-empty-subtitle">No application records found in System Status database.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Page Footer -->
+  <app-footer></app-footer>
+
+</div>

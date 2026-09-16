@@ -1,0 +1,198 @@
+<aside class="app-sidebar" [class.sidebar-open]="isSidebarOpen">
+  <div class="sidebar-header">
+    <!-- Full logo when expanded, small icon when collapsed -->
+    <img *ngIf="isSidebarOpen" src="assets/psl_client.png" alt="Logo" class="sidebar-logo" />
+    <img *ngIf="!isSidebarOpen" src="assets/psl_client_logo.png" alt="Logo" class="sidebar-logo-icon" />
+    <span *ngIf="isSidebarOpen" class="sidebar-close-icon" (click)="toggleSidebar()">&#x2716;</span>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <!-- Merged Live Tracking ESL Dashboard -->
+    <a class="sidebar-link" [class.active]="activeMenu === 'esldashboard'" (click)="selectMenu('esldashboard')"
+      [matTooltip]="!isSidebarOpen ? 'Dashboard' : ''" matTooltipPosition="right">
+      <i class="bi bi-activity"></i>
+      <span class="link-text">Dashboard</span>
+    </a>
+
+    <a class="sidebar-link" [class.active]="activeMenu === 'map'" (click)="selectMenu('map')"
+      [matTooltip]="!isSidebarOpen ? 'MAP' : ''" matTooltipPosition="right">
+      <i class="bi bi-map"></i>
+      <span class="link-text">MAP</span>
+    </a>
+
+    <a class="sidebar-link" [class.active]="activeMenu === 'ladleMovement'" [class.disabled]="isLadleMovementDisabled"
+      (click)="selectMenu('ladleMovement')"
+      [matTooltip]="!isSidebarOpen ? 'Ladle Movement' : ''" matTooltipPosition="right">
+      <i class="bi bi-truck"></i>
+      <span class="link-text">Ladle Movement</span>
+    </a>
+
+    <!-- WB Admin: Dropdown -->
+    <div class="sidebar-menu-group" *ngIf="isWBUser">
+      <a class="sidebar-link" [class.active]="activeMenu === 'ladleRequest'" (click)="toggleLadleRequestMenu()"
+        [matTooltip]="!isSidebarOpen ? 'Ladle Request' : ''" matTooltipPosition="right">
+        <i class="bi bi-clipboard-check"></i>
+        <span class="link-text">Ladle Request</span>
+        <i *ngIf="isSidebarOpen" class="bi submenu-arrow" [ngClass]="showLadleRequestSubmenu ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      </a>
+
+      <div class="sidebar-submenu" [class.submenu-open]="showLadleRequestSubmenu && isSidebarOpen">
+
+        <a class="sidebar-sublink" [class.active]="selectedAdminLocationId === 9"
+          (click)="selectAdminLocation(9, 'BF1')">
+          <span>BF1</span>
+        </a>
+
+        <a class="sidebar-sublink" [class.active]="selectedAdminLocationId === 1"
+          (click)="selectAdminLocation(1, 'BF2')">
+          <span>BF2</span>
+        </a>
+
+        <a class="sidebar-sublink" [class.active]="selectedAdminLocationId === 2"
+          (click)="selectAdminLocation(2, 'BF3')">
+          <span>BF3</span>
+        </a>
+
+        <a class="sidebar-sublink" [class.active]="selectedAdminLocationId === 4"
+          (click)="selectAdminLocation(4, 'SMS')">
+          <span>SMS</span>
+        </a>
+
+        <a class="sidebar-sublink" [class.active]="selectedAdminLocationId === 5"
+          (click)="selectAdminLocation(5, 'DIP')">
+          <span>DIP</span>
+        </a>
+
+        <a class="sidebar-sublink" [class.active]="selectedAdminLocationId === 6"
+          (click)="selectAdminLocation(6, 'PCM')">
+          <span>PCM</span>
+        </a>
+
+        <a class="sidebar-sublink" [class.active]="selectedAdminLocationId === 7"
+          (click)="selectAdminLocation(7, 'LRS')">
+          <span>LRS</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Normal users: Single Ladle Request -->
+    <a *ngIf="!isWBUser" class="sidebar-link" [class.active]="activeMenu === 'ladleRequest'"
+      [class.disabled]="isLadleRequestDisabled" (click)="selectMenu('ladleRequest')"
+      [matTooltip]="!isSidebarOpen ? 'Ladle Request' : ''" matTooltipPosition="right">
+      <i class="bi bi-clipboard-check"></i>
+      <span class="link-text">Ladle Request</span>
+    </a>
+
+    <a class="sidebar-link" [class.active]="activeMenu === 'pendingRequest'" (click)="selectMenu('pendingRequest')"
+      [matTooltip]="!isSidebarOpen ? 'Pending Request' : ''" matTooltipPosition="right">
+      <i class="bi bi-arrow-repeat"></i>
+      <span class="link-text">Pending Request</span>
+    </a>
+
+    <a class="sidebar-link" [class.active]="activeMenu === 'completedRequest'" (click)="selectMenu('completedRequest')"
+      [matTooltip]="!isSidebarOpen ? 'Completed Request' : ''" matTooltipPosition="right">
+      <i class="bi bi-check-circle"></i>
+      <span class="link-text">Completed Request</span>
+    </a>
+
+    <a class="sidebar-link" [class.active]="activeMenu === 'castAssignment'" (click)="selectMenu('castAssignment')"
+      [matTooltip]="!isSidebarOpen ? 'Cast Assignment' : ''" matTooltipPosition="right">
+      <i class="bi bi-fire"></i>
+      <span class="link-text">Cast Assignment</span>
+    </a>
+
+    <a class="sidebar-link" [class.active]="activeMenu === 'productionOrderMapping'" (click)="selectMenu('productionOrderMapping')"
+      [matTooltip]="!isSidebarOpen ? 'Production Order Mapping' : ''" matTooltipPosition="right">
+      <i class="bi bi-diagram-3"></i>
+      <span class="link-text">Production Order Mapping</span>
+    </a>
+
+    <a class="sidebar-link" [class.active]="activeMenu === 'locoLadleMovement'" (click)="selectMenu('locoLadleMovement')"
+      [matTooltip]="!isSidebarOpen ? 'Loco Ladle Movement' : ''" matTooltipPosition="right">
+      <i class="bi bi-train-front-fill"></i>
+      <span class="link-text">Loco Ladle Movement</span>
+    </a>
+
+    <!-- System Status -->
+    <a class="sidebar-link" [class.active]="activeMenu === 'systemstatus'" (click)="selectMenu('systemstatus')"
+      [matTooltip]="!isSidebarOpen ? 'System Status' : ''" matTooltipPosition="right">
+      <i class="bi bi-display"></i>
+      <span class="link-text">System Status</span>
+    </a>
+
+    <!-- Merged ESL Reports Menu Group -->
+    <div class="sidebar-menu-group">
+      <a class="sidebar-link" [class.active]="activeMenu === 'eslReports'" (click)="toggleEslReportsMenu()"
+        [matTooltip]="!isSidebarOpen ? 'ESL Reports' : ''" matTooltipPosition="right">
+        <i class="bi bi-file-earmark-bar-graph"></i>
+        <span class="link-text">ESL Reports</span>
+        <i *ngIf="isSidebarOpen" class="bi submenu-arrow" [ngClass]="showEslReportsSubmenu ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      </a>
+
+      <div class="sidebar-submenu" [class.submenu-open]="showEslReportsSubmenu && isSidebarOpen">
+        <!-- <a class="sidebar-sublink" [class.active]="activeMenu === 'transactionsum'" (click)="selectMenu('transactionsum')">
+          <i class="bi bi-file-earmark-spreadsheet me-2"></i><span>Transaction Summary</span>
+        </a> -->
+        <a class="sidebar-sublink" [class.active]="activeMenu === 'ladlereport'" (click)="selectMenu('ladlereport')">
+          <i class="bi bi-geo-alt me-2"></i><span>Ladle Journey</span>
+        </a>
+        <!-- <a class="sidebar-sublink" [class.active]="activeMenu === 'locationsummary'" (click)="selectMenu('locationsummary')">
+          <i class="bi bi-building me-2"></i><span>Location Summary</span>
+        </a> -->
+        <a class="sidebar-sublink" [class.active]="activeMenu === 'departmentreport'" (click)="selectMenu('departmentreport')">
+          <i class="bi bi-diagram-3 me-2"></i><span>Department Report</span>
+        </a>
+        <a class="sidebar-sublink" [class.active]="activeMenu === 'ladleweighmentreport'" (click)="selectMenu('ladleweighmentreport')">
+          <i class="bi bi-speedometer2 me-2"></i><span>Ladle Weighment Report</span>
+        </a>
+        <a class="sidebar-sublink" [class.active]="activeMenu === 'slagreport'" (click)="selectMenu('slagreport')">
+          <i class="bi bi-fire me-2"></i><span>Slag Report</span>
+        </a>
+        <a class="sidebar-sublink" [class.active]="activeMenu === 'manualvsautoreport'" (click)="selectMenu('manualvsautoreport')">
+          <i class="bi bi-robot me-2"></i><span>Manual vs Auto Report</span>
+        </a>
+      </div>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <span class="link-text">Ladle Movement Dashboard</span>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" [class.overlay-visible]="isSidebarOpen" (click)="toggleSidebar()">
+</div>
+
+<!-- ==================== Fixed Header ==================== -->
+<div class="app-header-container" [class.sidebar-open]="isSidebarOpen">
+
+  <div class="app-logo-section">
+    <button class="sidebar-toggle-btn" aria-label="Toggle Menu"
+      (click)="toggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <img src="assets/logo.png" alt="Perceptron Logo" class="app-combineLogo" />
+  </div>
+
+  <div class="app-title-section">
+    <h2 class="app-title">Ladle Movement Dashboard</h2>
+  </div>
+
+  <div class="app-right-section">
+
+    <button class="theme-toggle-btn" (click)="toggleTheme()" aria-label="Toggle Theme"
+      [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+      <i class="bi" [ngClass]="isDarkMode ? 'bi-sun-fill' : 'bi-moon-stars-fill'">
+      </i>
+    </button>
+
+    <button class="logout-button-wrapper" aria-label="Logout" (click)="logout()">
+      <img src="assets/logout.png" alt="Logout" class="logout-btn" />
+    </button>
+
+  </div>
+</div>
+<!-- ==================== End Header ==================== -->

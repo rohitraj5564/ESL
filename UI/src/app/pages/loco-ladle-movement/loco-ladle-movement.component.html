@@ -1,0 +1,77 @@
+<div class="loco-movement-page" [class.dark-theme]="isDarkTheme">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-title-section">
+      <span class="page-icon">🚂</span>
+      <div>
+        <h1 class="page-title">Loco Ladle Movement</h1>
+        <span class="page-subtitle">Real-Time Loco Tracking System</span>
+      </div>
+    </div>
+    <button class="refresh-btn" (click)="loadLocoLadleMapping()" [disabled]="isLoading">
+      <i class="bi" [ngClass]="isLoading ? 'bi-arrow-repeat spin' : 'bi-arrow-clockwise'"></i>
+      {{ isLoading ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <i class="bi bi-arrow-repeat spin"></i>
+    <span>Loading loco data...</span>
+  </div>
+
+  <!-- Loco Cards Grid -->
+  <div class="loco-cards-grid" *ngIf="!isLoading">
+
+    <div *ngFor="let loco of locos" class="loco-card" [style.border-top-color]="loco.color">
+
+      <!-- Card Header -->
+      <div class="loco-card-header">
+        <div class="loco-icon-wrapper" [style.background]="loco.color + '25'">
+          <i class="bi bi-train-front-fill" [style.color]="loco.color"></i>
+        </div>
+        <h2 class="loco-name" [style.color]="loco.color">{{ formatName(loco.name) }}</h2>
+        <span class="loco-badge" [style.background]="loco.color">{{ loco.ladles.length }}</span>
+      </div>
+
+      <!-- Card Body -->
+      <div class="loco-card-body">
+
+        <!-- Source Location -->
+        <div class="loco-field">
+          <label class="field-label">
+            <i class="bi bi-geo-alt-fill source-icon"></i>
+            Location
+          </label>
+          <div class="field-value">{{ loco.sourceLocation }}</div>
+        </div>
+
+        <!-- Ladle List -->
+        <div class="loco-field">
+          <label class="field-label">
+            <i class="bi bi-bucket-fill"></i>
+            Ladles ({{ loco.ladles.length }})
+          </label>
+          <div class="ladle-list">
+            <div *ngFor="let ladle of loco.ladles" class="ladle-chip" [style.border-left-color]="loco.color">
+              <div class="ladle-main">
+                <i class="bi bi-circle-fill ladle-dot" [style.color]="loco.color"></i>
+                <span class="ladle-number">{{ formatName(ladle.ladleName) }}</span>
+              </div>
+            </div>
+            <div *ngIf="loco.ladles.length === 0" class="no-ladle">No ladles assigned</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+
+</div>
+

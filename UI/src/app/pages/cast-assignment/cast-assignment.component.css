@@ -1,0 +1,1252 @@
+/* ================================================
+   FORM FIELDS
+================================================ */
+
+::ng-deep .mat-mdc-form-field {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  height: 56px !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(239, 246, 255, 0.92)) !important;
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(37, 99, 235, 0.18) !important;
+  box-shadow:
+    0 2px 8px rgba(37, 99, 235, 0.07),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  transition: all 0.25s ease !important;
+  overflow: visible !important;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+
+::ng-deep .mat-mdc-form-field-infix {
+  min-height: 56px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding-top: 18px !important;
+  padding-bottom: 6px !important;
+}
+
+::ng-deep .mat-mdc-text-field-wrapper:hover {
+  border-color: rgba(37, 99, 235, 0.38) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.13);
+}
+
+::ng-deep .mdc-text-field--focused .mat-mdc-text-field-wrapper {
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 1),
+      rgba(219, 234, 254, 0.97)) !important;
+  border-color: #2563eb !important;
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.12),
+    0 4px 16px rgba(37, 99, 235, 0.14);
+}
+
+::ng-deep .mdc-notched-outline__leading,
+::ng-deep .mdc-notched-outline__notch,
+::ng-deep .mdc-notched-outline__trailing {
+  border: none !important;
+}
+
+::ng-deep .mat-mdc-floating-label {
+  color: #2563eb !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.5px;
+  top: 14px !important;
+  transform: none !important;
+}
+
+::ng-deep .mdc-text-field--filled .mdc-floating-label--float-above,
+::ng-deep .mdc-text-field--outlined .mdc-floating-label--float-above {
+  transform: translateY(-100%) scale(0.85) !important;
+  top: 22px !important;
+  color: #2563eb !important;
+  font-weight: 800 !important;
+}
+
+::ng-deep .mat-mdc-input-element {
+  color: #0f172a !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+::ng-deep .mat-mdc-select-value {
+  color: #0f172a !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+::ng-deep .mat-mdc-select-arrow {
+  color: #2563eb !important;
+}
+
+::ng-deep .mat-mdc-form-field-focus-overlay {
+  opacity: 0 !important;
+}
+
+::ng-deep .mdc-line-ripple {
+  display: none !important;
+}
+
+::ng-deep .mat-mdc-icon-button.mat-mdc-button-base {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 4px !important;
+}
+
+::ng-deep .mat-mdc-icon-button svg,
+::ng-deep .mat-mdc-icon-button mat-icon {
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 18px !important;
+  color: #2563eb !important;
+}
+
+/* ================================================
+   DARK MODE — FIELDS
+================================================ */
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-text-field-wrapper {
+  background: linear-gradient(135deg,
+      rgba(30, 41, 59, 0.97),
+      rgba(15, 23, 42, 0.94)) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-text-field-wrapper:hover {
+  border-color: rgba(96, 165, 250, 0.38) !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mdc-text-field--focused .mat-mdc-text-field-wrapper {
+  border-color: #60a5fa !important;
+  box-shadow:
+    0 0 0 3px rgba(96, 165, 250, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-input-element {
+  color: #f1f5f9 !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-select-value {
+  color: #f1f5f9 !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-floating-label {
+  color: #60a5fa !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mdc-text-field--filled .mdc-floating-label--float-above,
+.cast-assignment-page.dark-theme ::ng-deep .mdc-text-field--outlined .mdc-floating-label--float-above {
+  color: #60a5fa !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-icon-button svg,
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-icon-button mat-icon {
+  color: #60a5fa !important;
+}
+
+/* ================================================
+   DATEPICKER
+================================================ */
+
+::ng-deep .custom-datepicker .mat-datepicker-content {
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow:
+    0 24px 64px rgba(37, 99, 235, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(37, 99, 235, 0.2) !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-header {
+  background: linear-gradient(135deg,
+      #1e3a8a 0%,
+      #2563eb 45%,
+      #7c3aed 100%) !important;
+  padding: 14px 16px 18px !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-header button,
+::ng-deep .custom-datepicker .mat-calendar-header span {
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-header button:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-radius: 8px !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-arrow {
+  fill: white !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-period-button {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: white !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-previous-button,
+::ng-deep .custom-datepicker .mat-calendar-next-button {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-radius: 8px !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-previous-button:hover,
+::ng-deep .custom-datepicker .mat-calendar-next-button:hover {
+  background: rgba(255, 255, 255, 0.28) !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-table-header th {
+  color: #2563eb !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  padding-bottom: 6px !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-cell-content {
+  border-radius: 50% !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-cell:not(.mat-calendar-body-disabled) .mat-calendar-body-cell-content:hover {
+  background: linear-gradient(135deg,
+      rgba(37, 99, 235, 0.14),
+      rgba(124, 58, 237, 0.1)) !important;
+  color: #2563eb !important;
+  transform: scale(1.12) !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border: 2px solid #2563eb !important;
+  color: #2563eb !important;
+  font-weight: 800 !important;
+  background: rgba(37, 99, 235, 0.06) !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-selected {
+  background: linear-gradient(135deg,
+      #2563eb,
+      #7c3aed) !important;
+  color: white !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45) !important;
+  transform: scale(1.1) !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-disabled .mat-calendar-body-cell-content {
+  color: #cbd5e1 !important;
+  text-decoration: line-through;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-label {
+  color: #64748b !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+}
+
+/* ================================================
+   SELECT PANEL
+================================================ */
+
+::ng-deep .mat-mdc-select-panel {
+  border-radius: 14px !important;
+  box-shadow:
+    0 12px 40px rgba(37, 99, 235, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(37, 99, 235, 0.12) !important;
+  padding: 6px !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.99) !important;
+}
+
+::ng-deep .mat-mdc-option {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  min-height: 38px !important;
+  margin: 2px 4px !important;
+  padding: 0 10px !important;
+  transition: all 0.2s ease !important;
+  color: #0f172a !important;
+}
+
+::ng-deep .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background: linear-gradient(135deg,
+      rgba(37, 99, 235, 0.08),
+      rgba(124, 58, 237, 0.05)) !important;
+  color: #2563eb !important;
+}
+
+::ng-deep .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: #2563eb !important;
+  font-weight: 700 !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-select-panel {
+  background: rgba(15, 23, 42, 0.99) !important;
+  border-color: rgba(96, 165, 250, 0.15) !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-option {
+  color: #e2e8f0 !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background: rgba(96, 165, 250, 0.1) !important;
+  color: #60a5fa !important;
+}
+
+/* ================================================
+   PAGE
+================================================ */
+
+.cast-assignment-page {
+  min-height: calc(100vh - 70px);
+  padding: 10px 20px 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  background: linear-gradient(135deg,
+      #e0f2fe 0%,
+      #eef2ff 35%,
+      #f0fdf4 100%);
+}
+
+.cast-assignment-page.dark-theme {
+  background: linear-gradient(135deg,
+      #020617 0%,
+      #0f172a 50%,
+      #111827 100%);
+  color: white;
+}
+
+/* ================================================
+   FILTER CARD
+================================================ */
+
+.filter-section {
+  margin-bottom: 16px;
+}
+
+.filter-card {
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(240, 249, 255, 0.88));
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow:
+    0 4px 20px rgba(37, 99, 235, 0.09),
+    0 1px 4px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+}
+
+.cast-assignment-page.dark-theme .filter-card {
+  background: linear-gradient(135deg,
+      rgba(15, 23, 42, 0.97),
+      rgba(30, 41, 59, 0.93));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  align-items: center;
+}
+
+/* ================================================
+   BUTTONS
+================================================ */
+
+.search-btn,
+.clear-btn {
+  height: 56px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 6px;
+
+  border: none !important;
+  cursor: pointer;
+
+  transition: all 0.25s ease !important;
+
+  width: 100%;
+}
+
+.search-btn {
+  background: linear-gradient(135deg,
+      #1d4ed8,
+      #2563eb,
+      #06b6d4) !important;
+
+  color: white !important;
+
+  box-shadow:
+    0 4px 14px rgba(37, 99, 235, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.search-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 8px 22px rgba(37, 99, 235, 0.45) !important;
+}
+
+.clear-btn {
+  background: linear-gradient(135deg,
+      #dc2626,
+      #ef4444,
+      #f97316) !important;
+
+  color: white !important;
+
+  box-shadow:
+    0 4px 14px rgba(239, 68, 68, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+.clear-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 8px 22px rgba(239, 68, 68, 0.45) !important;
+}
+
+.search-btn mat-icon,
+.clear-btn mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* ================================================
+   TABLE SECTION
+================================================ */
+
+.table-section {
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(240, 249, 255, 0.93));
+
+  border-radius: 20px;
+
+  padding: 14px 18px;
+
+  box-shadow:
+    0 8px 32px rgba(37, 99, 235, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.cast-assignment-page.dark-theme .table-section {
+  background: linear-gradient(135deg,
+      rgba(15, 23, 42, 0.97),
+      rgba(30, 41, 59, 0.95));
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ================================================
+   TABLE HEADER
+================================================ */
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+
+  border-bottom:
+    2px dashed rgba(37, 99, 235, 0.18);
+}
+
+.table-title h2 {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 800;
+
+  background: linear-gradient(135deg,
+      #2563eb,
+      #7c3aed);
+
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.table-title span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cast-assignment-page.dark-theme .table-title span {
+  color: #94a3b8;
+}
+
+.header-action-btn {
+  height: 38px;
+
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: white;
+
+  background: linear-gradient(135deg,
+      #16a34a,
+      #22c55e);
+
+  box-shadow:
+    0 4px 14px rgba(34, 197, 94, 0.3);
+
+  transition: all 0.25s ease;
+}
+
+.header-action-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 22px rgba(34, 197, 94, 0.4);
+}
+
+.header-action-btn mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* ================================================
+   TABLE
+================================================ */
+
+.table-container {
+  max-height: 279px;
+
+  overflow-y: auto;
+  overflow-x: auto;
+
+  border-radius: 16px;
+
+  position: relative;
+}
+
+.table-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg,
+      #2563eb,
+      #7c3aed);
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg,
+      #1d4ed8,
+      #6d28d9);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  background: linear-gradient(135deg,
+      #1e3a8a,
+      #312e81) !important;
+
+  color: white !important;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  padding: 8px 10px !important;
+
+  border: none;
+
+  letter-spacing: 0.2px;
+
+  white-space: nowrap;
+
+  min-width: 90px;
+}
+
+th:first-child {
+  border-radius: 12px 0 0 12px;
+}
+
+th:last-child {
+  border-radius: 0 12px 12px 0;
+}
+
+tr.mat-mdc-row {
+  background: white;
+
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 2px 8px rgba(37, 99, 235, 0.06);
+
+  border-bottom: 5px solid transparent;
+}
+
+.cast-assignment-page.dark-theme tr.mat-mdc-row {
+  background: rgba(30, 41, 59, 0.95);
+}
+
+tr.mat-mdc-row:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 18px rgba(37, 99, 235, 0.12);
+}
+
+td {
+  padding: 8px 10px !important;
+
+  border: none !important;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  min-width: 90px;
+}
+
+.cast-assignment-page.dark-theme td {
+  color: #e2e8f0;
+}
+
+td:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+td:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+/* ================================================
+   ACTION
+================================================ */
+
+.mat-column-action,
+th.mat-column-action,
+td.mat-column-action {
+  text-align: center !important;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center !important;
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+/* ================================================
+   TRANSACTION BOX
+================================================ */
+
+.transaction-box {
+  background: linear-gradient(135deg,
+      #2563eb,
+      #60a5fa);
+
+  color: white;
+
+  padding: 4px 10px;
+
+  border-radius: 8px;
+
+  width: fit-content;
+
+  font-weight: 700;
+  font-size: 11px;
+
+  box-shadow:
+    0 3px 10px rgba(37, 99, 235, 0.28);
+}
+
+/* ================================================
+   CAST INPUT
+================================================ */
+
+.cast-input {
+  width: 120px;
+  height: 34px;
+
+  border: 1px solid #dbe4ff;
+  border-radius: 10px;
+
+  padding: 0 10px;
+
+  outline: none;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  background: #ffffff;
+  color: #1e293b;
+
+  transition: 0.3s ease;
+
+  box-sizing: border-box;
+}
+
+.cast-input::placeholder {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cast-input:focus {
+  border-color: #4f46e5;
+
+  box-shadow:
+    0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.cast-assignment-page.dark-theme .cast-input {
+  background: #1e293b;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+.cast-assignment-page.dark-theme .cast-input::placeholder {
+  color: #94a3b8;
+}
+
+.cast-input:disabled {
+  background: #e2e8f0;
+
+  cursor: not-allowed;
+
+  opacity: 0.7;
+}
+
+.cast-assignment-page.dark-theme .cast-input:disabled {
+  background: #334155;
+  color: #94a3b8;
+}
+
+/* ================================================
+   BADGE
+================================================ */
+
+.badge {
+  background: linear-gradient(135deg,
+      #7c3aed,
+      #2563eb);
+
+  color: white;
+
+  padding: 3px 10px;
+
+  border-radius: 20px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.8px;
+
+  box-shadow:
+    0 3px 10px rgba(124, 58, 237, 0.28);
+}
+
+/* ================================================
+   ACTION BUTTONS
+================================================ */
+
+.edit-btn {
+  position: relative;
+
+  overflow: hidden;
+
+  min-width: 80px;
+  height: 30px;
+
+  border: none;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  padding: 0 10px;
+
+  cursor: pointer;
+
+  color: white;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  background: linear-gradient(135deg,
+      #2563eb,
+      #06b6d4);
+
+  box-shadow:
+    0 3px 10px rgba(37, 99, 235, 0.3);
+
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.edit-btn mat-icon {
+  font-size: 13px !important;
+  width: 13px !important;
+  height: 13px !important;
+}
+
+.edit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-glow {
+  position: absolute;
+
+  width: 120%;
+  height: 120%;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  top: -120%;
+  left: -120%;
+
+  transform: rotate(25deg);
+
+  transition: 0.5s;
+}
+
+.edit-btn:hover .btn-glow {
+  top: 120%;
+  left: 120%;
+}
+
+/* ================================================
+   PAGINATOR
+================================================ */
+
+.custom-paginator {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 8px;
+
+  background: transparent !important;
+
+  border-radius: 12px;
+}
+
+::ng-deep .custom-paginator .mat-mdc-paginator-container {
+  justify-content: flex-end !important;
+
+  padding: 0 !important;
+
+  min-height: 36px;
+}
+
+::ng-deep .custom-paginator .mat-mdc-paginator-range-label {
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: #64748b;
+}
+
+::ng-deep .custom-paginator .mat-mdc-icon-button {
+  width: 30px !important;
+  height: 30px !important;
+
+  border-radius: 8px !important;
+
+  background: linear-gradient(135deg,
+      #2563eb,
+      #7c3aed) !important;
+
+  color: white !important;
+
+  margin: 0 3px;
+
+  box-shadow:
+    0 3px 10px rgba(37, 99, 235, 0.3);
+
+  transition: all 0.25s ease !important;
+}
+
+::ng-deep .custom-paginator .mat-mdc-icon-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 18px rgba(37, 99, 235, 0.4) !important;
+}
+
+::ng-deep .custom-paginator .mat-mdc-icon-button:disabled {
+  opacity: 0.35 !important;
+
+  background: #cbd5e1 !important;
+
+  box-shadow: none !important;
+}
+
+::ng-deep .custom-paginator .mat-mdc-icon-button svg {
+  color: white !important;
+  fill: white !important;
+}
+
+::ng-deep .custom-paginator .mat-mdc-select-value {
+  font-weight: 700 !important;
+
+  color: #2563eb !important;
+
+  font-size: 12px !important;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .custom-paginator .mat-mdc-paginator-range-label {
+  color: #94a3b8;
+}
+
+.cast-assignment-page.dark-theme ::ng-deep .custom-paginator .mat-mdc-select-value {
+  color: #60a5fa !important;
+}
+
+/* ================================================
+   RESPONSIVE
+================================================ */
+
+@media (max-width: 1024px) {
+
+  .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .cast-assignment-page {
+    padding: 10px;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .search-btn,
+  .clear-btn {
+    height: 48px !important;
+    font-size: 12px !important;
+  }
+
+  .table-title h2 {
+    font-size: 18px;
+  }
+
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .header-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-container {
+    overflow-x: auto !important;
+    overflow-y: auto;
+
+    max-height: 320px;
+
+    border-radius: 12px;
+  }
+
+  table {
+    min-width: 950px;
+  }
+
+  th {
+    font-size: 11px;
+    padding: 10px !important;
+  }
+
+  td {
+    font-size: 11px;
+    padding: 10px !important;
+  }
+
+  .cast-input {
+    width: 90px;
+    font-size: 12px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .cast-assignment-page {
+    padding: 8px;
+  }
+
+  .filter-card {
+    padding: 12px;
+  }
+
+  .table-section {
+    padding: 12px;
+  }
+
+  .table-title h2 {
+    font-size: 16px;
+  }
+
+  .table-title span {
+    font-size: 11px;
+  }
+
+  .table-container {
+    max-height: 280px;
+  }
+
+  table {
+    min-width: 900px;
+  }
+
+  .transaction-box {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+
+  .edit-btn {
+    min-width: 70px;
+    font-size: 10px;
+  }
+
+}
+
+/* =========================================================
+   MATERIAL DATEPICKER OVERRIDE
+   Prevent ESL global table styles from affecting calendar
+========================================================= */
+
+::ng-deep .custom-datepicker {
+  background: #ffffff !important;
+  color: #0f2554 !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar {
+  background: #ffffff !important;
+  color: #0f2554 !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-content {
+  background: #ffffff !important;
+  padding: 10px !important;
+}
+
+::ng-deep .custom-datepicker table {
+  background: #ffffff !important;
+  color: #0f2554 !important;
+}
+
+::ng-deep .custom-datepicker thead {
+  background: #ffffff !important;
+  color: #2563eb !important;
+}
+
+::ng-deep .custom-datepicker tbody {
+  background: #ffffff !important;
+  color: #0f2554 !important;
+}
+
+::ng-deep .custom-datepicker tr {
+  background: #ffffff !important;
+  color: #0f2554 !important;
+}
+
+::ng-deep .custom-datepicker th {
+  background: #ffffff !important;
+  color: #2563eb !important;
+  border: 0 !important;
+}
+
+::ng-deep .custom-datepicker td {
+  background: #ffffff !important;
+  color: #0f2554 !important;
+  border: 0 !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-table-header th {
+  background: #ffffff !important;
+  color: #2563eb !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-cell-content {
+  background: transparent !important;
+  color: #0f2554 !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-today:not(.mat-calendar-body-selected) .mat-calendar-body-cell-content {
+  background: rgba(37, 99, 235, 0.06) !important;
+  color: #2563eb !important;
+  border: 2px solid #2563eb !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-selected .mat-calendar-body-cell-content {
+  background: linear-gradient(135deg,
+      #3949ab 0%,
+      #7b1fa2 100%) !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-disabled .mat-calendar-body-cell-content {
+  background: transparent !important;
+  color: #c5d8f5 !important;
+}
+
+::ng-deep .custom-datepicker .mat-calendar-body-cell-content:hover {
+  background: rgba(37, 99, 235, 0.10) !important;
+  color: #2563eb !important;
+}
+
+.sub-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 14px 18px;
+  background: var(--color-dashboard-card);
+  border: 1px solid var(--color-dashboard-border);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px var(--color-dashboard-shadow);
+  transition: background 0.3s ease;
+  margin-bottom: 14px;
+}
+.dashboard-page-title h1 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-dashboard-text);
+}
+
+.page-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-chart-accent));
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  box-shadow: 0 0 14px rgba(0, 92, 168, 0.3);
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.dashboard-page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-page-title h1 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-dashboard-text);
+}
+
+.page-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary),
+    var(--color-chart-accent)
+  );
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  box-shadow: 0 0 14px rgba(0, 92, 168, 0.3);
+  color: #fff;
+  flex-shrink: 0;
+}

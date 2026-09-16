@@ -1,0 +1,345 @@
+<div class="report-page-container" [class.dark-theme]="isDarkTheme">
+
+  <!-- Header Banner -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <i class="bi bi-diagram-3 header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2>Department Production & Movement Report</h2>
+        <p>Cross-Departmental Production & Ladle Movement Distribution</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="export-btn" (click)="exportToExcel()" [disabled]="ladleTransaction.length === 0">
+        <i class="bi bi-file-earmark-excel"></i>
+        <span>Export</span>
+      </button>
+
+      <button class="clear-btn" (click)="clearFilters()">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Clear</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="toPicker" [(ngModel)]="toInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="location-field">
+      <mat-label>Department</mat-label>
+      <mat-select [(ngModel)]="locName" placeholder="Select Department">
+        <mat-option *ngFor="let lad of laderList" [value]="lad.LocationName">
+          {{ lad.LocationName }}
+        </mat-option>
+      </mat-select>
+      <i class="bi bi-diagram-3 field-icon" matSuffix></i>
+    </mat-form-field>
+
+    <button class="show-btn" (click)="getFilteredData()" [disabled]="isLoading || !locName">
+      <i class="bi" [ngClass]="isLoading ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+      <span>{{ isLoading ? 'Searching...' : 'Show' }}</span>
+    </button>
+  </div>
+
+  <!-- Department Production Summary Section -->
+  <div class="dept-summary-section" *ngIf="productionInputData && productionInputData.length > 0">
+    <div class="dept-summary-card" *ngFor="let data of productionInputData">
+      <div class="dept-summary-header">
+        <div class="d-flex align-items-center gap-2">
+          <div class="dept-icon-box">
+            <i class="bi bi-building"></i>
+          </div>
+          <div>
+            <h4 class="dept-title">{{ data.LocationName }}</h4>
+            <span class="dept-count-badge">{{ data.LadleCount }} Ladles</span>
+          </div>
+        </div>
+        <div class="dept-total-box">
+          <span class="total-label">Total Production</span>
+          <span class="total-val">{{ data.TotalProduction }} <small>MT</small></span>
+        </div>
+      </div>
+
+      <!-- Breakdown Units Table -->
+      <div class="dept-units-table-wrap" *ngIf="data.ProductionUnits && data.ProductionUnits.length > 0">
+        <table class="dept-units-table">
+          <thead>
+            <tr>
+              <th>Production Unit</th>
+              <th>Ladles</th>
+              <th class="text-end">Production (MT)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let produnit of data.ProductionUnits">
+              <td><span class="unit-badge badge-sapphire">{{ produnit.LocationName }}</span></td>
+              <td><span class="count-pill">{{ produnit.LadleCount }}</span></td>
+              <td class="text-end fw-bold text-success">{{ produnit.TotalProduction }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Wrapper -->
+  <div class="table-wrapper">
+
+    <!-- Quick Search toolbar -->
+    <div class="table-toolbar" *ngIf="ladleTransaction.length > 0">
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" (keyup)="applyFilter($event)" placeholder="Search any department movement or transaction...">
+      </div>
+      <div class="result-count">
+        <span class="count-pill">{{ dataSource.filteredData.length }} records</span>
+      </div>
+    </div>
+
+    <!-- Scrollable Table -->
+    <div class="table-scroll-container">
+      <table mat-table [dataSource]="dataSource" matSort class="report-table">
+
+        <!-- Serial Number -->
+        <ng-container matColumnDef="SerialNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">#</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="sn-badge">{{ element.SerialNumber }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Ladle No -->
+        <ng-container matColumnDef="LadleNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Ladle No</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="ladle-badge">{{ element.LadleNo }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Source Location -->
+        <ng-container matColumnDef="SourceLocation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Source</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="unit-badge badge-sapphire">{{ element.SourceLocation || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Src In Date -->
+        <ng-container matColumnDef="SourceINDateSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Src In Date</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="date-chip">
+              <i class="bi bi-arrow-right-circle date-icon"></i>
+              {{ element.SourceINDateSTR || '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Src In Time -->
+        <ng-container matColumnDef="SourceINTimeSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Src In Time</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="time-text">{{ element.SourceINTimeSTR || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Src Out Date -->
+        <ng-container matColumnDef="SourceOUTDateSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Src Out Date</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="date-chip">
+              <i class="bi bi-arrow-left-circle date-icon"></i>
+              {{ element.SourceOUTDateSTR || '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Src Out Time -->
+        <ng-container matColumnDef="SourceOUTTimeSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Src Out Time</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="time-text">{{ element.SourceOUTTimeSTR || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Gross Weight -->
+        <ng-container matColumnDef="SourceWeight">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Gross Wt (MT)</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="wt-value">{{ element.SourceWeight || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Gross DateTime -->
+        <ng-container matColumnDef="SourceWeightDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Gross DateTime</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="datetime-text">{{ element.SourceWeightDateTime || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Cast No -->
+        <ng-container matColumnDef="CastNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Cast No</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="order-id">{{ element.CastNo || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Tare Weight -->
+        <ng-container matColumnDef="TareWeight">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Tare Wt (MT)</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="wt-value">{{ element.TareWeight || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Tare DateTime -->
+        <ng-container matColumnDef="TareWeightDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Tare DateTime</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="datetime-text">{{ element.TareWeightDateTime || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Net Weight -->
+        <ng-container matColumnDef="NetWeight">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Net Wt (MT)</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="net-wt-badge">{{ element.NetWeight || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- TAT -->
+        <ng-container matColumnDef="TAT">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">TAT</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="tat-badge">{{ element.TAT || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Destination Location -->
+        <ng-container matColumnDef="DestinationLocation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Destination</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="unit-badge badge-emerald">{{ element.DestinationLocation || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Dest In Date -->
+        <ng-container matColumnDef="DestinationINDateSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Dest In Date</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="date-chip">
+              <i class="bi bi-arrow-right-circle date-icon"></i>
+              {{ element.DestinationINDateSTR || '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Dest In Time -->
+        <ng-container matColumnDef="DestinationINTimeSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Dest In Time</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="time-text">{{ element.DestinationINTimeSTR || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Dest Out Date -->
+        <ng-container matColumnDef="DestinationOUTDateSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Dest Out Date</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="date-chip">
+              <i class="bi bi-arrow-left-circle date-icon"></i>
+              {{ element.DestinationOUTDateSTR || '-' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Dest Out Time -->
+        <ng-container matColumnDef="DestinationOUTTimeSTR">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span class="col-header">Dest Out Time</span>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="time-text">{{ element.DestinationOUTTimeSTR || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="data-row"></tr>
+      </table>
+
+      <!-- No Data -->
+      <div class="no-data" *ngIf="ladleTransaction.length === 0 && !isLoading">
+        <i class="bi bi-diagram-3 fs-2 d-block mb-2 text-muted"></i>
+        Please select a department and click Show to view production & movement records.
+      </div>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      showFirstLastButtons
+      aria-label="Select page of department records">
+    </mat-paginator>
+
+  </div>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
+
+</div>
