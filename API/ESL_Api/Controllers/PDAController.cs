@@ -1780,6 +1780,13 @@ namespace ESL_Api.Controllers
 
             return Ok(responseData);
         }
+
+        [HttpGet, Route("CheckSession")]
+        public IHttpActionResult CheckSession()
+        {
+            return Ok(new ResponseData { status = true, message = "Session active", data = null });
+        }
+
         [HttpGet, Route("GetAllBFLadle")]
 
         public IHttpActionResult GetAllBFLadle()

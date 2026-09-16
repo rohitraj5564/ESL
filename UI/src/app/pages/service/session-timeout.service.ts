@@ -28,6 +28,8 @@ export class SessionTimeoutService {
     'wheel'
   ];
 
+  private heartbeatInterval: any;
+
   constructor(
     private router: Router,
     private toastr: ToastrService,
@@ -35,6 +37,7 @@ export class SessionTimeoutService {
   ) {
     this.setupActivityTracking();
     this.setupTabCloseTracking();
+    this.startSessionHeartbeat();
   }
 
   // Get timeout duration in milliseconds from config (defaults to 15 min if not configured)
@@ -157,10 +160,67 @@ export class SessionTimeoutService {
 
   // ✅ Single method to clear everything
   private clearStorage(): void {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
     sessionStorage.clear();
     localStorage.clear();
     this.clearAllCookies();
     this.clearCacheStorage();
+  }
+
+  // ✅ Periodically verify active session to kick out superseded browsers
+  public startSessionHeartbeat(): void {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
+
+    this.heartbeatInterval = setInterval(() => {
+      const isLoggedIn = sessionStorage.getItem('IslogedIn');
+      const jwtToken = sessionStorage.getItem('jwtToken');
+      const apiUrl = sessionStorage.getItem('apiUrl');
+
+      if (isLoggedIn === 'True' && jwtToken && apiUrl) {
+        fetch(`${apiUrl}CheckSession`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${jwtToken}`,
+            'X-Api-Version': '1.0'
+          }
+        }).then(response => {
+          if (response.status === 401) {
+            response.json().then(data => {
+              const msg = data?.message || 'Your session was terminated because this account was logged in from another browser or device.';
+              this.handleSessionTermination(msg);
+            }).catch(() => {
+              this.handleSessionTermination('Your session was terminated because this account was logged in from another browser or device.');
+            });
+          }
+        }).catch(() => {
+          // Ignore transient network errors
+        });
+      }
+    }, 5000);
+  }
+
+  private handleSessionTermination(msg: string): void {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
+    this.clearStorage();
+    if (!Swal.isVisible()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Session Terminated',
+        text: msg,
+        confirmButtonText: 'OK',
+        allowOutsideClick: false
+      }).then(() => {
+        this.router.navigate(['/login']);
+      });
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   private clearAllCookies(): void {
@@ -184,6 +244,9 @@ export class SessionTimeoutService {
   // Clean up event listeners and timeout
   cleanup(tableElements?: HTMLElement[]) {
     clearTimeout(this.inactivityTimeout);
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
 
     this.activityEvents.forEach(event => {
       window.removeEventListener(event, this.handleActivity);

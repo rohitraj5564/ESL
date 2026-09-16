@@ -18,26 +18,30 @@ namespace ESL_Api.Global
             ConfigurationManager.AppSettings["AesEncryptionKey"];
 
         public static string GenerateToken(string userID, string userName,
-                                           int locationId, string locationName)
+                                           int locationId, string locationName, string sessionToken = null)
         {
             var securityKey = new SymmetricSecurityKey( Encoding.UTF8.GetBytes(SecretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var claimsList = new System.Collections.Generic.List<Claim>
             {
-                new Claim("userID", userID),
-                new Claim("userName", userName),
+                new Claim("userID", userID ?? string.Empty),
+                new Claim("userName", userName ?? string.Empty),
                 new Claim("locationId", locationId.ToString()),
-                new Claim("locationName", locationName),
+                new Claim("locationName", locationName ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString())
-
             };
+
+            if (!string.IsNullOrEmpty(sessionToken))
+            {
+                claimsList.Add(new Claim("sessionToken", sessionToken));
+            }
 
             var token = new JwtSecurityToken(
                 issuer: "ESL_Api",
                 audience: "ESL_Client",
-                claims: claims,
+                claims: claimsList,
                 expires: DateTime.UtcNow.AddMinutes(ExpiryMinutes),
                 signingCredentials: credentials
             );

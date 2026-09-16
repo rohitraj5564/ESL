@@ -53,6 +53,28 @@ namespace ESL_Api.Global
             System.Threading.Thread.CurrentPrincipal = principal;
             actionContext.RequestContext.Principal = principal;
 
+            // Single active session enforcement:
+            // If the token contains a sessionToken, ensure it is still the currently active session in DB
+            var tokenSessionId = principal.Claims.FirstOrDefault(c => c.Type == "sessionToken")?.Value;
+            var tokenUserId = principal.Claims.FirstOrDefault(c => c.Type == "userID")?.Value;
+            var tokenUserName = principal.Claims.FirstOrDefault(c => c.Type == "userName")?.Value;
+
+            if (!string.IsNullOrEmpty(tokenSessionId) && (!string.IsNullOrEmpty(tokenUserId) || !string.IsNullOrEmpty(tokenUserName)))
+            {
+                if (!IsSessionActive(tokenUserId, tokenUserName, tokenSessionId))
+                {
+                    actionContext.Response = actionContext.Request.CreateResponse(
+                        HttpStatusCode.Unauthorized,
+                        new
+                        {
+                            status = false,
+                            isSessionTerminated = true,
+                            message = "Your session was terminated because this account was logged in from another browser or device."
+                        });
+                    return;
+                }
+            }
+
             var apiVersion = actionContext.Request.Headers.Contains("X-Api-Version")
                 ? actionContext.Request.Headers.GetValues("X-Api-Version").FirstOrDefault()
                 : null;
@@ -66,6 +88,44 @@ namespace ESL_Api.Global
             }
 
             base.OnActionExecuting(actionContext);
+        }
+
+        private static bool IsSessionActive(string userId, string userName, string sessionToken)
+        {
+            try
+            {
+                using (var conn = new System.Data.SqlClient.SqlConnection(Appsetting.ConnectionString))
+                {
+                    conn.Open();
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"
+                            SELECT TOP 1 [SessionToken], [IsLogin] 
+                            FROM [dbo].[Users] WITH (NOLOCK) 
+                            WHERE (@UserID IS NOT NULL AND [UserID] = @UserID)
+                               OR (@UserName IS NOT NULL AND [UserName] = @UserName)";
+                        cmd.Parameters.AddWithValue("@UserID", (object)userId ?? System.DBNull.Value);
+                        cmd.Parameters.AddWithValue("@UserName", (object)userName ?? System.DBNull.Value);
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                string activeToken = reader["SessionToken"] != System.DBNull.Value ? reader["SessionToken"].ToString() : null;
+                                bool isLogin = reader["IsLogin"] != System.DBNull.Value && System.Convert.ToBoolean(reader["IsLogin"]);
+
+                                return isLogin && string.Equals(activeToken, sessionToken, System.StringComparison.OrdinalIgnoreCase);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error($"[JwtAuthFilter] Session check failed | User: {userName ?? userId}", ex);
+            }
+
+            return true;
         }
     }
 }

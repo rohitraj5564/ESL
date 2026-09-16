@@ -128,7 +128,8 @@ namespace ESL_Api.DataAccessLayer
                             userInfo.userID.ToString(),
                             decryptedUsername,
                             userInfo.userLocationId,
-                            userInfo.userLocationName.ToString()
+                            userInfo.userLocationName.ToString(),
+                            userInfo.sessionToken != null ? userInfo.sessionToken.ToString() : null
                         );
                         Logger.Info($"[PDALoginData] Login successful | UserID: {userInfo.userID} | LocationID: {userInfo.userLocationId}");
                     }
@@ -1004,7 +1005,8 @@ namespace ESL_Api.DataAccessLayer
                             userInfo.userID.ToString(),
                             decryptedUsername,
                             userInfo.userLocationId,
-                            userInfo.userLocationName.ToString()
+                            userInfo.userLocationName.ToString(),
+                            userInfo.sessionToken != null ? userInfo.sessionToken.ToString() : null
                         );
 
                         Logger.Info($"[DashboardLoginData] Login successful | UserID: {userInfo.userID} | LocationID: {userInfo.userLocationId}");

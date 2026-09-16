@@ -3,6 +3,7 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -30,27 +31,24 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          console.error('401 Unauthorized on request:', req.url);
+          console.warn('401 Unauthorized on request:', req.url);
 
-          const isLoggedIn = sessionStorage.getItem('IslogedIn');
-          const userID = sessionStorage.getItem('userID');
-          const activationKey = sessionStorage.getItem('activationKey');
-          const apiUrl = sessionStorage.getItem('apiUrl');
+          const terminationMsg = error.error?.message || 'Your session was terminated because this account was logged in from another browser or device.';
 
-          if (isLoggedIn === 'True' && userID && apiUrl && activationKey) {
-            fetch(`${apiUrl}DashboardLogout`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ userID, activationKey }),
-              keepalive: true
-            }).finally(() => {
-              sessionStorage.clear();
-              localStorage.clear();
+          sessionStorage.clear();
+          localStorage.clear();
+
+          if (!Swal.isVisible()) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Session Terminated',
+              text: terminationMsg,
+              confirmButtonText: 'OK',
+              allowOutsideClick: false
+            }).then(() => {
               this.router.navigate(['/login']);
             });
           } else {
-            sessionStorage.clear();
-            localStorage.clear();
             this.router.navigate(['/login']);
           }
         }
