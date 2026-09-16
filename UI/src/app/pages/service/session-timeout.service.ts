@@ -80,31 +80,32 @@ export class SessionTimeoutService {
 
   //  Handle Tab Close / Browser Close
   private setupTabCloseTracking(): void {
+    // Clear refresh flag on init
+    sessionStorage.removeItem('isRefresh');
 
-    // Set refresh flag on every page load
-    sessionStorage.setItem('isRefresh', 'true');
+    // Track reload shortcut keys (F5, Ctrl+R, Cmd+R)
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'F5' || (e.key === 'r' && (e.ctrlKey || e.metaKey))) {
+        sessionStorage.setItem('isRefresh', 'true');
+      }
+    });
 
-    // Remove flag after 2 seconds
-    setTimeout(() => {
-      sessionStorage.removeItem('isRefresh');
-    }, 2000);
-
-    window.addEventListener('beforeunload', () => {
-      const userID = sessionStorage.getItem('userID');
-      const isLoggedIn = sessionStorage.getItem('IslogedIn');
+    const sendCloseBeacon = () => {
+      const userID = sessionStorage.getItem('userID') || localStorage.getItem('userID');
+      const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+      const isLoggedIn = sessionStorage.getItem('IslogedIn') || localStorage.getItem('IslogedIn');
       const isRefresh = sessionStorage.getItem('isRefresh');
 
       // ✅ Only logout if tab is closing NOT refreshing
-      if (userID && isLoggedIn === 'True' && !isRefresh) {
-        const apiUrl = sessionStorage.getItem('apiUrl');
+      if ((userID || userName) && isLoggedIn === 'True' && !isRefresh) {
+        const apiUrl = sessionStorage.getItem('apiUrl') || localStorage.getItem('apiUrl');
         const activationKey = sessionStorage.getItem('activationKey');
 
-        if (apiUrl && activationKey) {
-          // ✅ fetch with keepalive — fixes CORS OPTIONS issue
-          fetch(`${apiUrl}DashboardLogout`, {
+        if (apiUrl) {
+          fetch(`${apiUrl}EndUserSession`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userID, activationKey }),
+            body: JSON.stringify({ userID, userName, reason: 'Browser Closed', activationKey }),
             keepalive: true
           });
         }
@@ -113,6 +114,13 @@ export class SessionTimeoutService {
         sessionStorage.clear();
         localStorage.clear();
         this.clearAllCookies();
+      }
+    };
+
+    window.addEventListener('beforeunload', sendCloseBeacon);
+    window.addEventListener('pagehide', (e: PageTransitionEvent) => {
+      if (!e.persisted) {
+        sendCloseBeacon();
       }
     });
   }
@@ -125,16 +133,17 @@ export class SessionTimeoutService {
     this.toastr.clear();
     this.sessionTimeoutSubject.next();
 
-    const userID = sessionStorage.getItem('userID');
-    const apiUrl = sessionStorage.getItem('apiUrl');
+    const userID = sessionStorage.getItem('userID') || localStorage.getItem('userID');
+    const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+    const apiUrl = sessionStorage.getItem('apiUrl') || localStorage.getItem('apiUrl');
     const activationKey = sessionStorage.getItem('activationKey');
 
-    // ✅ fetch with keepalive — fixes CORS OPTIONS issue
-    if (userID && apiUrl && activationKey) {
-      fetch(`${apiUrl}DashboardLogout`, {
+    // ✅ fetch with keepalive to record Inactivity Timeout
+    if ((userID || userName) && apiUrl) {
+      fetch(`${apiUrl}EndUserSession`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userID, activationKey }),
+        body: JSON.stringify({ userID, userName, reason: 'Inactivity Timeout', activationKey }),
         keepalive: true
       }).finally(() => {
         this.clearStorage();

@@ -68,12 +68,26 @@ export class AutoLogoutService {
       return;
     }
 
+    const userID = sessionStorage.getItem('userID') || localStorage.getItem('userID');
+    const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
+    const apiUrl = sessionStorage.getItem('apiUrl') || localStorage.getItem('apiUrl');
+    const activationKey = sessionStorage.getItem('activationKey');
+
+    if (apiUrl && (userID || userName)) {
+      fetch(`${apiUrl}EndUserSession`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userID, userName, reason: 'Inactivity Timeout', activationKey }),
+        keepalive: true
+      });
+    }
+
     this.ngZone.run(() => {
       sessionStorage.clear();
       localStorage.clear();
 
       this.toastr.warning(
-        'Your session expired due to 20 minutes of inactivity. Please sign in again.',
+        'Your session expired due to inactivity. Please sign in again.',
         'Session Expired',
         {
           timeOut: 5000,

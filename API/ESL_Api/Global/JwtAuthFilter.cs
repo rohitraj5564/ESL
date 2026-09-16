@@ -13,11 +13,14 @@ namespace ESL_Api.Global
         {
             var actionName = actionContext.ActionDescriptor.ActionName;
 
-            // Only allow unauthenticated access to login and activation endpoints
+            // Only allow unauthenticated access to login, activation, and session termination endpoints
             if (actionName == "DashboardLoginData" ||
                 actionName == "PDALoginData" ||
                 actionName == "GetActivationKey" ||
-                actionName == "AuthUser")
+                actionName == "AuthUser" ||
+                actionName == "EndUserSession" ||
+                actionName == "DashboardLogout" ||
+                actionName == "PDALogout")
             {
                 base.OnActionExecuting(actionContext);
                 return;

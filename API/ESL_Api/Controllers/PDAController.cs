@@ -283,7 +283,8 @@ namespace ESL_Api.Controllers
 
                 {
 
-                    PDADAL.PDALogoutUser(logoutRequest.userID);
+                    string reason = string.IsNullOrWhiteSpace(logoutRequest?.reason) ? "Manual Logout" : logoutRequest.reason;
+                    PDADAL.PDALogoutUser(logoutRequest.userID, reason, logoutRequest.userName);
 
                     responseData.status = true;
 
@@ -291,7 +292,7 @@ namespace ESL_Api.Controllers
 
                     responseData.data = null;
 
-                    Logger.LogResponse("LTS/PDALogout", true, $"UserID: {logoutRequest.userID} logged out");
+                    Logger.LogResponse("LTS/PDALogout", true, $"UserID: {logoutRequest.userID} logged out ({reason})");
 
                 }
 
@@ -1713,73 +1714,71 @@ namespace ESL_Api.Controllers
 
         }
         [HttpPost, Route("DashboardLogout")]
-
         public IHttpActionResult DashboardLogout([FromBody] LogoutRequest logoutRequest)
-
         {
-
-            Logger.LogRequest("LTS/DashboardLogout", logoutRequest?.userID ?? "unknown");
+            string reason = string.IsNullOrWhiteSpace(logoutRequest?.reason) ? "Manual Logout" : logoutRequest.reason;
+            Logger.LogRequest("LTS/DashboardLogout", logoutRequest?.userID ?? logoutRequest?.userName ?? "unknown", $"Reason: {reason}");
 
             ResponseData responseData = new ResponseData();
-
-            bool validateKey = Psl.Chase.Utils.ProductKeyHelper.ValidateProductKey(logoutRequest.activationKey);
+            bool validateKey = Psl.Chase.Utils.ProductKeyHelper.ValidateProductKey(logoutRequest?.activationKey);
 
             if (validateKey)
-
             {
-
                 try
-
                 {
-
-                    PDADAL.WEBLogoutUser(logoutRequest.userID);
-
+                    PDADAL.WEBLogoutUser(logoutRequest.userID, reason, logoutRequest.userName);
                     responseData.status = true;
-
                     responseData.message = "Logged out successfully";
-
                     responseData.data = null;
-
-                    Logger.LogResponse("LTS/DashboardLogout", true, $"UserID: {logoutRequest.userID} logged out");
-
+                    Logger.LogResponse("LTS/DashboardLogout", true, $"UserID: {logoutRequest.userID} logged out ({reason})");
                 }
-
                 catch (Exception ex)
-
                 {
-
                     responseData.status = false;
-
                     responseData.message = ex.Message;
-
                     responseData.data = null;
-
-                    Logger.Error($"[DashboardLogout] Failed | UserID: {logoutRequest.userID}", ex);
-
+                    Logger.Error($"[DashboardLogout] Failed | UserID: {logoutRequest?.userID}", ex);
                     Logger.LogResponse("LTS/DashboardLogout", false, ex.Message);
-
                 }
-
             }
-
             else
-
             {
-
                 responseData.status = false;
-
                 responseData.message = "777";
-
                 responseData.data = null;
-
                 Logger.Warn("[DashboardLogout] Invalid product key");
-
                 Logger.LogResponse("LTS/DashboardLogout", false, "Invalid product key");
-
             }
 
             return Ok(responseData);
+        }
 
+        [HttpPost, Route("EndUserSession")]
+        public IHttpActionResult EndUserSession([FromBody] LogoutRequest logoutRequest)
+        {
+            string reason = string.IsNullOrWhiteSpace(logoutRequest?.reason) ? "Manual Logout" : logoutRequest.reason;
+            string userIdentifier = logoutRequest?.userID ?? logoutRequest?.userName ?? "unknown";
+            Logger.LogRequest("LTS/EndUserSession", userIdentifier, $"Reason: {reason}");
+
+            ResponseData responseData = new ResponseData();
+            try
+            {
+                PDADAL.WEBLogoutUser(logoutRequest?.userID, reason, logoutRequest?.userName);
+                responseData.status = true;
+                responseData.message = $"Session ended successfully ({reason})";
+                responseData.data = null;
+                Logger.LogResponse("LTS/EndUserSession", true, $"User {userIdentifier} session ended ({reason})");
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Logger.Error($"[EndUserSession] Failed | User: {userIdentifier}", ex);
+                Logger.LogResponse("LTS/EndUserSession", false, ex.Message);
+            }
+
+            return Ok(responseData);
         }
         [HttpGet, Route("GetAllBFLadle")]
 

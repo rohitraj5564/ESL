@@ -11,7 +11,7 @@ namespace ESL_Api.IDataAccessLayer
     {
         #region PDA
         PDALoginModel PDALoginData(PDALoginRequest loginRequest);
-        bool PDALogoutUser(string userID);
+        bool PDALogoutUser(string userID, string reason = "Manual Logout", string userName = null);
         SyncData PDASyncData(string userID);
         FurnaceLadlesModelResponse GetLadlesByFurnace(string userID, int furnaceLocationID);
         Response CastAssignmentCreation(PDACastAssignmentModel castAssignment);
@@ -38,7 +38,7 @@ namespace ESL_Api.IDataAccessLayer
 
         #region Dashboard
         WEBDashboardLogin DashboardLoginData(DashboardLoginRequest loginRequest);
-        bool WEBLogoutUser(string userID);
+        bool WEBLogoutUser(string userID, string reason = "Manual Logout", string userName = null);
         List<BFLadleModel> GetAllBFLadle();
         LadleRequestListResponse GetLadleRequest();
         LadleMovementListResponse GetLadleMovement();

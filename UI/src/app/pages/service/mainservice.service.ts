@@ -51,12 +51,15 @@ private refreshReportSource = new Subject<void>();
 
   // Logout — WB Admin / Dashboard users
   logout(): void {
-    const userID = sessionStorage.getItem('userID');
+    const userID = sessionStorage.getItem('userID') || localStorage.getItem('userID');
+    const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
     const activationKey = sessionStorage.getItem('activationKey');
 
-    if (userID && activationKey) {
+    if (userID || userName) {
       this.http.post(`${this.apiUrl}DashboardLogout`, {
         userID: userID,
+        userName: userName,
+        reason: 'Manual Logout',
         activationKey: activationKey
       }).subscribe({
         next: (res) => {
@@ -76,11 +79,12 @@ private refreshReportSource = new Subject<void>();
 
   // Logout — BF / Production / Maintenance (PDA) users
   logoutPDA(): void {
-    const userID = sessionStorage.getItem('userID');
+    const userID = sessionStorage.getItem('userID') || localStorage.getItem('userID');
+    const userName = sessionStorage.getItem('userName') || localStorage.getItem('userName');
     const activationKey = sessionStorage.getItem('activationKey');
 
-    if (userID && activationKey) {
-      this.logoutPDACall({ userID, activationKey }).subscribe({
+    if (userID || userName) {
+      this.logoutPDACall({ userID, userName, reason: 'Manual Logout', activationKey }).subscribe({
         next: (res) => {
           this.clearStorage();
           this.router.navigate(['/login']);

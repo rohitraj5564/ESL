@@ -140,15 +140,17 @@ namespace ESL_Api.DataAccessLayer
             return response;
         }
 
-        public bool PDALogoutUser(string userID)
+        public bool PDALogoutUser(string userID, string reason = "Manual Logout", string userName = null)
         {
-            Logger.Info($"[PDALogoutUser] Logout started | UserID: {userID}");
+            Logger.Info($"[PDALogoutUser] Logout started | UserID: {userID} | UserName: {userName} | Reason: {reason}");
             using (IDbConnection db = new SqlConnection(Appsetting.ConnectionString))
             {
                 var _params = new DynamicParameters();
                 _params.Add("@UserID", userID);
-                db.Execute(Appsetting.SQLQueryCommand.PDA_SP_Logout, _params, commandType: CommandType.StoredProcedure);
-                Logger.Info($"[PDALogoutUser] Logout successful | UserID: {userID}");
+                _params.Add("@UserName", userName);
+                _params.Add("@LogoutReason", string.IsNullOrWhiteSpace(reason) ? "Manual Logout" : reason);
+                db.Execute("ESL_SP_RecordUserLogout", _params, commandType: CommandType.StoredProcedure);
+                Logger.Info($"[PDALogoutUser] Logout successful | UserID: {userID} | Reason: {reason}");
                 return true;
             }
         }
@@ -1013,16 +1015,17 @@ namespace ESL_Api.DataAccessLayer
             return response;
         }
 
-        public bool WEBLogoutUser(string userID)
+        public bool WEBLogoutUser(string userID, string reason = "Manual Logout", string userName = null)
         {
-            Logger.Info($"[WEBLogoutUser] Logout started | UserID: {userID}");
+            Logger.Info($"[WEBLogoutUser] Logout started | UserID: {userID} | UserName: {userName} | Reason: {reason}");
             using (IDbConnection db = new SqlConnection(Appsetting.ConnectionString))
             {
                 var _params = new DynamicParameters();
                 _params.Add("@UserID", userID);
-                db.Execute(Appsetting.SQLQueryCommand.WEB_SP_Logout, _params,
-                           commandType: CommandType.StoredProcedure);
-                Logger.Info($"[WEBLogoutUser] Logout successful | UserID: {userID}");
+                _params.Add("@UserName", userName);
+                _params.Add("@LogoutReason", string.IsNullOrWhiteSpace(reason) ? "Manual Logout" : reason);
+                db.Execute("ESL_SP_RecordUserLogout", _params, commandType: CommandType.StoredProcedure);
+                Logger.Info($"[WEBLogoutUser] Logout successful | UserID: {userID} | Reason: {reason}");
                 return true;
             }
         }

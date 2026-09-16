@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
   loginFailed: boolean = false;
   usernameError: boolean = false;
   passwordError: boolean = false;
+  enteredUserName: string = '';
 
   isLoading: boolean = false;
   errorMessage: string = '';
@@ -191,6 +192,11 @@ export class LoginComponent implements OnInit {
       'userID',
       response.data.userID
     );
+
+    const resolvedUserName = response?.data?.userName || this.enteredUserName || '';
+    sessionStorage.setItem('userName', resolvedUserName);
+    localStorage.setItem('userID', response?.data?.userID || '');
+    localStorage.setItem('userName', resolvedUserName);
 
     sessionStorage.setItem(
       'userLocationId',
@@ -469,6 +475,8 @@ export class LoginComponent implements OnInit {
     UserName: string,
     Password: string
   ): void {
+    this.enteredUserName = UserName ? UserName.trim() : '';
+
     if (this.isLoading) {
       return;
     }
