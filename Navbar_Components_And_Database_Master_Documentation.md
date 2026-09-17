@@ -5,7 +5,123 @@ This document provides an exhaustive, button-by-button mapping of every feature 
 
 ---
 
+### System Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "CLIENT TIER: Angular 12+ Single Page Application"
+        subgraph "Navigation & Layout"
+            NAV["NavbarComponent<br/>(Sidebar & Top Header)"]
+            GUARD["AuthGuard<br/>(Route Protection)"]
+        end
+
+        subgraph "Operational Screens"
+            DASH["Esldashboard / Dashboard<br/>(Live Telemetry & SCADA Grid)"]
+            MAP["MapComponent<br/>(Visual Ladle Movement Map)"]
+            HOME["HomeComponent<br/>(WB Admin Reversals & Loco Ops)"]
+            REQ["Ladle Request Screens<br/>(BF1, BF2, BF3, SMS, DIP, PCM, LRS)"]
+            PEND["PendingRequestComponent<br/>(Requisitions in Queue)"]
+            COMP["CompletedRequestComponent<br/>(Fulfilled Request Archive)"]
+            CAST["CastAssignmentComponent<br/>(Heat / Cast No Mapping)"]
+            PROD["ProductionOrderMapping<br/>(SAP / ERP Order Sync)"]
+            LOCO["LocoLadleMovement<br/>(Loco-to-Ladle Telemetry)"]
+            SYS["SystemStatusComponent<br/>(Hardware & Services Monitor)"]
+        end
+
+        subgraph "Analytical & Audit Reports"
+            REP_JOURNEY["Ladle Journey Report"]
+            REP_DEPT["Department Summary Report"]
+            REP_WEIGH["Ladle Weighment Report"]
+            REP_SLAG["Slag & Skull Report"]
+            REP_AUTO["Manual vs Auto Report"]
+            REP_LOGIN["User Login History Report"]
+        end
+
+        subgraph "Angular Services"
+            SVC_MAIN["MainService<br/>(HTTP REST Client)"]
+            SVC_ACT["UserActivityService<br/>(Inactivity Timeout Tracker)"]
+            SVC_THEME["ThemeService<br/>(Dark / Light Mode)"]
+            SVC_LAYOUT["LayoutService<br/>(Sidebar Drawer State)"]
+        end
+    end
+
+    subgraph "WEB & GATEWAY TIER"
+        IIS["IIS 10.0 Web Server / Reverse Proxy<br/>(http://172.17.20.10:100 / Port 40000)"]
+    end
+
+    subgraph "APPLICATION TIER: ASP.NET Web API 2 (.NET Framework 4.8 / C#)"
+        CTRL["PDAController<br/>(RoutePrefix: 'LTS')"]
+        
+        subgraph "Business Services & DAL"
+            DAL["PDADAL<br/>(Dapper ORM & Query Execution)"]
+            AD_SVC["ADAuthService<br/>(Active Directory LDAP/Kerberos)"]
+            ENGINE["LadleTracker Engine<br/>(PSL.Infinity.ESLLadleTracker)"]
+        end
+    end
+
+    subgraph "ENTERPRISE & FIELD HARDWARE TIER"
+        AD_DC["Active Directory Domain Controller<br/>(Port 389 / 636 LDAP)"]
+        RFID["RFID Stationary Readers<br/>(Tapping, Scales, Converters)"]
+        WB_SCALE["Weighbridge Indicators<br/>(Gross & Tare Weighments)"]
+        OCR_CAM["Cameras & OCR Engines<br/>(Ladle Visual ID)"]
+    end
+
+    subgraph "DATABASE TIER: Microsoft SQL Server (ESLLadleDB_Prod)"
+        subgraph "Stored Procedures"
+            SP_AUTH["ESL_WEB_SP_DashboardLogin<br/>ESL_SP_RecordUserLogout<br/>ESL_PDA_SP_LoginData"]
+            SP_OPS["ESL_WEB_SP_GetLadleMovement_V2<br/>ESL_WEB_SP_CreateMovement_V1<br/>ESL_WEB_SP_AssignedLocoToLadle<br/>ESL_WEB_SP_TransferLoco"]
+            SP_REQ["ESL_PDA_SP_CreateLadleRequest<br/>ESL_WEB_SP_CompleteLadleRequest<br/>ESL_PDA_SP_UpdateLadleRequest"]
+            SP_HOT["SP_GetHotmetalBooking<br/>ESL_PDA_SP_CreateCastAssignment_V1<br/>SP_InsertProductionOrder"]
+            SP_REP["ESL_SP_GetUserLoginHistoryReport<br/>ESL_SP_GetLoginReportUsers<br/>ESL_WEB_SP_GetLadleWeighmentReport<br/>ESL_WEB_SP_GetTransactionReport"]
+        end
+
+        subgraph "Database Tables"
+            TBL_USERS["[dbo].[Users]<br/>[dbo].[UserLoginHistory]"]
+            TBL_MOVES["[dbo].[LadleMovement]<br/>[dbo].[LadleMovementTrips]<br/>[dbo].[LadleMovementTrail]"]
+            TBL_REQS["[dbo].[LadleRequest]<br/>[dbo].[ReversalRequests]"]
+            TBL_TX["[dbo].[LadleTransactionDetails]<br/>[dbo].[WeighmentDetails]"]
+            TBL_HEAT["[dbo].[Hotmetal_booking]<br/>[dbo].[CastMaster]<br/>[dbo].[CastTransaction]"]
+            TBL_MASTERS["[dbo].[AssetMaster]<br/>[dbo].[LocoMaster]<br/>[dbo].[Locations]<br/>[dbo].[ReaderMaster]"]
+        end
+    end
+
+    %% UI Connections
+    NAV --> DASH & MAP & HOME & REQ & PEND & COMP & CAST & PROD & LOCO & SYS
+    NAV --> REP_JOURNEY & REP_DEPT & REP_WEIGH & REP_SLAG & REP_AUTO & REP_LOGIN
+    DASH & MAP & HOME & REQ & PEND & COMP & CAST & PROD & LOCO & SYS --> SVC_MAIN
+    REP_JOURNEY & REP_DEPT & REP_WEIGH & REP_SLAG & REP_AUTO & REP_LOGIN --> SVC_MAIN
+    SVC_ACT -.->|"Auto-Logout on Idle"| SVC_MAIN
+
+    %% API Connections
+    SVC_MAIN -->|"HTTP POST / GET (JSON)"| IIS
+    IIS --> CTRL
+    CTRL --> DAL
+    DAL --> AD_SVC
+    DAL --> ENGINE
+    AD_SVC -.->|"LDAP Simple Bind & Search"| AD_DC
+
+    %% Hardware to DB
+    RFID & WB_SCALE & OCR_CAM -.->|"Raw telemetry data"| TBL_TX
+
+    %% DAL to Stored Procedures
+    DAL -->|"Exec"| SP_AUTH
+    DAL -->|"Exec"| SP_OPS
+    DAL -->|"Exec"| SP_REQ
+    DAL -->|"Exec"| SP_HOT
+    DAL -->|"Exec"| SP_REP
+
+    %% Stored Procedures to Tables
+    SP_AUTH --> TBL_USERS
+    SP_OPS --> TBL_MOVES & TBL_MASTERS
+    SP_REQ --> TBL_REQS & TBL_TX
+    SP_HOT --> TBL_HEAT
+    SP_REP --> TBL_USERS & TBL_TX & TBL_MOVES
+```
+
+---
+
 ### Table of Contents
+0. [System Architecture Diagram](#system-architecture-diagram)
 1. [Header Actions & Navigation Controls](#1-header-actions--navigation-controls)
 2. [Sidebar Menu 1: Live Dashboard (Telemetry & Overview)](#2-sidebar-menu-1-live-dashboard)
 3. [Sidebar Menu 2: MAP (Live Plant Tracking Map)](#3-sidebar-menu-2-map)
