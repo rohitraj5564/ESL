@@ -5,123 +5,229 @@ This document provides an exhaustive, button-by-button mapping of every feature 
 
 ---
 
-### System Architecture Diagram
+---
+
+### 1. Complete System Architecture Diagram (Entire UI Ecosystem)
+
+The following diagram illustrates the **complete architecture of the entire ESL Ladle Tracking & Management System**, covering every screen in the UI, client services, backend API controllers, business logic engines, field hardware telemetry, database stored procedures, and relational tables.
 
 ```mermaid
 graph TB
-    subgraph "CLIENT TIER: Angular 12+ Single Page Application"
-        subgraph "Navigation & Layout"
-            NAV["NavbarComponent<br/>(Sidebar & Top Header)"]
-            GUARD["AuthGuard<br/>(Route Protection)"]
+    %% =========================================================================
+    %% TIER 1: FRONTEND SINGLE PAGE APPLICATION (ANGULAR 12+)
+    %% =========================================================================
+    subgraph "TIER 1: CLIENT PRESENTATION LAYER (Angular 12+ SPA)"
+        subgraph "Layout & Global Controls"
+            NAV["NavbarComponent<br/>(Sidebar Menu Drawer & Top Header)"]
+            THEME_CTRL["Theme Engine<br/>(Dark Mode / Light Mode)"]
+            IDLE_CTRL["UserActivityService<br/>(15-Min Inactivity Auto-Logout)"]
+            BEACON_CTRL["AppComponent<br/>(Window Unload Beacon Dispatcher)"]
         end
 
-        subgraph "Operational Screens"
-            DASH["Esldashboard / Dashboard<br/>(Live Telemetry & SCADA Grid)"]
-            MAP["MapComponent<br/>(Visual Ladle Movement Map)"]
-            HOME["HomeComponent<br/>(WB Admin Reversals & Loco Ops)"]
-            REQ["Ladle Request Screens<br/>(BF1, BF2, BF3, SMS, DIP, PCM, LRS)"]
-            PEND["PendingRequestComponent<br/>(Requisitions in Queue)"]
-            COMP["CompletedRequestComponent<br/>(Fulfilled Request Archive)"]
-            CAST["CastAssignmentComponent<br/>(Heat / Cast No Mapping)"]
-            PROD["ProductionOrderMapping<br/>(SAP / ERP Order Sync)"]
-            LOCO["LocoLadleMovement<br/>(Loco-to-Ladle Telemetry)"]
-            SYS["SystemStatusComponent<br/>(Hardware & Services Monitor)"]
+        subgraph "1. Real-Time Operations & Tracking Screens"
+            UI_DASH["EsldashboardComponent / DashboardComponent<br/>• Live SCADA Telemetry & Dynamic Pipe SVG<br/>• Heat Turnaround Times & Hold Time Metrics<br/>• LIMS Chemical Chemistry Modal"]
+            UI_MAP["MapComponent<br/>• Live Spatial Plant Layout & Track Nodes<br/>• Real-Time Ladle Coordinate Polling<br/>• Station Zoom, Pan & Dwell Inspection"]
+            UI_HOME["HomeComponent (Weighbridge Operations)<br/>• Create Ladle Movement Trips<br/>• Couple / Transfer Locomotives<br/>• Reversal Requisitions & Dispatch"]
+            UI_LOCO["LocoLadleMovementComponent<br/>• Locomotive-to-Ladle Telemetry Pairing<br/>• Yard Fleet Allocation & Status"]
         end
 
-        subgraph "Analytical & Audit Reports"
-            REP_JOURNEY["Ladle Journey Report"]
-            REP_DEPT["Department Summary Report"]
-            REP_WEIGH["Ladle Weighment Report"]
-            REP_SLAG["Slag & Skull Report"]
-            REP_AUTO["Manual vs Auto Report"]
-            REP_LOGIN["User Login History Report"]
+        subgraph "2. Plant Shop Floor Requisition Screens"
+            UI_BF["EslBlastFurnaceComponent (BF1, BF2, BF3)<br/>• Empty Ladle Requisition Dispatch<br/>• Tapping Cast Assignment Mapping<br/>• Request Modification / Cancellation"]
+            UI_PROD["EslProductionComponent (SMS, DIP, PCM)<br/>• Incoming Hot Metal Verification<br/>• Gross / Tare Weight Confirmation<br/>• Hot Metal Reversal Requisition"]
+            UI_MAINT["EslMaintenanceComponent (LRS Shop)<br/>• Ladle Refractory Inspection<br/>• Ladle De-skulling & Maintenance Close<br/>• Return to Service Approval"]
+            UI_PEND["PendingRequestComponent<br/>• Active Requisition Approval Queue<br/>• Yard Empty Ladle Allocation"]
+            UI_COMP["CompletedRequestComponent<br/>• Historical Fulfilled Trip Archive"]
         end
 
-        subgraph "Angular Services"
-            SVC_MAIN["MainService<br/>(HTTP REST Client)"]
-            SVC_ACT["UserActivityService<br/>(Inactivity Timeout Tracker)"]
-            SVC_THEME["ThemeService<br/>(Dark / Light Mode)"]
-            SVC_LAYOUT["LayoutService<br/>(Sidebar Drawer State)"]
-        end
-    end
-
-    subgraph "WEB & GATEWAY TIER"
-        IIS["IIS 10.0 Web Server / Reverse Proxy<br/>(http://172.17.20.10:100 / Port 40000)"]
-    end
-
-    subgraph "APPLICATION TIER: ASP.NET Web API 2 (.NET Framework 4.8 / C#)"
-        CTRL["PDAController<br/>(RoutePrefix: 'LTS')"]
-        
-        subgraph "Business Services & DAL"
-            DAL["PDADAL<br/>(Dapper ORM & Query Execution)"]
-            AD_SVC["ADAuthService<br/>(Active Directory LDAP/Kerberos)"]
-            ENGINE["LadleTracker Engine<br/>(PSL.Infinity.ESLLadleTracker)"]
-        end
-    end
-
-    subgraph "ENTERPRISE & FIELD HARDWARE TIER"
-        AD_DC["Active Directory Domain Controller<br/>(Port 389 / 636 LDAP)"]
-        RFID["RFID Stationary Readers<br/>(Tapping, Scales, Converters)"]
-        WB_SCALE["Weighbridge Indicators<br/>(Gross & Tare Weighments)"]
-        OCR_CAM["Cameras & OCR Engines<br/>(Ladle Visual ID)"]
-    end
-
-    subgraph "DATABASE TIER: Microsoft SQL Server (ESLLadleDB_Prod)"
-        subgraph "Stored Procedures"
-            SP_AUTH["ESL_WEB_SP_DashboardLogin<br/>ESL_SP_RecordUserLogout<br/>ESL_PDA_SP_LoginData"]
-            SP_OPS["ESL_WEB_SP_GetLadleMovement_V2<br/>ESL_WEB_SP_CreateMovement_V1<br/>ESL_WEB_SP_AssignedLocoToLadle<br/>ESL_WEB_SP_TransferLoco"]
-            SP_REQ["ESL_PDA_SP_CreateLadleRequest<br/>ESL_WEB_SP_CompleteLadleRequest<br/>ESL_PDA_SP_UpdateLadleRequest"]
-            SP_HOT["SP_GetHotmetalBooking<br/>ESL_PDA_SP_CreateCastAssignment_V1<br/>SP_InsertProductionOrder"]
-            SP_REP["ESL_SP_GetUserLoginHistoryReport<br/>ESL_SP_GetLoginReportUsers<br/>ESL_WEB_SP_GetLadleWeighmentReport<br/>ESL_WEB_SP_GetTransactionReport"]
+        subgraph "3. Metallurgy, SAP ERP & Hardware Diagnostics"
+            UI_CAST["CastAssignmentComponent<br/>• Hot Metal Heat / Cast Number Update<br/>• Spectro Chemistry (C, Si, Mn, S, P, Ti, Cr)<br/>• Ladle RFID Tag to Heat Association"]
+            UI_SAP["ProductionOrderMappingComponent<br/>• SAP / ERP Production Order Input<br/>• Prefix Rule Assignment per Furnace<br/>• Target Steel Grade Mapping"]
+            UI_SYS["SystemStatusComponent / ReaderstatusComponent<br/>• RFID Gate Antenna Ping Health<br/>• OCR Visual Capture Recognition Health<br/>• Windows Service Telemetry Heartbeat"]
         end
 
-        subgraph "Database Tables"
-            TBL_USERS["[dbo].[Users]<br/>[dbo].[UserLoginHistory]"]
-            TBL_MOVES["[dbo].[LadleMovement]<br/>[dbo].[LadleMovementTrips]<br/>[dbo].[LadleMovementTrail]"]
-            TBL_REQS["[dbo].[LadleRequest]<br/>[dbo].[ReversalRequests]"]
-            TBL_TX["[dbo].[LadleTransactionDetails]<br/>[dbo].[WeighmentDetails]"]
-            TBL_HEAT["[dbo].[Hotmetal_booking]<br/>[dbo].[CastMaster]<br/>[dbo].[CastTransaction]"]
-            TBL_MASTERS["[dbo].[AssetMaster]<br/>[dbo].[LocoMaster]<br/>[dbo].[Locations]<br/>[dbo].[ReaderMaster]"]
+        subgraph "4. Operational & Audit Reporting Suite"
+            UI_REP_JOURNEY["LadlereportComponent<br/>• End-to-End Round Trip Ladle Journey<br/>• Station Dwell Visual Timeline"]
+            UI_REP_DEPT["DepartmentreportComponent<br/>• Departmental TAT, Hold Time & Tonnage"]
+            UI_REP_WEIGH["LadleWeighmentReportComponent<br/>• Gross, Tare, Net Weighment Audit<br/>• Scale Calibration & Weight Discrepancies"]
+            UI_REP_SLAG["SlagReportComponent<br/>• Slag Pot Tonnage & Skull Tare Increment"]
+            UI_REP_AUTO["ManualVsAutoReportComponent<br/>• RFID Auto-Detection vs Manual Override %"]
+            UI_REP_LOGIN["UserLoginHistoryReportComponent<br/>• Audit Log of Logins, Durations & Logouts<br/>• PDF / Excel Export Engine"]
+        end
+
+        subgraph "Angular Shared Services"
+            SVC_MAIN["MainserviceService<br/>(Central HTTP REST Client)"]
+            SVC_THEME["ThemeService"]
+            SVC_LAYOUT["LayoutService"]
+            SVC_CONFIG["AppConfigService"]
         end
     end
 
-    %% UI Connections
-    NAV --> DASH & MAP & HOME & REQ & PEND & COMP & CAST & PROD & LOCO & SYS
-    NAV --> REP_JOURNEY & REP_DEPT & REP_WEIGH & REP_SLAG & REP_AUTO & REP_LOGIN
-    DASH & MAP & HOME & REQ & PEND & COMP & CAST & PROD & LOCO & SYS --> SVC_MAIN
-    REP_JOURNEY & REP_DEPT & REP_WEIGH & REP_SLAG & REP_AUTO & REP_LOGIN --> SVC_MAIN
-    SVC_ACT -.->|"Auto-Logout on Idle"| SVC_MAIN
+    %% UI to Services
+    NAV --> UI_DASH & UI_MAP & UI_HOME & UI_LOCO
+    NAV --> UI_BF & UI_PROD & UI_MAINT & UI_PEND & UI_COMP
+    NAV --> UI_CAST & UI_SAP & UI_SYS
+    NAV --> UI_REP_JOURNEY & UI_REP_DEPT & UI_REP_WEIGH & UI_REP_SLAG & UI_REP_AUTO & UI_REP_LOGIN
 
-    %% API Connections
-    SVC_MAIN -->|"HTTP POST / GET (JSON)"| IIS
-    IIS --> CTRL
-    CTRL --> DAL
+    UI_DASH & UI_MAP & UI_HOME & UI_LOCO --> SVC_MAIN
+    UI_BF & UI_PROD & UI_MAINT & UI_PEND & UI_COMP --> SVC_MAIN
+    UI_CAST & UI_SAP & UI_SYS --> SVC_MAIN
+    UI_REP_JOURNEY & UI_REP_DEPT & UI_REP_WEIGH & UI_REP_SLAG & UI_REP_AUTO & UI_REP_LOGIN --> SVC_MAIN
+    IDLE_CTRL -.->|"Auto Logout on Idle"| SVC_MAIN
+    BEACON_CTRL -.->|"sendBeacon on Unload"| SVC_MAIN
+
+    %% =========================================================================
+    %% TIER 2: REVERSE PROXY & GATEWAY
+    %% =========================================================================
+    subgraph "TIER 2: WEB HOSTING & GATEWAY TIER"
+        IIS["IIS 10.0 Web Server (HTTP Host / Reverse Proxy)<br/>• Production: http://172.17.20.10:100<br/>• Local Dev: http://localhost:40000<br/>• Cross-Origin Resource Sharing (CORS) Handling"]
+    end
+
+    SVC_MAIN -->|"HTTP POST / GET (JSON Payloads)"| IIS
+
+    %% =========================================================================
+    %% TIER 3: APPLICATION API & BUSINESS ENGINES
+    %% =========================================================================
+    subgraph "TIER 3: BACKEND API & BUSINESS LAYER (ASP.NET Web API 2 / C# .NET 4.8)"
+        API_GATEWAY["PDAController (RoutePrefix: 'LTS')<br/>• PostDashboardLoginData / DashboardLogout / LogoutUser<br/>• GetDashboardData / GetLadleMovement / CreateWEBMovement<br/>• InsertLadleRequest / UpdateLadleRequest / CompleteLadleRequest<br/>• GetHotmetalBooking / UpdateCastNumber / InsertProductionOrder<br/>• GetUserLoginHistoryReport / GetLadleWeighmentReport"]
+
+        subgraph "Application Core Services"
+            DAL["PDADAL (Data Access Layer)<br/>• Dapper High-Performance Micro-ORM<br/>• Parameterized Stored Procedure Execution<br/>• Multi-Dataset Result Mapping"]
+            AD_SVC["ADAuthService<br/>• Multi-Base LDAP Protocol Engine<br/>• Kerberos & Domain Simple Bind<br/>• Active Directory Error Parser"]
+            TRACKER_ENG["LadleTracker Engine (PSL.Infinity.ESLLadleTracker)<br/>• SCADA State Machine Transitions<br/>• Dwell & Turnaround Calculation Core"]
+        end
+    end
+
+    IIS --> API_GATEWAY
+    API_GATEWAY --> DAL
     DAL --> AD_SVC
-    DAL --> ENGINE
-    AD_SVC -.->|"LDAP Simple Bind & Search"| AD_DC
+    DAL --> TRACKER_ENG
 
-    %% Hardware to DB
-    RFID & WB_SCALE & OCR_CAM -.->|"Raw telemetry data"| TBL_TX
+    %% =========================================================================
+    %% TIER 4: FIELD HARDWARE & EXTERNAL DIRECTORY
+    %% =========================================================================
+    subgraph "TIER 4: FIELD HARDWARE & ENTERPRISE DIRECTORY"
+        AD_DC["Active Directory Domain Controller<br/>• Host: 172.17.20.121 (Port 389 / 636)<br/>• Domain: ESL01.VEDANTARESOURCE.LOCAL"]
+        RFID_READERS["Fixed RFID Gate Readers<br/>• BF Tapping, WB Scales, SMS Bay Entrances"]
+        WB_SCALES["Weighbridge Digital Scale Indicators<br/>• Automatic Gross & Tare Signal Acquisition"]
+        OCR_CAMERAS["Optical Vision Cameras<br/>• Ladle Number Identification"]
+    end
+
+    AD_SVC -.->|"LDAP Directory Query"| AD_DC
+    RFID_READERS & WB_SCALES & OCR_CAMERAS -.->|"Field Telemetry Data"| TRACKER_ENG
+
+    %% =========================================================================
+    %% TIER 5: DATABASE LAYER (MICROSOFT SQL SERVER 2019)
+    %% =========================================================================
+    subgraph "TIER 5: DATABASE TIER (Microsoft SQL Server 2019 - ESLLadleDB_Prod)"
+        subgraph "Stored Procedures by Functional Area"
+            SP_AUTH["Authentication & Session SPs:<br/>• ESL_WEB_SP_DashboardLogin<br/>• ESL_PDA_SP_LoginData<br/>• ESL_SP_RecordUserLogout<br/>• ESL_WEB_SP_Logout"]
+            SP_MOVE["Ladle Tracking & Movement SPs:<br/>• ESL_WEB_SP_GetDashboardData<br/>• ESL_WEB_SP_GetLadleMovement_V2<br/>• ESL_WEB_SP_CreateMovement_V1<br/>• ESL_WEB_SP_CreateMovementTrips<br/>• ESL_WEB_SP_GetLadleMovementTrailLocation<br/>• ESL_WEB_SP_DeleteLadleFromMovement_V4"]
+            SP_LOCO["Locomotive Management SPs:<br/>• ESL_WEB_SP_GetAllLocoOccupied<br/>• ESL_WEB_SP_AssignedLocoToLadle<br/>• ESL_WEB_SP_TransferLoco<br/>• ESL_WEB_SP_GetLatestLocoLadleMapping"]
+            SP_REQ["Shop Requisition & Reversal SPs:<br/>• ESL_PDA_SP_CreateLadleRequest<br/>• ESL_PDA_SP_UpdateLadleRequest<br/>• ESL_WEB_SP_GetLadleRequest_V1<br/>• ESL_WEB_SP_CompleteLadleRequest<br/>• ESL_PDA_SP_RequestReversalLadles_V1<br/>• ESL_WEB_SP_InsertLadleReversal_V4<br/>• ESL_PDA_SP_CloseLadleMovement_V2"]
+            SP_HEAT["Cast, Metallurgy & SAP Orders SPs:<br/>• SP_GetHotmetalBooking<br/>• ESL_PDA_SP_CreateCastAssignment_V1<br/>• SP_InsertProductionOrder<br/>• SP_GetProductionReport<br/>• SP_GetPrefixByLocation"]
+            SP_REP["Audit & Analytics Reporting SPs:<br/>• ESL_SP_GetUserLoginHistoryReport<br/>• ESL_SP_GetLoginReportUsers<br/>• ESL_WEB_SP_GetLadleWeighmentReport<br/>• ESL_WEB_SP_GetTransactionReport<br/>• ESL_WEB_SP_GetManualVsAutoAssignmentReport<br/>• ESL_WEB_SP_GetSystemStatus"]
+        end
+
+        subgraph "Relational Tables by Domain"
+            TBL_USER["User & Session Domain:<br/>• [dbo].[Users]<br/>• [dbo].[UserLoginHistory]"]
+            TBL_LOGISTICS["Logistics & Fleet Domain:<br/>• [dbo].[LadleMovement]<br/>• [dbo].[LadleMovementTrips]<br/>• [dbo].[LadleMovementTrail]<br/>• [dbo].[LocoMaster]<br/>• [dbo].[LocoLadleMapping]"]
+            TBL_REQUISITION["Requisition Domain:<br/>• [dbo].[LadleRequest]<br/>• [dbo].[ReversalRequests]"]
+            TBL_TRANSACTION["Telemetry & Weight Domain:<br/>• [dbo].[LadleTransactionDetails]<br/>• [dbo].[WeighmentDetails]<br/>• [dbo].[SlagDetails]<br/>• [dbo].[Audit_Overrides]"]
+            TBL_METALLURGY["Heat & Chemistry Domain:<br/>• [dbo].[Hotmetal_booking]<br/>• [dbo].[HotMetal_ChemistryBF2]<br/>• [dbo].[CastMaster]<br/>• [dbo].[CastTransaction]"]
+            TBL_ERP["ERP & Hardware Master Domain:<br/>• [dbo].[ProductionOrderMapping]<br/>• [dbo].[ProductionOrderDetails]<br/>• [dbo].[AssetMaster]<br/>• [dbo].[Locations]<br/>• [dbo].[ReaderMaster]<br/>• [dbo].[ServiceHeartBeat]"]
+        end
+    end
 
     %% DAL to Stored Procedures
-    DAL -->|"Exec"| SP_AUTH
-    DAL -->|"Exec"| SP_OPS
-    DAL -->|"Exec"| SP_REQ
-    DAL -->|"Exec"| SP_HOT
-    DAL -->|"Exec"| SP_REP
+    DAL -->|"Execute Dapper Query"| SP_AUTH & SP_MOVE & SP_LOCO & SP_REQ & SP_HEAT & SP_REP
 
     %% Stored Procedures to Tables
-    SP_AUTH --> TBL_USERS
-    SP_OPS --> TBL_MOVES & TBL_MASTERS
-    SP_REQ --> TBL_REQS & TBL_TX
-    SP_HOT --> TBL_HEAT
-    SP_REP --> TBL_USERS & TBL_TX & TBL_MOVES
+    SP_AUTH --> TBL_USER
+    SP_MOVE --> TBL_LOGISTICS & TBL_TRANSACTION & TBL_ERP
+    SP_LOCO --> TBL_LOGISTICS
+    SP_REQ --> TBL_REQUISITION & TBL_TRANSACTION
+    SP_HEAT --> TBL_METALLURGY & TBL_ERP
+    SP_REP --> TBL_USER & TBL_TRANSACTION & TBL_LOGISTICS & TBL_ERP
+```
+
+---
+
+### 2. Functional Data Flow Architecture (User Interaction ➔ DB Execution)
+
+The following architectural flow shows how each user action in the UI travels through the routing engine, services, API endpoints, DAL methods, stored procedures, and tables:
+
+```mermaid
+flowchart LR
+    subgraph "1. User Action in UI"
+        A1["Dashboard View<br/>(Live SCADA & Pipes)"]
+        A2["Map View<br/>(Ladle Coordinates)"]
+        A3["Weighbridge Ops<br/>(Movements & Locos)"]
+        A4["Furnace Requisition<br/>(BF1, BF2, BF3, SMS)"]
+        A5["Cast & Heat Assign<br/>(LIMS Spectro)"]
+        A6["SAP Order Mapping<br/>(Order Sync)"]
+        A7["Reports Suite<br/>(Weighment, Journey, Login)"]
+        A8["Auth & Session<br/>(Login, Idle, Close)"]
+    end
+
+    subgraph "2. Angular Service"
+        B1["getLiveDashboard()"]
+        B2["getLadleMovement()"]
+        B3["addWEBMovement()<br/>transferLoco()"]
+        B4["createRequestladles()<br/>completeLadleRequest()"]
+        B5["updateCastNumber()<br/>insertCastAssignment()"]
+        B6["insertProductionOrdersMapping()"]
+        B7["getLadleReport()<br/>getUserLoginHistoryReport()"]
+        B8["loginDashboard()<br/>logout()"]
+    end
+
+    subgraph "3. API Endpoint (PDAController)"
+        C1["GET /LTS/dashboard"]
+        C2["GET /LTS/GetLadleMovement"]
+        C3["POST /LTS/CreateWEBMovement<br/>POST /LTS/TransferLoco"]
+        C4["POST /LTS/InsertLadleRequest<br/>POST /LTS/CompleteLadleRequest"]
+        C5["POST /LTS/UpdateCastNumber<br/>POST /LTS/InsertCastAssignment"]
+        C6["POST /LTS/InsertProductionOrder"]
+        C7["POST /LTS/ladle<br/>GET /LTS/GetUserLoginHistoryReport"]
+        C8["POST /LTS/DashboardLoginData<br/>POST /LTS/LogoutUser"]
+    end
+
+    subgraph "4. Stored Procedure"
+        D1["ESL_WEB_SP_GetDashboardData"]
+        D2["ESL_WEB_SP_GetLadleMovement_V2"]
+        D3["ESL_WEB_SP_CreateMovement_V1<br/>ESL_WEB_SP_TransferLoco"]
+        D4["ESL_PDA_SP_CreateLadleRequest<br/>ESL_WEB_SP_CompleteLadleRequest"]
+        D5["SP_GetHotmetalBooking<br/>ESL_PDA_SP_CreateCastAssignment_V1"]
+        D6["SP_InsertProductionOrder"]
+        D7["LadleJourney Query<br/>ESL_SP_GetUserLoginHistoryReport"]
+        D8["ESL_WEB_SP_DashboardLogin<br/>ESL_SP_RecordUserLogout"]
+    end
+
+    subgraph "5. Database Tables"
+        E1["LadleTransactionDetails<br/>Locations, AssetMaster"]
+        E2["LadleMovement<br/>LadleMovementTrail"]
+        E3["LadleMovement<br/>LadleMovementTrips, LocoMaster"]
+        E4["LadleRequest<br/>ReversalRequests"]
+        E5["Hotmetal_booking<br/>CastMaster, CastTransaction"]
+        E6["ProductionOrderMapping<br/>ProductionOrderDetails"]
+        E7["LadleTransactionDetails<br/>WeighmentDetails, UserLoginHistory"]
+        E8["Users<br/>UserLoginHistory"]
+    end
+
+    A1 --> B1 --> C1 --> D1 --> E1
+    A2 --> B2 --> C2 --> D2 --> E2
+    A3 --> B3 --> C3 --> D3 --> E3
+    A4 --> B4 --> C4 --> D4 --> E4
+    A5 --> B5 --> C5 --> D5 --> E5
+    A6 --> B6 --> C6 --> D6 --> E6
+    A7 --> B7 --> C7 --> D7 --> E7
+    A8 --> B8 --> C8 --> D8 --> E8
 ```
 
 ---
 
 ### Table of Contents
-0. [System Architecture Diagram](#system-architecture-diagram)
+0. [Complete System Architecture Diagram](#1-complete-system-architecture-diagram-entire-ui-ecosystem)
+1. [Header Actions & Navigation Controls](#1-header-actions--navigation-controls)
 1. [Header Actions & Navigation Controls](#1-header-actions--navigation-controls)
 2. [Sidebar Menu 1: Live Dashboard (Telemetry & Overview)](#2-sidebar-menu-1-live-dashboard)
 3. [Sidebar Menu 2: MAP (Live Plant Tracking Map)](#3-sidebar-menu-2-map)
