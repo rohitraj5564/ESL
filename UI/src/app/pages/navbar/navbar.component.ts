@@ -105,7 +105,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     // Auto-close ESL Reports submenu if clicking any item outside ESL Reports
-    const eslReports = ['transactionsum', 'ladlereport', 'locationsummary', 'departmentreport', 'ladleweighmentreport', 'slagreport', 'manualvsautoreport'];
+    const eslReports = ['transactionsum', 'ladlereport', 'locationsummary', 'departmentreport', 'ladleweighmentreport', 'slagreport', 'manualvsautoreport', 'userloginreport'];
     if (!eslReports.includes(menu) && menu !== 'eslReports') {
       this.showEslReportsSubmenu = false;
     }
@@ -188,6 +188,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
       case 'manualvsautoreport':
         this.navigate('/manualvsautoreport');
+        break;
+
+      case 'userloginreport':
+        this.navigate('/userloginreport');
         break;
 
       case 'systemstatus':

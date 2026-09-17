@@ -1,0 +1,296 @@
+<div class="report-page-container" [class.dark-theme]="isDarkTheme">
+
+  <!-- Header Banner -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon-wrap">
+        <i class="bi bi-clock-history header-icon"></i>
+      </div>
+      <div class="header-text">
+        <h2>User Login History & Duration Report</h2>
+        <p>Comprehensive audit log of user logins, logouts, session durations, and individual time analysis</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="pdf-btn" (click)="exportToPDF()" [disabled]="detailsData.length === 0" title="Download Report in PDF">
+        <i class="bi bi-file-earmark-pdf"></i>
+        <span>Download PDF</span>
+      </button>
+
+      <button class="export-btn" (click)="exportToExcel()" [disabled]="detailsData.length === 0" title="Download Excel Sheet">
+        <i class="bi bi-file-earmark-excel"></i>
+        <span>Export Excel</span>
+      </button>
+
+      <button class="clear-btn" (click)="resetFilters()" title="Reset to default 7-day window">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <span>Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Section: From Date to To Date + Optional User Filter -->
+  <div class="filter-section">
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>From Date</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="date-field">
+      <mat-label>To Date</mat-label>
+      <input matInput [matDatepicker]="toPicker" [(ngModel)]="toInputDate" placeholder="DD-MM-YYYY" readonly>
+      <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker panelClass="custom-datepicker"></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="user-field">
+      <mat-label>User Filter</mat-label>
+      <mat-select [(ngModel)]="selectedUser" placeholder="All Users">
+        <mat-option value="ALL">All Users</mat-option>
+        <mat-option *ngFor="let u of userList" [value]="u.Username">
+          {{ u.Name ? u.Name + ' (' + u.Username + ')' : u.Username }}
+        </mat-option>
+      </mat-select>
+      <i class="bi bi-person field-icon" matSuffix></i>
+    </mat-form-field>
+
+    <button class="show-btn" (click)="getReportData()" [disabled]="isLoading">
+      <i class="bi" [ngClass]="isLoading ? 'bi-arrow-repeat spin' : 'bi-search'"></i>
+      <span>{{ isLoading ? 'Searching...' : 'Search Report' }}</span>
+    </button>
+  </div>
+
+  <!-- KPI Metrics Banner (4 Cards) -->
+  <div class="metrics-container" *ngIf="detailsData.length > 0">
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-blue">
+        <i class="bi bi-box-arrow-in-right"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Total Login Sessions</span>
+        <span class="metric-val">{{ totalSessions }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-orange">
+        <i class="bi bi-hourglass-split"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Total Duration Logged</span>
+        <span class="metric-val">{{ totalDurationFormatted }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-purple">
+        <i class="bi bi-people"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Distinct Users</span>
+        <span class="metric-val">{{ totalDistinctUsers }}</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon-wrap icon-green">
+        <i class="bi bi-broadcast"></i>
+      </div>
+      <div class="metric-info">
+        <span class="metric-label">Active Online Sessions</span>
+        <span class="metric-val">{{ activeOnlineCount }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: User-wise Duration Summary -->
+  <div class="summary-section-card" *ngIf="summaryData.length > 0">
+    <div class="section-title">
+      <i class="bi bi-person-badge-fill me-2 text-primary"></i>
+      <span>User Duration Summary (Aggregated for Selected Period)</span>
+    </div>
+
+    <div class="user-summary-grid">
+      <div class="user-summary-card" *ngFor="let s of summaryData">
+        <div class="usc-header">
+          <div class="usc-name-group">
+            <span class="usc-fullname">{{ s.Name || s.Username }}</span>
+            <span class="usc-username">{{ s.Username }}</span>
+          </div>
+          <span class="usc-badge" [ngClass]="s.IsCurrentlyOnline ? 'badge-online' : 'badge-offline'">
+            <i class="bi" [ngClass]="s.IsCurrentlyOnline ? 'bi-circle-fill text-success' : 'bi-dash-circle'"></i>
+            {{ s.IsCurrentlyOnline ? 'Online' : 'Logged Out' }}
+          </span>
+        </div>
+
+        <div class="usc-body">
+          <div class="usc-item">
+            <span class="usc-label">Total Sessions</span>
+            <span class="usc-value">{{ s.TotalLogins }}</span>
+          </div>
+          <div class="usc-item">
+            <span class="usc-label">Total Time Spent</span>
+            <span class="usc-value usc-dur">{{ s.TotalDurationFormatted }}</span>
+          </div>
+          <div class="usc-item usc-item-full" *ngIf="s.LastLoginDateTime">
+            <span class="usc-label">Last Login</span>
+            <span class="usc-value-sm">{{ s.LastLoginDateTime | date:'dd-MM-yyyy HH:mm:ss' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Detailed Sessions Table Wrapper -->
+  <div class="table-wrapper">
+
+    <!-- Quick Search bar inside table card -->
+    <div class="table-toolbar" *ngIf="detailsData.length > 0">
+      <div class="search-box">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" (keyup)="applyFilter($event)" placeholder="Search in records by username, name, reason, status...">
+      </div>
+
+      <div class="toolbar-info">
+        <span>Showing <b>{{ dataSource.filteredData.length }}</b> of <b>{{ detailsData.length }}</b> sessions</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Fetching user login history records...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && detailsData.length === 0 && hasSearched">
+      <i class="bi bi-inbox empty-icon"></i>
+      <h4>No Login History Found</h4>
+      <p>No login records match the selected date range and user filter.</p>
+    </div>
+
+    <!-- Initial / Unsearched State -->
+    <div class="empty-state" *ngIf="!isLoading && !hasSearched">
+      <i class="bi bi-search empty-icon"></i>
+      <h4>Select Date Range</h4>
+      <p>Choose From Date and To Date to generate the user login history report.</p>
+    </div>
+
+    <!-- Table Content -->
+    <div class="table-responsive" *ngIf="!isLoading && detailsData.length > 0">
+      <table mat-table [dataSource]="dataSource" matSort class="custom-mat-table">
+
+        <!-- SL No -->
+        <ng-container matColumnDef="SLNo">
+          <th mat-header-cell *matHeaderCellDef><span class="col-header">#</span></th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            {{ paginator ? paginator.pageIndex * paginator.pageSize + i + 1 : i + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- Username -->
+        <ng-container matColumnDef="Username">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><span class="col-header">Username</span></th>
+          <td mat-cell *matCellDef="let row">
+            <span class="user-badge">{{ row.Username }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Full Name -->
+        <ng-container matColumnDef="Name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><span class="col-header">Name</span></th>
+          <td mat-cell *matCellDef="let row">
+            <span class="font-medium">{{ row.Name || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Login Date & Time -->
+        <ng-container matColumnDef="LoginDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><span class="col-header">Login Time</span></th>
+          <td mat-cell *matCellDef="let row">
+            <div class="datetime-cell">
+              <i class="bi bi-calendar-event me-1 text-muted"></i>
+              <span>{{ row.LoginDateTime | date:'dd-MM-yyyy HH:mm:ss' }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Logout Date & Time -->
+        <ng-container matColumnDef="LogoutDateTime">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><span class="col-header">Logout Time</span></th>
+          <td mat-cell *matCellDef="let row">
+            <div class="datetime-cell" *ngIf="row.LogoutDateTime">
+              <i class="bi bi-calendar-check me-1 text-muted"></i>
+              <span>{{ row.LogoutDateTime | date:'dd-MM-yyyy HH:mm:ss' }}</span>
+            </div>
+            <span *ngIf="!row.LogoutDateTime && row.IsLoggedIn" class="active-pulse">
+              <i class="bi bi-record-fill me-1"></i> Active Now
+            </span>
+            <span *ngIf="!row.LogoutDateTime && !row.IsLoggedIn" class="text-muted">-</span>
+          </td>
+        </ng-container>
+
+        <!-- Total Duration -->
+        <ng-container matColumnDef="TotalDuration">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><span class="col-header">Session Duration</span></th>
+          <td mat-cell *matCellDef="let row">
+            <span class="duration-badge" [ngClass]="row.IsLoggedIn ? 'duration-active' : ''">
+              <i class="bi" [ngClass]="row.IsLoggedIn ? 'bi-stopwatch text-success me-1' : 'bi-clock me-1'"></i>
+              {{ row.TotalDuration || (row.IsLoggedIn ? 'Ongoing' : '00h 00m 00s') }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Logout Reason -->
+        <ng-container matColumnDef="LogoutReason">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><span class="col-header">Logout Reason / Termination</span></th>
+          <td mat-cell *matCellDef="let row">
+            <span class="reason-pill" [ngClass]="{
+              'reason-manual': row.LogoutReason?.includes('Manual') || row.LogoutReason?.includes('User'),
+              'reason-browser': row.LogoutReason?.includes('Browser') || row.LogoutReason?.includes('Close'),
+              'reason-inactivity': row.LogoutReason?.includes('Inactive') || row.LogoutReason?.includes('Inactivity') || row.LogoutReason?.includes('Idle'),
+              'reason-relogin': row.LogoutReason?.includes('Re-Login') || row.LogoutReason?.includes('Terminated'),
+              'reason-active': row.IsLoggedIn
+            }">
+              <i class="bi me-1" [ngClass]="{
+                'bi-box-arrow-right': row.LogoutReason?.includes('Manual'),
+                'bi-window-x': row.LogoutReason?.includes('Browser'),
+                'bi-hourglass-split': row.LogoutReason?.includes('Inactive'),
+                'bi-shield-exclamation': row.LogoutReason?.includes('Re-Login'),
+                'bi-lightning-charge': row.IsLoggedIn
+              }"></i>
+              {{ row.LogoutReason || (row.IsLoggedIn ? 'Active Session' : '-') }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="Status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header><span class="col-header">Status</span></th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-pill" [ngClass]="row.IsLoggedIn ? 'status-active' : 'status-ended'">
+              <i class="bi" [ngClass]="row.IsLoggedIn ? 'bi-circle-fill' : 'bi-check-circle'"></i>
+              {{ row.IsLoggedIn ? 'Active' : 'Ended' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row-hover"></tr>
+      </table>
+
+      <!-- Paginator -->
+      <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons class="custom-paginator">
+      </mat-paginator>
+    </div>
+  </div>
+
+  <!-- Footer Component -->
+  <app-footer></app-footer>
+
+</div>

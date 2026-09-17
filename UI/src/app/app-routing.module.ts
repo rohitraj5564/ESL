@@ -33,6 +33,7 @@ import { SystemStatusComponent } from './pages/system-status/system-status.compo
 import { LadleWeighmentReportComponent } from './pages/ladleweighmentreport/ladleweighmentreport.component';
 import { SlagReportComponent } from './pages/slagreport/slagreport.component';
 import { ManualVsAutoReportComponent } from './pages/manual-vs-auto-report/manual-vs-auto-report.component';
+import { UserLoginHistoryReportComponent } from './pages/user-login-history-report/user-login-history-report.component';
 
 const routes: Routes = [
   {
@@ -169,6 +170,11 @@ const routes: Routes = [
   {
     path: 'manualvsautoreport',
     component: ManualVsAutoReportComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'userloginreport',
+    component: UserLoginHistoryReportComponent,
     canActivate: [authGuard]
   },
 

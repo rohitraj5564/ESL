@@ -1787,6 +1787,56 @@ namespace ESL_Api.Controllers
             return Ok(new ResponseData { status = true, message = "Session active", data = null });
         }
 
+        [HttpGet, Route("GetUserLoginHistoryReport")]
+        public IHttpActionResult GetUserLoginHistoryReport(string fromDate, string toDate, string userName = null)
+        {
+            Logger.LogRequest("LTS/GetUserLoginHistoryReport", userName ?? "all", $"From: {fromDate}, To: {toDate}");
+            ResponseData responseData = new ResponseData();
+            try
+            {
+                DateTime dtFrom = DateTime.Parse(fromDate);
+                DateTime dtTo = DateTime.Parse(toDate);
+
+                var reportData = PDADAL.GetUserLoginHistoryReport(dtFrom, dtTo, userName);
+                responseData.status = true;
+                responseData.message = "Report data fetched successfully";
+                responseData.data = reportData;
+                Logger.LogResponse("LTS/GetUserLoginHistoryReport", true, $"Fetched {reportData.summary.Count} user summaries, {reportData.details.Count} session records");
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Logger.Error($"[GetUserLoginHistoryReport] Error | From: {fromDate} | To: {toDate}", ex);
+                Logger.LogResponse("LTS/GetUserLoginHistoryReport", false, ex.Message);
+            }
+
+            return Ok(responseData);
+        }
+
+        [HttpGet, Route("GetLoginReportUsers")]
+        public IHttpActionResult GetLoginReportUsers()
+        {
+            ResponseData responseData = new ResponseData();
+            try
+            {
+                var users = PDADAL.GetLoginReportUsers();
+                responseData.status = true;
+                responseData.message = "Users fetched successfully";
+                responseData.data = users;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Logger.Error("[GetLoginReportUsers] Error", ex);
+            }
+
+            return Ok(responseData);
+        }
+
         [HttpGet, Route("GetAllBFLadle")]
 
         public IHttpActionResult GetAllBFLadle()

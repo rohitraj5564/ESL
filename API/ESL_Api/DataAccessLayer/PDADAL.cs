@@ -3199,5 +3199,53 @@ namespace ESL_Api.DataAccessLayer
         }
         #endregion
 
+        #region User Login History Report
+        public UserLoginReportData GetUserLoginHistoryReport(DateTime fromDate, DateTime toDate, string userName = null)
+        {
+            var result = new UserLoginReportData();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Appsetting.ConnectionString))
+                {
+                    db.Open();
+                    var _params = new DynamicParameters();
+                    _params.Add("@FromDate", fromDate);
+                    _params.Add("@ToDate", toDate);
+                    _params.Add("@UserName", string.IsNullOrWhiteSpace(userName) || userName == "ALL" ? null : userName);
+
+                    using (var multi = db.QueryMultiple("ESL_SP_GetUserLoginHistoryReport", _params, commandType: CommandType.StoredProcedure))
+                    {
+                        result.summary = multi.Read<UserLoginSummaryItem>().ToList();
+                        result.details = multi.Read<UserLoginDetailItem>().ToList();
+                    }
+                }
+                Logger.Info($"[GetUserLoginHistoryReport] Fetched {result.summary.Count} user summaries, {result.details.Count} session details.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogDBError("GetUserLoginHistoryReport", ex);
+            }
+            return result;
+        }
+
+        public List<UserOptionItem> GetLoginReportUsers()
+        {
+            var result = new List<UserOptionItem>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(Appsetting.ConnectionString))
+                {
+                    db.Open();
+                    result = db.Query<UserOptionItem>("ESL_SP_GetLoginReportUsers", commandType: CommandType.StoredProcedure).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogDBError("GetLoginReportUsers", ex);
+            }
+            return result;
+        }
+        #endregion
+
     }
 }

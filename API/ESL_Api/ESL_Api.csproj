@@ -313,6 +313,7 @@
     <Compile Include="Models\LadleChartDto.cs" />
     <Compile Include="Models\LocoLadleMappingModel.cs" />
     <Compile Include="Models\LogoutRequest .cs" />
+    <Compile Include="Models\UserLoginReportModel.cs" />
     <Compile Include="Models\PDAAvailableTransferLocoRequest.cs" />
     <Compile Include="Models\PDACastAssignmentModel.cs" />
     <Compile Include="Models\DashboardData.cs" />

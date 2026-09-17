@@ -75,6 +75,7 @@ import { SystemStatusComponent } from './pages/system-status/system-status.compo
 import { LadleWeighmentReportComponent } from './pages/ladleweighmentreport/ladleweighmentreport.component';
 import { SlagReportComponent } from './pages/slagreport/slagreport.component';
 import { ManualVsAutoReportComponent } from './pages/manual-vs-auto-report/manual-vs-auto-report.component';
+import { UserLoginHistoryReportComponent } from './pages/user-login-history-report/user-login-history-report.component';
 
 function initializeApp(configService: AppConfigService) {
   return () => configService.loadConfig();
@@ -107,6 +108,7 @@ function initializeApp(configService: AppConfigService) {
     LadleWeighmentReportComponent,
     SlagReportComponent,
     ManualVsAutoReportComponent,
+    UserLoginHistoryReportComponent,
     SystemStatusComponent
   ],
 

@@ -155,6 +155,18 @@ private refreshReportSource = new Subject<void>();
     return this.http.post<any>(`${this.apiUrl}/DashboardLogout`, userData);
   }
 
+  getUserLoginHistoryReport(fromDate: string, toDate: string, userName?: string): Observable<any> {
+    let url = `${this.apiUrl}GetUserLoginHistoryReport?fromDate=${encodeURIComponent(fromDate)}&toDate=${encodeURIComponent(toDate)}`;
+    if (userName && userName !== 'ALL') {
+      url += `&userName=${encodeURIComponent(userName)}`;
+    }
+    return this.http.get<any>(url);
+  }
+
+  getLoginReportUsers(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}GetLoginReportUsers`);
+  }
+
   // ==================== WB Admin / Home (Dashboard) ====================
 
   getAllBFLadle() {

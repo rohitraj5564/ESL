@@ -115,6 +115,11 @@ namespace ESL_Api.IDataAccessLayer
         #region Manual Vs Auto Assignment Report
         List<ManualVsAutoAssignmentModel> GetManualVsAutoAssignmentReport(DateTime fromDate, DateTime toDate);
         #endregion
+
+        #region User Login History Report
+        UserLoginReportData GetUserLoginHistoryReport(DateTime fromDate, DateTime toDate, string userName = null);
+        List<UserOptionItem> GetLoginReportUsers();
+        #endregion
     }
 }
 
